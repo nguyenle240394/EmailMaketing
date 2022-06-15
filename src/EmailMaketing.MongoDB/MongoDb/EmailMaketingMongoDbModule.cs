@@ -5,6 +5,7 @@ using Volo.Abp.FeatureManagement.MongoDB;
 using Volo.Abp.Identity.MongoDB;
 using Volo.Abp.IdentityServer.MongoDB;
 using Volo.Abp.Modularity;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.PermissionManagement.MongoDB;
 using Volo.Abp.SettingManagement.MongoDB;
 using Volo.Abp.TenantManagement.MongoDB;
@@ -35,6 +36,10 @@ public class EmailMaketingMongoDbModule : AbpModule
         Configure<AbpUnitOfWorkDefaultOptions>(options =>
         {
             options.TransactionBehavior = UnitOfWorkTransactionBehavior.Disabled;
+        });
+        Configure<AbpMultiTenancyOptions>(options =>
+        {
+            options.IsEnabled = true;
         });
     }
 }

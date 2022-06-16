@@ -8,12 +8,7 @@ namespace EmailMaketing.Customers
 {
     public class CreateUpdateCustomer
     {
-        [Required]
-        [DisplayName("User Name")]
-        public string UserName { get; set; }
-        [Required]
-        /*[RegularExpression("^.*(?=.{8,})(?=.*Vd)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$")]*/
-        public string Password { get; set; }
+        public Guid UserID { get; set; }
         [Required]
         [DisplayName("Full Name")]
         public string FullName { get; set; }

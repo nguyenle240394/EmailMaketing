@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Volo.Abp.Identity;
 
 namespace EmailMaketing.Web;
 

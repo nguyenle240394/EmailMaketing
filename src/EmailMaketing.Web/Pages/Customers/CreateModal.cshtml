@@ -19,10 +19,10 @@
     <form method="post" asp-page="/Customers/CreateModal">
         <abp-card-body>
             <abp-row>
-                <abp-input asp-for="Customer.UserName"></abp-input>
-                <abp-input asp-for="Customer.Password" type="password"></abp-input>
+                <abp-input asp-for="AppUser.UserName"></abp-input>
+                <abp-input asp-for="AppUser.Password"></abp-input>
                 <abp-input asp-for="Customer.FullName"></abp-input>
-                <abp-input asp-for="Customer.Email"></abp-input>
+                <abp-input asp-for="AppUser.Email"></abp-input>
                 <abp-input asp-for="Customer.PhoneNumber"></abp-input>
             </abp-row>
         </abp-card-body>

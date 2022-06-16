@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Identity;
 
 namespace EmailMaketing.Customers
 {
     public class CustomerAppService : ApplicationService, ICustomerAppService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IdentityUserManager _userManager;
 
-        public CustomerAppService(ICustomerRepository customerRepository )
+        public CustomerAppService(ICustomerRepository customerRepository, IdentityUserManager UserManager)
         {
             _customerRepository = customerRepository;
+            _userManager = UserManager;
         }
         public async Task<CustomerDto> CreateAsync(CreateUpdateCustomer input)
         {

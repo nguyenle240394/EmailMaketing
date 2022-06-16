@@ -47,10 +47,10 @@
                             ]
                     }
                 },*/
-                {
+               /* {
                     title: l('User Name'),
                     data: "userName"
-                },
+                },*/
                 {
                     title: l('Name'),
                     data: "fullName",

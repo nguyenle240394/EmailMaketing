@@ -10,6 +10,7 @@ namespace EmailMaketing.SenderEmails
         public string Email { get; set; }
         public string Password { get; set; }
         public Guid CustomerID { get; set; }
+        public string CustomerName { get; set; }
         public bool IsSend { get; set; }
     }
 }

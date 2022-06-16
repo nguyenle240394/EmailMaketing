@@ -19,6 +19,10 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getList),
             columnDefs: [
+                //{
+                //    title: l('Action'),
+                //    rowAction
+                //},
                 {
                     title: l('Email'),
                     data: "email"
@@ -30,6 +34,10 @@ $(function () {
                 {
                     title: l('CustomerID'),
                     data: "customerID"
+                },
+                {
+                    title: l('CustomerName'),
+                    data: "customerName"
                 },
                 {
                     title: l('IsSend'),

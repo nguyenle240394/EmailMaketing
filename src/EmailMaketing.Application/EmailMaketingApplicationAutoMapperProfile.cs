@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmailMaketing.Customers;
+using EmailMaketing.SenderEmails;
 
 namespace EmailMaketing;
 
@@ -12,5 +13,8 @@ public class EmailMaketingApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
         CreateMap<CreateUpdateCustomer, Customer>();
         CreateMap<Customer, CustomerDto>();
+
+        CreateMap<SenderEmail, SenderEmailDto>();
+        CreateMap<CreateUpdateSenderEmailDto, SenderEmail>();
     }
 }

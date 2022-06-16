@@ -47,8 +47,8 @@ $(function () {
     //    dataTable.ajax.reload();
     //});
 
-    //$('#NewSenderEmailButton').click(function (e) {
-    //    e.preventDefault();
-    //    //createModal.open();
-    //});
+    $('#NewSenderEmailButton').click(function (e) {
+        e.preventDefault();
+        //createModal.open();
+    });
 });

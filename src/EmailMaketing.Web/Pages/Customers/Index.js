@@ -77,10 +77,10 @@
             ]
         })
     );
-    createModal.onResult(function () {
+    /*createModal.onResult(function () {
         dataTable.ajax.reload();
     });
-
+*/
     /*editModal.onResult(function () {
         dataTable.ajax.reload();
     });*/

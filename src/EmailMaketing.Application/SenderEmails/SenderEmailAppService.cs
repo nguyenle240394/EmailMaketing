@@ -79,8 +79,6 @@ namespace EmailMaketing.SenderEmails
             var items = await _senderEmailRepository.FindAsync(id);
             items.Email = input.Email;
             items.Password = input.Password;
-            items.CustomerID = input.CustomerID;
-            items.IsSend = input.IsSend;
             await _senderEmailRepository.UpdateAsync(items);
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }

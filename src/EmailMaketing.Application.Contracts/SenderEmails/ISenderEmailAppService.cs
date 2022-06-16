@@ -15,5 +15,6 @@ namespace EmailMaketing.SenderEmails
         Task<bool> DeleteAsync(Guid id);
         //Task<ListResultDto<CustomerLookupDto>> GetCustomerLookupAsync();
         //Task<List<SelectListItems<Guid?>>> GetListSendEmailLookupAsync(Guid? Id = null);
+
     }
 }

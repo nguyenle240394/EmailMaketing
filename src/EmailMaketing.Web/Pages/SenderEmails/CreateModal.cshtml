@@ -1,0 +1,29 @@
+﻿@page
+@model EmailMaketing.Web.Pages.SenderEmails.CreateModalModel
+@using Microsoft.Extensions.Localization
+@using EmailMaketing.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@inject IStringLocalizer<EmailMaketingResource> L
+@section scripts{
+    <script type="text/javascript" src="/Pages/SenderEmail/Create.js"></script>
+}
+
+<form abp-model="SenderEmail" asp-page="/SenderEmails/CreateModal">
+    <abp-card>
+        <abp-card-header>
+            <abp-card-title>@L["New Sender Email"]</abp-card-title> 
+        </abp-card-header>
+        <abp-card-body>
+            <abp-row>
+                <abp-input asp-for="SenderEmail.Email"></abp-input>
+                <abp-input asp-for="SenderEmail.Password" type="password"></abp-input>
+                <abp-input asp-for="SenderEmail.CustomerID"></abp-input>
+                <abp-input asp-for="SenderEmail.IsSend"></abp-input>
+            </abp-row>
+        </abp-card-body>
+        <abp-card-footer>
+            <a href="/SenderEmails" class="btn btn-secondary">@L["Cancel"]</a>
+            <button id="save" data-busy-text="Đang lưu..." class="btn btn-primary bkgrnd-cyan save-details" type="submit" name="save-details">@L["Save"]</button>
+        </abp-card-footer>
+    </abp-card>
+</form>

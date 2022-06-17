@@ -17,7 +17,7 @@ $(function () {
             order: [[1, "asc"]],
             searching: false,
             scrollX: true,
-            ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getList),
+            ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getListWithNavigation),
             columnDefs: [
                 //{
                 //    title: l('Action'),
@@ -25,27 +25,31 @@ $(function () {
                 //},
                 {
                     title: l('Email'),
-                    data: "email"
+                    data: "senderEmail.email",
                 },
                 {
                     title: l('Password'),
-                    data: "password"
+                    data: "senderEmail.password"
                 },
                 {
                     title: l('CustomerName'),
-                    data: "customerName"
+                    data: "customer",
+                    render: function (data) {
+                        if (data != null) return data.fullName;
+                        return "";
+                    }
                 },
                 {
                     title: l('IsSend'),
-                    data: "isSend"
+                    data: "senderEmail.isSend"
                 }
             ]
 
         })
     )
-    createModal.onResult(function () {
-        dataTable.ajax.reload();
-    });
+    //createModal.onResult(function () {
+    //    dataTable.ajax.reload();
+    //});
 
     //editModal.onResult(function () {
     //    dataTable.ajax.reload();

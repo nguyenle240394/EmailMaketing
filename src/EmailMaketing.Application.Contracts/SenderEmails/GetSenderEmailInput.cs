@@ -8,6 +8,5 @@ namespace EmailMaketing.SenderEmails
     public class GetSenderEmailInput : PagedAndSortedResultRequestDto
     {
         public string Filter { get; set; }
-        public Guid? idcustomer { get; set; }
     }
 }

@@ -38,7 +38,33 @@ namespace EmailMaketing.SenderEmails
                 .Take(maxResultCount)
                 .ToListAsync();
         }
+        public async Task<List<SenderWithNavigation>> GetListWithNavigationAsync(
+          int skipCount,
+          int maxResultCount,
+          string sorting,
+          string filter = null,
+          CancellationToken cancellationToken = default)
+        {
+            var query = await GetMongoQueryableAsync();
+            var data = await query
+                .WhereIf(
+                !filter.IsNullOrWhiteSpace(),
+                senderemail => senderemail.Email.Contains(filter))
+                .OrderByDescending(x => x.CreationTime)
+                .As<IMongoQueryable<SenderEmail>>()
+                .Skip(skipCount)
+                .Take(maxResultCount)
+                .ToListAsync(cancellationToken: cancellationToken);
+            var db = await GetDbContextAsync(cancellationToken);
 
+            var customer = db.Customers.AsQueryable();
+            var dataWithNavigator = data.Select(x => new SenderWithNavigation()
+            {
+                SenderEmail =x,
+                Customer = customer.FirstOrDefault(y=>y.Id ==x.CustomerID )
+            });
+            return dataWithNavigator.ToList();
+        }
         //public async Task<List<SenderEmail>> GetListSendEmailLookupAsync(
         //    Guid? Id, 
         //    string filterText = null, 

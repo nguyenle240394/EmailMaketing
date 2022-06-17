@@ -10,6 +10,11 @@ namespace EmailMaketing.Customers
     {
         public Guid UserID { get; set; }
         [Required]
+        [DisplayName("User Name")]
+        public string UserName { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
         [DisplayName("Full Name")]
         public string FullName { get; set; }
         [Required]

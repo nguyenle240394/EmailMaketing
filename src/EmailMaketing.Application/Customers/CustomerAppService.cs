@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Identity;
@@ -10,13 +12,22 @@ namespace EmailMaketing.Customers
     public class CustomerAppService : ApplicationService, ICustomerAppService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly IdentityUserManager _userManager;
+        private readonly IdentityUserAppService _identityUserAppService;
+        private readonly IdentityUserManager _identityUserManager;
 
-        public CustomerAppService(ICustomerRepository customerRepository, IdentityUserManager UserManager)
+        public CustomerAppService(ICustomerRepository customerRepository, IdentityUserAppService identityUserAppService)
         {
             _customerRepository = customerRepository;
-            _userManager = UserManager;
+            _identityUserAppService = identityUserAppService;
         }
+
+        public async Task ChangeStatus(Guid Id)
+        {
+            var customer = await _customerRepository.FindAsync(Id);
+            customer.Status = !customer.Status;
+            await _customerRepository.UpdateAsync(customer);
+        }
+
         public async Task<CustomerDto> CreateAsync(CreateUpdateCustomer input)
         {
             var customer = ObjectMapper.Map<CreateUpdateCustomer, Customer>(input);
@@ -42,6 +53,7 @@ namespace EmailMaketing.Customers
                     input.Sorting,
                     input.Filter
                 );
+            
             var customerAdd = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
             var totalCount = await _customerRepository.GetCountAsync();
             return new PagedResultDto<CustomerDto>(
@@ -54,5 +66,18 @@ namespace EmailMaketing.Customers
         {
             throw new NotImplementedException();
         }
+
+
+        /*private async Task<Dictionary<Guid, IdentityUser>> GetSupplierDictionaryAsync(List<Customer> customers)
+        {
+            var identityUserIds = customers
+                .Select(c => c.UserID)
+                .Distinct()
+                .ToArray();
+
+            var queryable = await _identityUser.
+            var suppliers = await AsyncExecuter.ToListAsync(queryable.Where(s => supplierIds.Contains(s.Id)));
+            return suppliers.ToDictionary(x => x.Id, x => x);
+        }*/
     }
 }

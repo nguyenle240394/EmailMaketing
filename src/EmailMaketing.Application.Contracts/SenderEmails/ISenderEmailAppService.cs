@@ -13,9 +13,8 @@ namespace EmailMaketing.SenderEmails
         Task<SenderEmailDto> CreateAsync(CreateUpdateSenderEmailDto input);
         //Task<SenderEmailDto> UpdateAsync(Guid id, CreateUpdateSenderEmailDto input);
         //Task<bool> DeleteAsync(Guid id);
-        //Task<ListResultDto<CustomerLookupDto>> GetCustomerLookupAsync();
+        Task<ListResultDto<CustomerLookupDto>> GetCustomerLookupAsync();
         
-        //Task<List<SelectListItems<Guid?>>> GetListSendEmailLookupAsync(Guid? Id = null);
 
     }
 }

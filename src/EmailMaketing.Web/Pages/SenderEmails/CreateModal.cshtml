@@ -4,9 +4,6 @@
 @using EmailMaketing.Localization
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @inject IStringLocalizer<EmailMaketingResource> L
-@section scripts{
-    <script type="text/javascript" src="/Pages/SenderEmail/Create.js"></script>
-}
 
 <form abp-model="SenderEmail" asp-page="/SenderEmails/CreateModal">
     <abp-card>

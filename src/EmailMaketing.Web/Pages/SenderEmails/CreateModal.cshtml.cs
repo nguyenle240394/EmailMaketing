@@ -10,13 +10,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
+using Volo.Abp.Identity;
 
 namespace EmailMaketing.Web.Pages.SenderEmails
 {
     public class CreateModalModel : PageModel
     {
         private readonly ISenderEmailAppService _senderEmailAppService;
-        public CreateModalModel(ISenderEmailAppService senderEmailAppService)
+        public CreateModalModel(
+            ISenderEmailAppService senderEmailAppService)
         {
             _senderEmailAppService = senderEmailAppService;
         }
@@ -24,7 +26,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         [BindProperty]
         public CreateUpdateSenderEmailDto SenderEmail { get; set; }
 
-        public async Task OnGet()
+        public async Task OnGetAsync()
         {
         }
         

@@ -80,7 +80,6 @@ $(function () {
                             '<span class="slider round"></span>' +
                             '</label >';
                         return str;
-
                     }
                 },
                 {
@@ -96,10 +95,10 @@ $(function () {
             ]
         })
     );
-    /*createModal.onResult(function () {
+    createModal.onResult(function () {
         dataTable.ajax.reload();
     });
-*/
+
     /*editModal.onResult(function () {
         dataTable.ajax.reload();
     });*/
@@ -148,4 +147,5 @@ function ChangeStatus(id, status) {
                 }
             }
         });
+    
 };

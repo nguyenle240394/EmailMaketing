@@ -67,6 +67,7 @@ namespace EmailMaketing.Web.Pages.Customers
             public string Password { get; set; }
             [Required]
             [DisplayName("Full Name")]
+            [RegularExpression("[a-zA-Z]Vs")]
             public string FullName { get; set; }
             [Required]
             [RegularExpression("[0-9]{10}")]

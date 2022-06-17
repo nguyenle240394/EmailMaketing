@@ -23,9 +23,18 @@ namespace EmailMaketing.Customers
 
         public async Task ChangeStatus(Guid Id)
         {
+            var identityUser = new IdentityUserUpdateDto();
             var customer = await _customerRepository.FindAsync(Id);
+
             customer.Status = !customer.Status;
             await _customerRepository.UpdateAsync(customer);
+            var user = await _identityUserAppService.GetAsync(customer.UserID);
+
+            user.IsActive = !user.IsActive;
+            identityUser.UserName= user.UserName;
+            identityUser.Email = user.Email;
+            identityUser.IsActive = user.IsActive;
+            await _identityUserAppService.UpdateAsync(customer.UserID, identityUser);
         }
 
         public async Task<CustomerDto> CreateAsync(CreateUpdateCustomer input)

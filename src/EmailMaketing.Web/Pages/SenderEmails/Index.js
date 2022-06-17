@@ -32,10 +32,6 @@ $(function () {
                     data: "password"
                 },
                 {
-                    title: l('CustomerID'),
-                    data: "customerID"
-                },
-                {
                     title: l('CustomerName'),
                     data: "customerName"
                 },

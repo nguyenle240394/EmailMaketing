@@ -41,14 +41,13 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         url: "/Customers"
                     )
             );
-        if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
-            context.Menu.AddItem(
-                    new ApplicationMenuItem(
-                            "EmailMaketing.SenderEmails",
-                            l["Menu:SenderEmails"],
-                            url: "/SenderEmails"
-                        )
-                );
+        context.Menu.AddItem(
+                new ApplicationMenuItem(
+                        "EmailMaketing.SenderEmails",
+                        l["Menu:SenderEmails"],
+                        url: "/SenderEmails"
+                    )
+            );
 
         if (MultiTenancyConsts.IsEnabled)
         {

@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 
@@ -22,14 +24,14 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         [BindProperty]
         public CreateUpdateSenderEmailDto SenderEmail { get; set; }
 
-        public void OnGet()
-        { }
-
-        public async Task<IActionResult> OnPost()
+        public async Task OnGet()
+        {
+        }
+        
+        public async Task<IActionResult> OnPostAsync()
         {
             await _senderEmailAppService.CreateAsync(SenderEmail);
             return RedirectToAction("Index", "SenderEmails");
         }
-
     }
 }

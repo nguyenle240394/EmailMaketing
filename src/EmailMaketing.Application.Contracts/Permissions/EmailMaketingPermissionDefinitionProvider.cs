@@ -13,10 +13,10 @@ public class EmailMaketingPermissionDefinitionProvider : PermissionDefinitionPro
 
         var emailMaketingGroup = context.AddGroup(EmailMaketingPermissions.GroupName, L("Permission:EmailMarketing"));
 
-        var senderEmailPermission = emailMaketingGroup.AddPermission(EmailMaketingPermissions.SenderEmails.Default, L("Permission:SenderEmails"));
-        senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Create, L("Permission:SenderEmails.Create"));
-        senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Edit, L("Permission:SenderEmails.Edit"));
-        senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Delete, L("Permission:SenderEmails.Delete"));
+        //var senderEmailPermission = emailMaketingGroup.AddPermission(EmailMaketingPermissions.SenderEmails.Default, L("Permission:SenderEmails"));
+        //senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Create, L("Permission:SenderEmails.Create"));
+        //senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Edit, L("Permission:SenderEmails.Edit"));
+        //senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Delete, L("Permission:SenderEmails.Delete"));
     }
 
     private static LocalizableString L(string name)

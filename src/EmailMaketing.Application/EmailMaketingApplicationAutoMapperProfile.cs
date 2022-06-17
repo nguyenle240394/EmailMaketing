@@ -13,6 +13,7 @@ public class EmailMaketingApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
         CreateMap<CreateUpdateCustomer, Customer>();
         CreateMap<Customer, CustomerDto>();
+        CreateMap<Customer, CustomerLookupDto>();
 
         CreateMap<SenderEmail, SenderEmailDto>();
         CreateMap<CreateUpdateSenderEmailDto, SenderEmail>();

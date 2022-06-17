@@ -12,7 +12,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace EmailMaketing.SenderEmails
 {
-    [Authorize(EmailMaketingPermissions.SenderEmails.Default)]
+    //[Authorize(EmailMaketingPermissions.SenderEmails.Default)]
     public class SenderEmailAppService : ApplicationService, ISenderEmailAppService
     {
         private readonly ISenderEmailRepository _senderEmailRepository;
@@ -46,16 +46,18 @@ namespace EmailMaketing.SenderEmails
             return new ListResultDto<CustomerLookupDto>(customerLookupDto);
         }
 
-        private async Task<Dictionary<Guid, Customer>> GetCustomerDictionaryAsync(List<SenderEmail> senderEmails)
-        {
-            var customerId = senderEmails
-                .Select(s => s.CustomerID)
-                .Distinct()
-                .ToArray();
-            var query = await _customerRepository.GetQueryableAsync();
-            var customers = await AsyncExecuter.ToListAsync(query.Where(c => customerId.Contains(c.Id)));
-            return customers.ToDictionary(x => x.Id, x => x);
-        }
+        //private async Task<Dictionary<Guid, Customer>> GetCustomerDictionaryAsync(List<SenderEmail> senderEmails)
+        //{
+        //    var customerId = senderEmails
+        //        .Select(s => s.CustomerID)
+        //        .Distinct()
+        //        .ToArray();
+        //    var query = await _customerRepository.GetQueryableAsync();
+        //    var customers = await AsyncExecuter.ToListAsync(query.Where(c => customerId.Contains(c.Id)));
+        //    return customers.ToDictionary(x => x.Id, x => x);
+        //}
+
+        private async Task<List<>>
 
         public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
         {
@@ -69,10 +71,13 @@ namespace EmailMaketing.SenderEmails
                 input.Sorting,
                 input.Filter);
             var totalcount = await _senderEmailRepository.GetCountAsync();
+            //var customerDictionary = await GetCustomerDictionaryAsync(senderemail); 
             var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
-            var customerDictionary = await GetCustomerDictionaryAsync(senderemail);
-            senderEmailDtos.ForEach(senderEmailDto => senderEmailDto.CustomerName = customerDictionary[senderEmailDto.CustomerID].FullName);
-            
+            //senderEmailDtos.ForEach(senderEmailDto => senderEmailDto.CustomerName = customerDictionary[senderEmailDto.CustomerID].FullName);
+            foreach(var item in senderEmailDtos)
+            {
+                var customer = await _customerRepository.
+            }
             return new PagedResultDto<SenderEmailDto>(
                 totalcount,
                 senderEmailDtos

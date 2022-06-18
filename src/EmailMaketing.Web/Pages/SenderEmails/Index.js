@@ -40,7 +40,7 @@ $(function () {
                     data: "senderEmail.password"
                 },
                 {
-                    title: l('CustomerName'),
+                    title: l('Customer Name'),
                     data: "customer",
                     render: function (data) {
                         if (data != null) return data.fullName;

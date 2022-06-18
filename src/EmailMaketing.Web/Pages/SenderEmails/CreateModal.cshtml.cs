@@ -43,7 +43,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
             SenderEmail.CustomerID = customer.Id;
             var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
-            await _senderEmailAppService.CreateAsync(SenderEmail);
+            await _senderEmailAppService.CreateAsync(senderemails);
             return NoContent();
         }
 

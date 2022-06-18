@@ -9,7 +9,7 @@
 @inject IHtmlLocalizer<EmailMaketingResource> L
 @inject ICurrentUser CurrentUser
 @section scripts{
-    <script type="text/javascript" src="~/Pages/SenderEmails/Index.js"></script>
+     <abp-script src="/Pages/SenderEmails/Index.js" />
 } 
 
 <abp-card>
@@ -19,11 +19,10 @@
                 <abp-card-title>@L["Sender Email"]</abp-card-title>
             </abp-column>
             <abp-column size-md="_6" class="text-end">
-                <abp-button id="NewProductButton"
+                <abp-button id="NewSenderEmailButton"
                             text="@L["New Sender Email"].Value"
                             icon="plus"
-                            button-type="Primary"
-                            onclick="location.href='@Url.Action("CreateModal","SenderEmails")'"/>
+                            button-type="Primary"/>
             </abp-column>
         </abp-row>
     </abp-card-header>

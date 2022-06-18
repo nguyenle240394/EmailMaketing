@@ -1,8 +1,7 @@
 ﻿
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
-    //var createModal = new abp.ModelManager({
-    //    viewUrl: abp.abpPath + 'SenderEmails/CreateModal',
+    var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
     //    scriptUrl: '/Pages/SenderEmails/Create.js'
     //});
     //getFilter = function () {
@@ -10,7 +9,7 @@ $(function () {
     //        filterText: $("input[name='Search']").val()
     //    }
     //}
-    dataTable = $('#SenderEmailTable').DataTable(
+    var dataTable = $('#SenderEmailTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
@@ -21,7 +20,16 @@ $(function () {
             columnDefs: [
                 //{
                 //    title: l('Action'),
-                //    rowAction
+                //    rowAction: {
+                //        items: [
+                //            {
+                //                text: l('Edit'),
+                //                action: function (data) {
+                //                    editModal.open({ id: data.record.id})
+                //                }
+                //            }
+                //        ]
+                //    }
                 //},
                 {
                     title: l('Email'),
@@ -57,6 +65,6 @@ $(function () {
 
     $('#NewSenderEmailButton').click(function (e) {
         e.preventDefault();
-        //createModal.open();
+        createModal.open();
     });
 });

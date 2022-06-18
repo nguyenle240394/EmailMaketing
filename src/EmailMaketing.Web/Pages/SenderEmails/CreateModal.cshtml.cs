@@ -16,7 +16,7 @@ using Volo.Abp.Users;
 
 namespace EmailMaketing.Web.Pages.SenderEmails
 {
-    public class CreateModalModel : PageModel
+    public class CreateModalModel : EmailMaketingPageModel
     {
         private readonly ISenderEmailAppService _senderEmailAppService;
         private readonly ICustomerRepository _customerRepository;
@@ -30,19 +30,31 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         }
 
         [BindProperty]
-        public CreateUpdateSenderEmailDto SenderEmail { get; set; }
+        public CreateSenderEmailViewModal SenderEmail { get; set; }
 
-        public async Task OnGetAsync()
+        public void OnGet()
         {
+            SenderEmail = new CreateSenderEmailViewModal();
         }
-        
+
         public async Task<IActionResult> OnPostAsync()
         {
             var userId = _currentUser.Id; // Lay userId hien tai
             var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
             SenderEmail.CustomerID = customer.Id;
+            var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
             await _senderEmailAppService.CreateAsync(SenderEmail);
-            return RedirectToAction("Index", "SenderEmails");
+            return NoContent();
+        }
+
+        public class CreateSenderEmailViewModal
+        {
+            [Required]
+            public string Email { get; set; }
+            [Required]
+            public string Password { get; set; }
+            [HiddenInput]
+            public Guid? CustomerID { get; set; }
         }
     }
 }

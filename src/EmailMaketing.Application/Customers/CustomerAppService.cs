@@ -50,9 +50,10 @@ namespace EmailMaketing.Customers
             return true;
         }
 
-        public Task<CustomerDto> GetCustomerAsync(Guid id)
+        public async Task<CustomerDto> GetCustomerAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var customer = await _customerRepository.FindAsync(id);
+            return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
 
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomerInput input)
@@ -72,9 +73,27 @@ namespace EmailMaketing.Customers
                 );
         }
 
-        public Task<CustomerDto> UpdateAsync(Guid id, CreateUpdateCustomer input)
+        public async Task<CustomerDto> UpdateAsync(Guid id, CreateUpdateCustomer input)
         {
-            throw new NotImplementedException();
+            var identityUpdateUserDto = new IdentityUserUpdateDto();
+            var customer = await _customerRepository.FindAsync(id);
+            customer.UserName = input.UserName;
+            customer.Password = input.Password;
+            customer.Email = input.Email;
+            customer.PhoneNumber=input.PhoneNumber;
+            customer.FullName=input.FullName;
+            customer.UserID = input.UserID;
+
+            await _customerRepository.UpdateAsync(customer);
+            var user = await _identityUserAppService.FindByUsernameAsync(customer.UserName);
+            if (user != null)
+            {
+                identityUpdateUserDto.UserName = input.UserName;
+                identityUpdateUserDto.Password = input.Password;
+                identityUpdateUserDto.Email = input.Email;
+                await _identityUserAppService.UpdateAsync(customer.UserID,identityUpdateUserDto);
+            }
+            return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
     }
 }

@@ -3,7 +3,7 @@ var l;
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
     var createModal = new abp.ModalManager(abp.appPath + 'Customers/CreateModal');
-    /*var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');*/
+    var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
 
     dataTable = $('#CustomerTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -14,41 +14,7 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
-                {
-                    title: l('Actions'),
-                    rowAction: {
-                        items:
-                            [
-                                {
-                                    text: l('Edit'),
-                                    visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),
-                                    action: function (data) {
-                                        editModal.open({ id: data.record.id });
-                                    }
-                                },
-                                {
-                                    text: l('Delete'),
-                                    visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
-                                    confirmMessage: function (data) {
-                                        return l('CustomerDeletionConfirmationMessage', data.record.name);
-                                    },
-                                    action: function (data) {
-                                        bachHoaXanh.customers.customer
-                                            .delete(data.record.id)
-                                            .then(function (data) {
-                                                if (data) {
-                                                    abp.notify.info(l('SuccessfullyDeleted'));
-                                                    dataTable.ajax.reload();
-                                                } else {
-                                                    abp.message.error(l("NotifyDeleteBill"));
-                                                }
-
-                                            });
-                                    }
-                                }
-                            ]
-                    }
-                },
+               
                 {
                     title: l('User Name'),
                     data: "userName"
@@ -90,6 +56,41 @@ $(function () {
                             .fromISO(data, {
                                 locale: abp.localization.currentCulture.name
                             }).toLocaleString(luxon.DateTime.DATETIME_SHORT);
+                    }
+                },
+                {
+                    title: l('Actions'),
+                    rowAction: {
+                        items:
+                            [
+                                {
+                                    text: l('Edit'),
+                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
+                                    action: function (data) {
+                                        editModal.open({ id: data.record.id });
+                                    }
+                                },
+                                {
+                                    text: l('Delete'),
+                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),*/
+                                    confirmMessage: function (data) {
+                                        return l('CustomerDeletionConfirmationMessage', data.record.name);
+                                    },
+                                    action: function (data) {
+                                        bachHoaXanh.customers.customer
+                                            .delete(data.record.id)
+                                            .then(function (data) {
+                                                if (data) {
+                                                    abp.notify.info(l('SuccessfullyDeleted'));
+                                                    dataTable.ajax.reload();
+                                                } else {
+                                                    abp.message.error(l("NotifyDeleteBill"));
+                                                }
+
+                                            });
+                                    }
+                                }
+                            ]
                     }
                 }
             ]

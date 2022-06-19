@@ -12,5 +12,6 @@ namespace EmailMaketing.Customers
         Task<bool> DeleteAsync(Guid id);
         Task<CustomerDto> UpdateAsync(Guid id, CreateUpdateCustomer input);
         Task<CustomerDto> GetCustomerAsync(Guid id);
+        Task ChangeStatus(Guid Id);
     }
 }

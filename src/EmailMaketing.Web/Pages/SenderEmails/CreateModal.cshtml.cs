@@ -39,9 +39,16 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var userId = _currentUser.Id; // Lay userId hien tai
-            var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
-            SenderEmail.CustomerID = customer.Id;
+            if(_currentUser.UserName != "admin")
+            {
+                var userId = _currentUser.Id; // Lay userId hien tai
+                var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+                SenderEmail.CustomerID = customer.Id;
+            }
+            else
+            {
+                SenderEmail.CustomerID = null;
+            }
             var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
             await _senderEmailAppService.CreateAsync(senderemails);
             return NoContent();

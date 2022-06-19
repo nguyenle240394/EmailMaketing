@@ -2,8 +2,6 @@
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
     var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
-    //    scriptUrl: '/Pages/SenderEmails/Create.js'
-    //});
     //getFilter = function () {
     //    return {
     //        filterText: $("input[name='Search']").val()
@@ -55,9 +53,9 @@ $(function () {
 
         })
     )
-    //createModal.onResult(function () {
-    //    dataTable.ajax.reload();
-    //});
+    createModal.onResult(function () {
+        dataTable.ajax.reload();
+    });
 
     //editModal.onResult(function () {
     //    dataTable.ajax.reload();

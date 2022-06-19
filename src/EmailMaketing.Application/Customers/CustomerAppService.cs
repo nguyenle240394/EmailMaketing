@@ -44,9 +44,10 @@ namespace EmailMaketing.Customers
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var customer = await _customerRepository.FindAsync(id);
+            return true;
         }
 
         public Task<CustomerDto> GetCustomerAsync(Guid id)
@@ -75,18 +76,5 @@ namespace EmailMaketing.Customers
         {
             throw new NotImplementedException();
         }
-
-
-        /*private async Task<Dictionary<Guid, IdentityUser>> GetSupplierDictionaryAsync(List<Customer> customers)
-        {
-            var identityUserIds = customers
-                .Select(c => c.UserID)
-                .Distinct()
-                .ToArray();
-
-            var queryable = await _identityUser.
-            var suppliers = await AsyncExecuter.ToListAsync(queryable.Where(s => supplierIds.Contains(s.Id)));
-            return suppliers.ToDictionary(x => x.Id, x => x);
-        }*/
     }
 }

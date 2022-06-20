@@ -20,5 +20,8 @@ public class EmailMaketingWebAutoMapperProfile : Profile
 
 
         CreateMap<CustomerDto, Pages.Customers.ResetPasswordModel.ResetPasswordCustomerViewModal>();
+
+        CreateMap<SenderEmailDto, Pages.SenderEmails.EditModalModel.EditSenderEmailViewModal>();
+        CreateMap<Pages.SenderEmails.EditModalModel.EditSenderEmailViewModal, CreateUpdateSenderEmailDto>();
     }
 }

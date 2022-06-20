@@ -22,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Pages\SenderEmails\CreateModal.cshtml" />
+    <None Include="Pages\SenderEmails\EditModal.cshtml" />
+    <None Include="Pages\SenderEmails\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Pages\**\*.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

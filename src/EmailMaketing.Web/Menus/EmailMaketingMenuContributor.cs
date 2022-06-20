@@ -40,6 +40,13 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         url: "/Customers"
                     )
             );
+        context.Menu.AddItem(
+               new ApplicationMenuItem(
+                       "EmailMaketing.SenderEmails",
+                       l["Menu:SenderEmails"],
+                       url: "/SenderEmails"
+                   )
+           );
 
         if (MultiTenancyConsts.IsEnabled)
         {

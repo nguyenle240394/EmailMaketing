@@ -1,8 +1,9 @@
 ﻿@page "/abc"
 @model EmailMaketing.Web.Pages.ContentEmail.FormContentEmailModel
-@section styles {
+@*@section styles {
 <abp-style src="/Pages/ContentEmail/FormContentEmail.css" />
-}
+}*@
+<link rel="stylesheet" href="/FormContentEmail.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <div class="container">
@@ -177,7 +178,6 @@
   </div>
 </div>
 <script>
-    var MyArrayid = @Model.ContentEmail;
     //load data
     var count_elements = $('.summary-email').length;
     if (count_elements > 6) {
@@ -204,20 +204,6 @@
         $(".countwords").text(str + " Words")
      });
 
-
-    var html = `<div class="summary-email">
-                    <div class="left">
-                        <p class = "textchange"></p>
-                        <div>
-                            <img src="Images/alarmclock.png" style="width: 15px; height: 15px"/>
-                            <span class = "datetime"></span>
-                        </div>
-                    </div>
-                    <div class="right">
-                       <i class="fa fa-envelope"></i>
-                       <p>DRAFT</p>
-                    </div>
-                </div>`
      function on(e)
      {
          e.preventDefault();
@@ -256,6 +242,23 @@
              $(".tab-content").css('overflow-y', 'scroll');
          }
      });
+
+
+    var html = `<div class='summary-email'>
+        <div class="left">
+            <p class = "textchange"></p>
+            <div>
+                <img src="Images/alarmclock.png" style="width: 15px; height: 15px"/>
+                <span class = "datetime"></span>
+            </div>
+        </div>
+        <div class="right">
+            <i class="fa fa-envelope"></i>
+            <p>DRAFT</p>
+        </div>
+    </div>`
+
+
 
      function off() 
      {
@@ -387,8 +390,7 @@ $(".btn-toadd").click(function(){
     $(".form-check :checked").each(function() {
         var Id = "#list" + this.id;
         var gettext = $(Id).text();
-        var html = `<p class ="item-email"> ${gettext} 
-         <i class="fa fa-times"></i></p>`;
+        var html = `<p class ="item-email"> ${gettext} <i class="fa fa-times"></i></p>`;
         $("#to-recipients").append(html);
     });
     if ($(".item-email").length >= 3) {

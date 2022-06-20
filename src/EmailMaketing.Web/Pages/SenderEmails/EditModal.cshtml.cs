@@ -14,7 +14,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         private readonly CustomerAppService _customerAppService;
 
         [BindProperty]
-        public EditCustomerViewModal Customer { get; set; }
+        public EditSenderEmailViewModal Customer { get; set; }
 
         public EditModalModel(CustomerAppService customerAppService)
         {
@@ -23,18 +23,18 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         public async Task OnGetAsync(Guid id)
         {
             var customerDto = await _customerAppService.GetCustomerAsync(id);
-            Customer = ObjectMapper.Map<CustomerDto, EditCustomerViewModal>(customerDto);
+            Customer = ObjectMapper.Map<CustomerDto, EditSenderEmailViewModal>(customerDto);
 
         }
         public async Task<IActionResult> OnPostAsync()
         {
             await _customerAppService.UpdateAsync(
                     Customer.Id,
-                    ObjectMapper.Map<EditCustomerViewModal, CreateUpdateCustomer>(Customer)
+                    ObjectMapper.Map<EditSenderEmailViewModal, CreateUpdateCustomer>(Customer)
                 );
             return NoContent();
         }
-        public class EditCustomerViewModal
+        public class EditSenderEmailViewModal
         {
             [HiddenInput]
             [BindProperty(SupportsGet = true)]

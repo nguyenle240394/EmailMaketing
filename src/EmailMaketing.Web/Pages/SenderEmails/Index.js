@@ -2,6 +2,8 @@
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
     var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
+    var editModal = new abp.ModalManager(abp.appPath + 'SenderEmails/EditModal');
+
     //getFilter = function () {
     //    return {
     //        filterText: $("input[name='Search']").val()
@@ -16,19 +18,10 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getListWithNavigation),
             columnDefs: [
-                //{
-                //    title: l('Action'),
-                //    rowAction: {
-                //        items: [
-                //            {
-                //                text: l('Edit'),
-                //                action: function (data) {
-                //                    editModal.open({ id: data.record.id})
-                //                }
-                //            }
-                //        ]
-                //    }
-                //},
+                {
+                    title: l('id'),
+                    data: "senderEmail.id",
+                },
                 {
                     title: l('Email'),
                     data: "senderEmail.email",
@@ -48,6 +41,20 @@ $(function () {
                 {
                     title: l('IsSend'),
                     data: "senderEmail.isSend"
+                },
+                {
+                    title: l('Actions'),
+                    rowAction: {
+                        items:
+                            [
+                                {
+                                    text: l('Edit'),
+                                    action: function (data) {
+                                        editModal.open({ id: data.record.senderEmail.id });
+                                    }
+                                }
+                            ]
+                    }
                 }
             ]
 
@@ -57,9 +64,9 @@ $(function () {
         dataTable.ajax.reload();
     });
 
-    //editModal.onResult(function () {
-    //    dataTable.ajax.reload();
-    //});
+    editModal.onResult(function () {
+        dataTable.ajax.reload();
+    });
 
     $('#NewSenderEmailButton').click(function (e) {
         e.preventDefault();

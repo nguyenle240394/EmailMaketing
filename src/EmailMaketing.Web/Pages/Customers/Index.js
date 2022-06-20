@@ -77,7 +77,7 @@ $(function () {
                                         return l('CustomerDeletionConfirmationMessage', data.record.name);
                                     },
                                     action: function (data) {
-                                        bachHoaXanh.customers.customer
+                                        emailMaketing.customers.customer
                                             .delete(data.record.id)
                                             .then(function (data) {
                                                 if (data) {

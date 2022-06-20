@@ -93,13 +93,20 @@ namespace EmailMaketing.SenderEmails
             };
         }
 
-        //public async Task<SenderEmailDto> UpdateAsync(Guid id, CreateUpdateSenderEmailDto input)
-        //{
-        //    var items = await _senderEmailRepository.FindAsync(id);
-        //    items.Email = input.Email;
-        //    items.Password = input.Password;
-        //    await _senderEmailRepository.UpdateAsync(items);
-        //    return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
-        //}
+        public async Task<SenderEmailDto> GetSenderEmailAsync(Guid Id)
+        {
+            var senderemail = await _senderEmailRepository.FindAsync(Id);
+            return ObjectMapper.Map<SenderEmail, SenderEmailDto>(senderemail);
+        }
+
+        public async Task<SenderEmailDto> UpdateAsync(Guid id, CreateUpdateSenderEmailDto input)
+        {
+            var items = await _senderEmailRepository.FindAsync(id);
+            items.Email = input.Email;
+            items.Password = input.Password;
+            items.CustomerID = input.CustomerID;
+            await _senderEmailRepository.UpdateAsync(items);
+            return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
+        }
     }
 }

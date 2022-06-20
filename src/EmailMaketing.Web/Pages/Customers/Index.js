@@ -64,6 +64,7 @@ $(function () {
                         items:
                             [
                                 {
+                                    iconClass: "bx bx-edit",
                                     text: l('Edit'),
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),
                                     action: function (data) {

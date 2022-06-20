@@ -1,37 +1,55 @@
 using EmailMaketing.Customers;
+using EmailMaketing.SenderEmails;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Volo.Abp.Users;
 
 namespace EmailMaketing.Web.Pages.SenderEmails
 {
     
     public class EditModalModel : EmailMaketingPageModel
     {
-        private readonly CustomerAppService _customerAppService;
+        private readonly ISenderEmailAppService _senderEmailAppService;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ICurrentUser _currentUser;
+        public EditModalModel(
+            ISenderEmailAppService senderEmailAppService,
+            ICustomerRepository customerRepository,
+            ICurrentUser currentUser)
+        {
+            _senderEmailAppService = senderEmailAppService;
+            _customerRepository = customerRepository;
+            _currentUser = currentUser;
+        }
 
         [BindProperty]
-        public EditSenderEmailViewModal Customer { get; set; }
+        public EditSenderEmailViewModal SenderEmails { get; set; }
 
-        public EditModalModel(CustomerAppService customerAppService)
-        {
-            _customerAppService = customerAppService;
-        }
         public async Task OnGetAsync(Guid id)
         {
-            var customerDto = await _customerAppService.GetCustomerAsync(id);
-            Customer = ObjectMapper.Map<CustomerDto, EditSenderEmailViewModal>(customerDto);
+            var senderemailDto = await _senderEmailAppService.GetSenderEmailAsync(id);
+            SenderEmails = ObjectMapper.Map<SenderEmailDto, EditSenderEmailViewModal>(senderemailDto);
 
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            await _customerAppService.UpdateAsync(
-                    Customer.Id,
-                    ObjectMapper.Map<EditSenderEmailViewModal, CreateUpdateCustomer>(Customer)
-                );
+            if (_currentUser.UserName != "admin")
+            {
+                var userId = _currentUser.Id; // Lay userId hien tai
+                var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+                SenderEmails.CustomerID = customer.Id;
+            }
+            else
+            {
+                SenderEmails.CustomerID = null;
+            }
+            await _senderEmailAppService.UpdateAsync(
+                SenderEmails.Id,
+                ObjectMapper.Map<EditSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmails));
             return NoContent();
         }
         public class EditSenderEmailViewModal
@@ -39,19 +57,11 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             [HiddenInput]
             [BindProperty(SupportsGet = true)]
             public Guid Id { get; set; }
-            [HiddenInput]
-            public Guid UserID { get; set; }
-            [DisplayName("User Name")]
-            public string UserName { get; set; }
-            public string Password { get; set; }
-            [DisplayName("Full Name")]
-            /*[RegularExpression("[a-zA-Z]Vs")]*/
-            public string FullName { get; set; }
-            [RegularExpression("[0-9]{10}")]
-            public string PhoneNumber { get; set; }
             [EmailAddress]
             public string Email { get; set; }
-            /*public bool Status { get; set; }*/
+            public string Password { get; set; }
+            [HiddenInput]
+            public Guid? CustomerID { get; set; }
         }
     }
 }

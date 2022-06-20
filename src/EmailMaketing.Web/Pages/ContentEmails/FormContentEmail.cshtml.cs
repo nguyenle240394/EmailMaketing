@@ -16,14 +16,14 @@ using EmailMaketing.Jobs;
 using Abp.BackgroundJobs;
 using System.Collections.Generic;
 
-namespace EmailMaketing.Web.Pages.ContentEmail
+namespace EmailMaketing.Web.Pages.ContentEmails
 {
     public class FormContentEmailModel : PageModel
     {
         private readonly ContentEmailAppService _ContentEmailAppService;
         private readonly RegistrationMailService _RegistrationMailService;
         public List<ContentEmailDto> ContentEmail { get; set; }
-        public List<string> id { get; set; }
+        public ContentEmailDto SelectEmail { get; set; }
         public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService)
         {
             _ContentEmailAppService = contentEmailAppService;
@@ -61,7 +61,27 @@ namespace EmailMaketing.Web.Pages.ContentEmail
             ContentEmail = await _ContentEmailAppService.GetListEmailAsync(g);
             return new JsonResult(ContentEmail.Count);
         }
-        public async Task OnPostSelectEmail()
+        public async Task<IActionResult> OnPostSelectEmail(string id)
+        {
+            Guid guid = new Guid(id);
+            SelectEmail = await _ContentEmailAppService.GetEmailAsync(guid);
+            return new JsonResult(SelectEmail);
+        }
+        public async Task<IActionResult> OnPostDeleteEmail(string id)
+        {
+            Guid guid = new Guid(id);
+            var check = await _ContentEmailAppService.DeleteAsync(guid);
+            if(check == true)
+            {
+                return new JsonResult("OK");
+            }
+            else
+            {
+                return new JsonResult("Error");
+            }
+        }
+
+        public void OnPostUpdateEmail(string str_json)
         {
 
         }

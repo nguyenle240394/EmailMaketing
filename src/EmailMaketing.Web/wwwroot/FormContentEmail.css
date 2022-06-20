@@ -3,7 +3,7 @@
 }
 .container form{
     display: flex;
-    margin-top: 100px;
+    margin-top: 10px;
 }
 .container .left-container{
     flex: 0.7;
@@ -96,7 +96,7 @@
     border: 1px solid silver;
     padding: 20px;
 }
-.content textarea:focus {
+textarea:focus {
     outline: none;
     padding: 20px;
 }
@@ -331,7 +331,7 @@ span.choose {
     text-decoration: underline;
     color: #008489;
     margin-left: 25px;
-    cursor: pointer;
+    pointer-events: none;
 }
     .toemail .recepients:hover {
         color: #00676B;

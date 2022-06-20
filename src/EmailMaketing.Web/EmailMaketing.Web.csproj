@@ -30,6 +30,7 @@
     <None Include="Pages\SenderEmails\CreateModal.cshtml" />
     <None Include="Pages\SenderEmails\EditModal.cshtml" />
     <None Include="Pages\SenderEmails\Index.cshtml" />
+    <None Include="wwwroot\FormContentEmail.css" />
   </ItemGroup>
 
   <ItemGroup>

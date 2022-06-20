@@ -29,12 +29,6 @@ namespace EmailMaketing.SenderEmails
             _identityUserRepository = identityUserRepository;
         }
 
-        public async Task<SenderEmailDto> GetAsync(Guid id)
-        {
-            var sender = await _senderEmailRepository.GetAsync(id);
-            return ObjectMapper.Map<SenderEmail, SenderEmailDto>(sender);
-        }
-
         public async Task<SenderEmailDto> CreateAsync(CreateUpdateSenderEmailDto input)
         {
             var SenderEmail = ObjectMapper.Map<CreateUpdateSenderEmailDto, SenderEmail>(input);
@@ -65,10 +59,6 @@ namespace EmailMaketing.SenderEmails
                 input.Filter);
             //Convert to DTOs
             var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
-            //Get a lookup dictionary for the related authors
-            //var customerDictionary = await GetCustomerDictionaryAsync(senderemail);
-            //Set AuthorName for the DTOs
-            //senderEmailDtos.ForEach(senderEmailDto => senderEmailDto.CustomerName = customerDictionary[senderEmailDto.CustomerID].FullName);
             //Get the total count with another query (required for the paging)
             var totalcount = await _senderEmailRepository.GetCountAsync();
             return new PagedResultDto<SenderEmailDto>
@@ -77,6 +67,7 @@ namespace EmailMaketing.SenderEmails
                 Items = senderEmailDtos
             };
         }
+
         public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {
             //Set a default sorting, if not provided
@@ -93,10 +84,6 @@ namespace EmailMaketing.SenderEmails
                 input.Filter);
             //Convert to DTOs
             var senderWithNavigationDtos = ObjectMapper.Map<List<SenderWithNavigation>, List<SenderWithNavigationDto>>(senderemail);
-            //Get a lookup dictionary for the related authors
-            //var customerDictionary = await GetCustomerDictionaryAsync(senderemail);
-            //Set AuthorName for the DTOs
-            //senderEmailDtos.ForEach(senderEmailDto => senderEmailDto.CustomerName = customerDictionary[senderEmailDto.CustomerID].FullName);
             //Get the total count with another query (required for the paging)
             var totalcount = await _senderEmailRepository.GetCountAsync();
             return new PagedResultDto<SenderWithNavigationDto>
@@ -105,24 +92,6 @@ namespace EmailMaketing.SenderEmails
                 Items = senderWithNavigationDtos
             };
         }
-        public async Task<ListResultDto<CustomerLookupDto>> GetCustomerLookupAsync()
-        {
-            var customers = await _customerRepository.GetListAsync();
-            return new ListResultDto<CustomerLookupDto>(
-                ObjectMapper.Map<List<Customer>, List<CustomerLookupDto>>(customers));
-        }
-
-        public async Task<Dictionary<Guid, Customer>> GetCustomerDictionaryAsync(List<SenderEmail> senderEmails)
-        {
-            var customerId = senderEmails
-                .Select(s => s.CustomerID)
-                .Distinct()
-                .ToArray();
-            var queryable = await _customerRepository.GetQueryableAsync();
-            var customers = await AsyncExecuter.ToListAsync(queryable.Where(c => customerId.Contains(c.Id)));
-            return customers.ToDictionary(x => x.Id, x => x);
-        }
-
 
         //public async Task<SenderEmailDto> UpdateAsync(Guid id, CreateUpdateSenderEmailDto input)
         //{

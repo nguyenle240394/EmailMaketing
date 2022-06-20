@@ -15,6 +15,7 @@ public class EmailMaketingWebAutoMapperProfile : Profile
         CreateMap<Pages.Customers.CreateModalModel.CreateCustomerViewModal, CreateUpdateCustomer>();
         CreateMap<CustomerDto, Pages.Customers.EditModalModel.EditCustomerViewModal>();
         CreateMap<Pages.Customers.EditModalModel.EditCustomerViewModal, CreateUpdateCustomer>();
+
         CreateMap<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>();
         CreateMap<SenderEmailDto,Pages.SenderEmails.EditModalModel.EditSenderEmailViewModal>();
         CreateMap<Pages.SenderEmails.EditModalModel.EditSenderEmailViewModal, CreateUpdateSenderEmailDto>();

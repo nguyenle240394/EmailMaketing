@@ -38,7 +38,7 @@ namespace EmailMaketing.SenderEmails
                 .Take(maxResultCount)
                 .ToListAsync();
         }
-        /*public async Task<List<SenderWithNavigation>> GetListWithNavigationAsync(
+        public async Task<List<SenderWithNavigation>> GetListWithNavigationAsync(
           int skipCount,
           int maxResultCount,
           string sorting,
@@ -60,11 +60,11 @@ namespace EmailMaketing.SenderEmails
             var customer = db.Customers.AsQueryable();
             var dataWithNavigator = data.Select(x => new SenderWithNavigation()
             {
-                SenderEmail =x,
-                Customer = customer.FirstOrDefault(y=>y.Id ==x.CustomerID )
+                SenderEmail = x,
+                Customer = customer.FirstOrDefault(y => y.Id == x.CustomerID)
             });
             return dataWithNavigator.ToList();
-        }*/
+        }
         //public async Task<List<SenderEmail>> GetListSendEmailLookupAsync(
         //    Guid? Id, 
         //    string filterText = null, 

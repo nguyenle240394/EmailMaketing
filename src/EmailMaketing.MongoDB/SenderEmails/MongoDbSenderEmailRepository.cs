@@ -65,22 +65,5 @@ namespace EmailMaketing.SenderEmails
             });
             return dataWithNavigator.ToList();
         }
-
-        //public async Task<List<SenderEmail>> GetListSendEmailLookupAsync(
-        //    Guid? Id, 
-        //    string filterText = null, 
-        //    string name = null, 
-        //    string sorting = null, 
-        //    int maxResultCount = int.MaxValue, 
-        //    int skipCount = 0, 
-        //    CancellationToken cancellationToken = default)
-        //{
-        //    var query = await GetMongoQueryableAsync();
-        //    var result = await query.As<IMongoQueryable<SenderEmail>>()
-        //        .OrderByDescending(x => x.CreationTime)
-        //        .PageBy<SenderEmail, IMongoQueryable<SenderEmail>>(skipCount, maxResultCount)
-        //        .ToListAsync(GetCancellationToken(cancellationToken));
-        //    return result;
-        //}
     }
 }

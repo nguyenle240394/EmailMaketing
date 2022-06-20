@@ -36,12 +36,12 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(SenderEmail);
         }
 
-        //public async Task<bool> DeleteAsync(Guid id)
-        //{
-        //    var items = await _senderEmailRepository.FindAsync(id);
-        //    await _senderEmailRepository.DeleteAsync(items);
-        //    return true;
-        //}
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var items = await _senderEmailRepository.FindAsync(id);
+            await _senderEmailRepository.DeleteAsync(items);
+            return true;
+        }
 
         public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
         {

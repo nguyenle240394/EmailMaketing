@@ -23,14 +23,5 @@ namespace EmailMaketing.SenderEmails
           string sorting,
           string filter = null,
           CancellationToken cancellationToken = default);
-
-        //Task<List<SenderEmail>> GetListSendEmailLookupAsync(
-        //    Guid? Id,
-        //    string filterText = null,
-        //    string name = null,
-        //    string sorting = null,
-        //    int maxResultCount = int.MaxValue,
-        //    int skipCount = 0,
-        //    CancellationToken cancellationToken = default);
     }
 }

@@ -4,11 +4,6 @@ $(function () {
     var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
     var editModal = new abp.ModalManager(abp.appPath + 'SenderEmails/EditModal');
 
-    //getFilter = function () {
-    //    return {
-    //        filterText: $("input[name='Search']").val()
-    //    }
-    //}
     var dataTable = $('#SenderEmailTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
@@ -18,10 +13,6 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getListWithNavigation),
             columnDefs: [
-                {
-                    title: l('id'),
-                    data: "senderEmail.id",
-                },
                 {
                     title: l('Email'),
                     data: "senderEmail.email",
@@ -51,6 +42,25 @@ $(function () {
                                     text: l('Edit'),
                                     action: function (data) {
                                         editModal.open({ id: data.record.senderEmail.id });
+                                    }
+                                },
+                                {
+                                    text: l('Delete'),
+                                    confirmMessage: function (data) {
+                                        return l(
+                                            'Sender Email Deletion Confirmation Message',
+                                            data.record.name
+                                        );
+                                    },
+                                    action: function (data) {
+                                        emailMaketing.senderEmails.senderEmail
+                                            .delete(data.record.senderEmail.id)
+                                            .then(function () {
+                                                abp.notify.info(
+                                                    l('Successfully Deleted')
+                                                );
+                                                dataTable.ajax.reload();
+                                            });
                                     }
                                 }
                             ]

@@ -1,4 +1,4 @@
-﻿//using EmailMaketing.Customers;
+﻿using EmailMaketing.Customers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,6 @@ namespace EmailMaketing.SenderEmails
     public class SenderWithNavigationDto
     {
         public SenderEmailDto SenderEmail { get; set; }
-        //public CustomerDto Customer { get; set; }
+        public CustomerDto Customer { get; set; }
     }
 }

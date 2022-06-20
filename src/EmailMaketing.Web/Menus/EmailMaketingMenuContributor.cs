@@ -18,7 +18,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
         }
     }
 
-    private async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
+    private  async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
         var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<EmailMaketingResource>();

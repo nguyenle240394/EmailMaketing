@@ -22,9 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
+
     <None Include="Pages\Customers\CreateModal.cshtml" />
     <None Include="Pages\Customers\EditModal.cshtml" />
     <None Include="Pages\Customers\Index.cshtml" />
+
+    <None Include="Pages\SenderEmails\CreateModal.cshtml" />
+    <None Include="Pages\SenderEmails\EditModal.cshtml" />
+    <None Include="Pages\SenderEmails\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

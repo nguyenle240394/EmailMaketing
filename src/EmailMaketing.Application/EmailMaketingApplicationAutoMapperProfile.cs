@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using EmailMaketing.Customers;
-//using EmailMaketing.Customers;
 using EmailMaketing.SenderEmails;
 
 namespace EmailMaketing;

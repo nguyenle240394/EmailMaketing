@@ -65,6 +65,7 @@ namespace EmailMaketing.SenderEmails
             });
             return dataWithNavigator.ToList();
         }
+
         //public async Task<List<SenderEmail>> GetListSendEmailLookupAsync(
         //    Guid? Id, 
         //    string filterText = null, 

@@ -72,7 +72,8 @@ $(function () {
                                     }
                                 },
                                 {
-                                    text: l('Delete'),
+                                    iconClass: "fa fa-trash-o",
+                                    text: l('Delete'), 
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
                                     confirmMessage: function (data) {
                                         return l('CustomerDeletionConfirmationMessage', data.record.name);

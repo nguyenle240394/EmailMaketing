@@ -80,6 +80,25 @@ namespace EmailMaketing.Customers
                 );
         }
 
+        public async Task<CustomerDto> ReSetPasswordAsync(Guid id, string password)
+        {
+            var identityUpdateDto = new IdentityUserUpdateDto();
+            var  customer = await _customerRepository.FindAsync(id);
+            var user = await _identityUserAppService.FindByUsernameAsync(customer.UserName);
+            if (user != null)
+            {
+                identityUpdateDto.UserName = customer.UserName;
+                identityUpdateDto.Email = customer.Email;
+                identityUpdateDto.Password = password;
+                identityUpdateDto.IsActive = user.IsActive;
+                await _identityUserAppService.UpdateAsync(user.Id, identityUpdateDto);
+            }
+            else {
+                throw new UserFriendlyException(L["Not Found"]);
+            }
+            return ObjectMapper.Map<Customer, CustomerDto>(customer);
+        }
+
         public async Task<CustomerDto> UpdateAsync(Guid id, CreateUpdateCustomer input)
         {
             var identityUpdateUserDto = new IdentityUserUpdateDto();

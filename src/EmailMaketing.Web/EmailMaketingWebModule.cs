@@ -40,6 +40,8 @@ using Volo.Abp.VirtualFileSystem;
 using EmailMaketing.Mails;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Hangfire;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using EmailMaketing.Permissions;
 
 namespace EmailMaketing.Web;
 
@@ -96,7 +98,17 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
+
       //  configureHangfire(context, configuration);
+
+
+        Configure<RazorPagesOptions>(options =>
+        {
+            options.Conventions.AuthorizePage("/Customers/Index", EmailMaketingPermissions.Customers.Default);
+            options.Conventions.AuthorizePage("/Customers/CreateModal", EmailMaketingPermissions.Customers.Create);
+            options.Conventions.AuthorizePage("/Customers/EditModal", EmailMaketingPermissions.Customers.Edit);
+        });
+
     }
     private void ConfigureUrls(IConfiguration configuration)
     {

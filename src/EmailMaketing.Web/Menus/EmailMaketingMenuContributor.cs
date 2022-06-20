@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using EmailMaketing.Localization;
 using EmailMaketing.MultiTenancy;
+using EmailMaketing.Permissions;
 using Volo.Abp.Identity.Web.Navigation;
 using Volo.Abp.SettingManagement.Web.Navigation;
 using Volo.Abp.TenantManagement.Web.Navigation;
@@ -33,6 +34,26 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 order: 0
             )
         );
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
+        {
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                        "EmailMaketing.Customers",
+                        l["Menu:Customers"],
+                        url: "/Customers"
+                    )
+            );
+
+        }
+
+        context.Menu.AddItem(
+
+                new ApplicationMenuItem(
+                        "EmailMaketing.SenderEmails",
+                        l["Menu:SenderEmails"],
+                        url: "/SenderEmails"
+                    )
+            );
 
         if (MultiTenancyConsts.IsEnabled)
         {

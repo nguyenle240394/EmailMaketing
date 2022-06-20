@@ -1,0 +1,25 @@
+﻿@page
+@model EmailMaketing.Web.Pages.Customers.CreateModalModel
+@using EmailMaketing.Localization
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@inject IStringLocalizer<EmailMaketingResource> L
+@{
+    Layout = null;
+}
+<form method="post" asp-page="/Customers/CreateModal">
+    <abp-modal>
+        <abp-modal-header></abp-modal-header>
+        <abp-modal-body>
+            <abp-input asp-for="Customer.UserName"/>
+            <abp-input asp-for="Customer.Password" type="Password"/>
+            <abp-input asp-for="Customer.FullName"/>
+            <abp-input asp-for="Customer.Email"/>
+            <abp-input asp-for="Customer.PhoneNumber"/>
+            @*<abp-input asp-for="Customer.Status"/>*@
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel| AbpModalButtons.Save)">
+
+        </abp-modal-footer>
+    </abp-modal>
+</form>

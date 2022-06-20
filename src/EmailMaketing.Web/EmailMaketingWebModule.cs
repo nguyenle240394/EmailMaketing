@@ -37,6 +37,11 @@ using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using EmailMaketing.Mails;
+using Volo.Abp.BackgroundJobs;
+using Volo.Abp.BackgroundJobs.Hangfire;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using EmailMaketing.Permissions;
 
 namespace EmailMaketing.Web;
 
@@ -54,6 +59,7 @@ namespace EmailMaketing.Web;
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
     )]
+[DependsOn(typeof(AbpBackgroundJobsModule))]
 public class EmailMaketingWebModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -70,9 +76,16 @@ public class EmailMaketingWebModule : AbpModule
             );
         });
     }
-
+    //private void configureHangfire(ServiceConfigurationContext context, IConfiguration configuration)
+    //{
+    //    //context.Services.AddHangfire(config =>
+    //    //{
+    //    //  //  config.UseMongoStorage(configuration.GetConnectionString("Default"));
+    //    //});
+    //}
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
 
@@ -85,8 +98,18 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
-    }
 
+      //  configureHangfire(context, configuration);
+
+
+        Configure<RazorPagesOptions>(options =>
+        {
+            options.Conventions.AuthorizePage("/Customers/Index", EmailMaketingPermissions.Customers.Default);
+            options.Conventions.AuthorizePage("/Customers/CreateModal", EmailMaketingPermissions.Customers.Create);
+            options.Conventions.AuthorizePage("/Customers/EditModal", EmailMaketingPermissions.Customers.Edit);
+        });
+
+    }
     private void ConfigureUrls(IConfiguration configuration)
     {
         Configure<AppUrlOptions>(options =>
@@ -134,7 +157,7 @@ public class EmailMaketingWebModule : AbpModule
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                    options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Domain.Shared"));
+                options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Domain.Shared"));
                 options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Domain"));
                 options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Application.Contracts"));
                 options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Application"));

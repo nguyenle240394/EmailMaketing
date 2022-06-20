@@ -19,7 +19,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
         }
     }
 
-    private async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
+    private  async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
         var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<EmailMaketingResource>();
@@ -34,13 +34,18 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 order: 0
             )
         );
-        context.Menu.AddItem(
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
+        {
+            context.Menu.AddItem(
                 new ApplicationMenuItem(
                         "EmailMaketing.Customers",
                         l["Menu:Customers"],
                         url: "/Customers"
                     )
             );
+
+        }
+
         context.Menu.AddItem(
 
                 new ApplicationMenuItem(
@@ -49,8 +54,6 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         url: "/SenderEmails"
                     )
             );
-
-           
 
         if (MultiTenancyConsts.IsEnabled)
         {

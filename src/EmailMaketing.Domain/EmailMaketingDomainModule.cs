@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using EmailMaketing.MultiTenancy;
 using Volo.Abp.AuditLogging;
@@ -29,7 +29,7 @@ namespace EmailMaketing;
     typeof(AbpTenantManagementDomainModule),
     typeof(AbpEmailingModule)
 )]
-public class EmailMaketingDomainModule : AbpModule
+    public class EmailMaketingDomainModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

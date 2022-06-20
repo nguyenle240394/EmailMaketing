@@ -1,5 +1,5 @@
 ﻿@page
-@model EmailMaketing.Web.Pages.Customers.CreateModalModel
+@model EmailMaketing.Web.Pages.Customers.EditModalModel
 @using EmailMaketing.Localization
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
@@ -7,10 +7,12 @@
 @{
     Layout = null;
 }
-<form method="post" asp-page="/Customers/CreateModal">
+<form method="post" asp-page="/Customers/EditModal">
     <abp-modal>
         <abp-modal-header></abp-modal-header>
         <abp-modal-body>
+            <abp-input asp-for="Customer.Id"/>
+            <abp-input asp-for="Customer.UserID"/>
             <abp-input asp-for="Customer.UserName"/>
             <abp-input asp-for="Customer.Password" type="Password"/>
             <abp-input asp-for="Customer.FullName"/>

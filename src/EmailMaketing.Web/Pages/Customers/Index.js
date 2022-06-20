@@ -65,26 +65,26 @@ $(function () {
                             [
                                 {
                                     text: l('Edit'),
-                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
+                                    visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),
                                     action: function (data) {
                                         editModal.open({ id: data.record.id });
                                     }
                                 },
                                 {
                                     text: l('Delete'),
-                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),*/
+                                    visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
                                     confirmMessage: function (data) {
                                         return l('CustomerDeletionConfirmationMessage', data.record.name);
                                     },
                                     action: function (data) {
-                                        bachHoaXanh.customers.customer
+                                        emailMaketing.customers.customer
                                             .delete(data.record.id)
                                             .then(function (data) {
                                                 if (data) {
-                                                    abp.notify.info(l('SuccessfullyDeleted'));
+                                                    abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
                                                 } else {
-                                                    abp.message.error(l("NotifyDeleteBill"));
+                                                    abp.message.error(l("Notify Delete Bill"));
                                                 }
 
                                             });
@@ -100,9 +100,9 @@ $(function () {
         dataTable.ajax.reload();
     });
 
-    /*editModal.onResult(function () {
+    editModal.onResult(function () {
         dataTable.ajax.reload();
-    });*/
+    });
 
 
     $('#NewCustomerButton').click(function (e) {

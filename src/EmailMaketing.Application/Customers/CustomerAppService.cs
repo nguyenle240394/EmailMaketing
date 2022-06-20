@@ -13,7 +13,6 @@ namespace EmailMaketing.Customers
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IdentityUserAppService _identityUserAppService;
-        private readonly IdentityUserManager _identityUserManager;
 
         public CustomerAppService(ICustomerRepository customerRepository, IdentityUserAppService identityUserAppService)
         {
@@ -47,7 +46,15 @@ namespace EmailMaketing.Customers
         public async Task<bool> DeleteAsync(Guid id)
         {
             var customer = await _customerRepository.FindAsync(id);
-            return true;
+            if (customer != null)
+            {
+                await _identityUserAppService.DeleteAsync(customer.UserID);
+                await _customerRepository.DeleteAsync(customer);
+                return true;
+            }
+            return false;
+            
+            
         }
 
         public async Task<CustomerDto> GetCustomerAsync(Guid id)
@@ -77,21 +84,22 @@ namespace EmailMaketing.Customers
         {
             var identityUpdateUserDto = new IdentityUserUpdateDto();
             var customer = await _customerRepository.FindAsync(id);
-            customer.UserName = input.UserName;
-            customer.Password = input.Password;
-            customer.Email = input.Email;
-            customer.PhoneNumber=input.PhoneNumber;
-            customer.FullName=input.FullName;
-            customer.UserID = input.UserID;
-
-            await _customerRepository.UpdateAsync(customer);
             var user = await _identityUserAppService.FindByUsernameAsync(customer.UserName);
-            if (user != null)
+            if (user !=null)
             {
+                customer.UserName = input.UserName;
+                customer.Email = input.Email;
+                customer.PhoneNumber = input.PhoneNumber;
+                customer.FullName = input.FullName;
+                customer.UserID = input.UserID;
+                await _customerRepository.UpdateAsync(customer);
+
+
                 identityUpdateUserDto.UserName = input.UserName;
                 identityUpdateUserDto.Password = input.Password;
                 identityUpdateUserDto.Email = input.Email;
-                await _identityUserAppService.UpdateAsync(customer.UserID,identityUpdateUserDto);
+                identityUpdateUserDto.IsActive = user.IsActive;
+                await _identityUserAppService.UpdateAsync(customer.UserID, identityUpdateUserDto);
             }
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }

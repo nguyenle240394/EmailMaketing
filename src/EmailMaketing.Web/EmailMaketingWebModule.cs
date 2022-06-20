@@ -37,6 +37,8 @@ using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using EmailMaketing.Permissions;
 
 namespace EmailMaketing.Web;
 
@@ -85,6 +87,16 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
+
+        Configure<RazorPagesOptions>(options =>
+        {
+            options.Conventions.AuthorizePage("/Customers/Index", EmailMaketingPermissions.Customers.Default);
+            options.Conventions.AuthorizePage("/Customers/CreateModal", EmailMaketingPermissions.Customers.Create);
+            options.Conventions.AuthorizePage("/Customers/EditModal", EmailMaketingPermissions.Customers.Edit);
+        });
+
+
+
     }
 
     private void ConfigureUrls(IConfiguration configuration)
@@ -134,7 +146,7 @@ public class EmailMaketingWebModule : AbpModule
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                    options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Domain.Shared"));
+                options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Domain.Shared"));
                 options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Domain"));
                 options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Application.Contracts"));
                 options.FileSets.ReplaceEmbeddedByPhysical<EmailMaketingApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}EmailMaketing.Application"));

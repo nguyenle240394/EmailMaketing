@@ -17,12 +17,13 @@ namespace EmailMaketing.SenderEmails
             string filter = null,
             CancellationToken cancellationToken = default
         );
-        Task<List<SenderWithNavigation>> GetListWithNavigationAsync(
-          int skipCount,
-          int maxResultCount,
-          string sorting,
-          string filter = null,
-          CancellationToken cancellationToken = default);
+        //Task<List<SenderWithNavigation>> GetListWithNavigationAsync(
+        //  int skipCount,
+        //  int maxResultCount,
+        //  string sorting,
+        //  string filter = null,
+        //  CancellationToken cancellationToken = default);
+
         //Task<List<SenderEmail>> GetListSendEmailLookupAsync(
         //    Guid? Id,
         //    string filterText = null,

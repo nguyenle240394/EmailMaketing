@@ -43,13 +43,13 @@ namespace EmailMaketing.SenderEmails
             return true;
         }
 
-        //public async Task<List<SenderEmailDto>> GetListSenderAsync()
-        //{
-        //    var sender = await _senderEmailRepository.GetListAsync();
-        //    return ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(sender);
-        //}
+        public async Task<List<SenderEmailDto>> GetListSenderAsync()
+        {
+            var sender = await _senderEmailRepository.GetListAsync();
+            return ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(sender);
+        }
 
-        public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
+        /*public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
         {
             //Set a default sorting, if not provided
             if (input.Sorting.IsNullOrWhiteSpace())
@@ -72,7 +72,7 @@ namespace EmailMaketing.SenderEmails
                 TotalCount = totalcount,
                 Items = senderEmailDtos
             };
-        }
+        }*/
 
         public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {

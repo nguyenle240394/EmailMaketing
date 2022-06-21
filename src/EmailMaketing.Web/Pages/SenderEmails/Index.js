@@ -59,11 +59,13 @@ $(function () {
                                     action: function (data) {
                                         emailMaketing.senderEmails.senderEmail
                                             .delete(data.record.senderEmail.id)
-                                            .then(function () {
-                                                abp.notify.info(
-                                                    l('Successfully Deleted')
-                                                );
-                                                dataTable.ajax.reload();
+                                            .then(function (data) {
+                                                if (data) {
+                                                    abp.notify.info(l('Successfully Deleted'));
+                                                    dataTable.ajax.reload();
+                                                } else {
+                                                    abp.message.error(l("Delete Failed"));
+                                                }
                                             });
                                     }
                                 }

@@ -41,7 +41,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         {
             if(_currentUser.UserName != "admin")
             {
-                var userId = _currentUser.Id; // Lay userId hien tai
+                var userId = _currentUser.Id; //Lay userId hien tai
                 var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
                 SenderEmail.CustomerID = customer.Id;
             }
@@ -49,6 +49,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             {
                 SenderEmail.CustomerID = null;
             }
+
             var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
             await _senderEmailAppService.CreateAsync(senderemails);
             return NoContent();

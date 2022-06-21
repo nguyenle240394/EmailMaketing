@@ -77,7 +77,7 @@ $(function () {
                                     iconClass: "fa fa-trash-o",
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
                                     confirmMessage: function (data) {
-                                        return l('CustomerDeletionConfirmationMessage', data.record.name);
+                                        return l('Deleting Customer', data.record.name);
                                     },
                                     action: function (data) {
                                         emailMaketing.customers.customer
@@ -87,7 +87,7 @@ $(function () {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
                                                 } else {
-                                                    abp.message.error(l("Notify Delete Bill"));
+                                                    abp.message.error(l("Customer have data"));
                                                 }
 
                                             });

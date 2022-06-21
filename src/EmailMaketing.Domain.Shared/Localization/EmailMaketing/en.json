@@ -10,7 +10,7 @@
     "Permission:Customers.Create": "Creating new customer",
     "Permission:Customers.Edit": "Editing the customers",
     "Permission:Customers.Delete": "Deleting the customers",
-    "Menu:SenderEmails": "SenderEmails"
+    "Menu:SenderEmails": "SenderEmails",
     "Permission:SenderEmails": "SenderEmails Management",
     "Permission:SenderEmails.Create": "Creating new SenderEmails",
     "Permission:SenderEmails.Edit": "Editing the SenderEmails",

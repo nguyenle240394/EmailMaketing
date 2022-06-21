@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailMaketing.SenderEmails;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,11 +14,15 @@ namespace EmailMaketing.Customers
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IdentityUserAppService _identityUserAppService;
+        private readonly ISenderEmailAppService _senderEmailAppService;
 
-        public CustomerAppService(ICustomerRepository customerRepository, IdentityUserAppService identityUserAppService)
+        public CustomerAppService(ICustomerRepository customerRepository,
+            IdentityUserAppService identityUserAppService,
+            ISenderEmailAppService senderEmailAppService)
         {
             _customerRepository = customerRepository;
             _identityUserAppService = identityUserAppService;
+            _senderEmailAppService = senderEmailAppService;
         }
 
         public async Task ChangeStatus(Guid Id)
@@ -30,7 +35,7 @@ namespace EmailMaketing.Customers
             var user = await _identityUserAppService.GetAsync(customer.UserID);
 
             user.IsActive = !user.IsActive;
-            identityUser.UserName= user.UserName;
+            identityUser.UserName = user.UserName;
             identityUser.Email = user.Email;
             identityUser.IsActive = user.IsActive;
             await _identityUserAppService.UpdateAsync(customer.UserID, identityUser);
@@ -46,15 +51,17 @@ namespace EmailMaketing.Customers
         public async Task<bool> DeleteAsync(Guid id)
         {
             var customer = await _customerRepository.FindAsync(id);
-            if (customer != null)
+            var senderEmails = await _senderEmailAppService.GetListSenderAsync();
+            foreach (var item in senderEmails)
             {
-                await _identityUserAppService.DeleteAsync(customer.UserID);
-                await _customerRepository.DeleteAsync(customer);
-                return true;
+                if (item.CustomerID == customer.Id)
+                {
+                    return false;
+                }
             }
-            return false;
-            
-            
+            await _identityUserAppService.DeleteAsync(customer.UserID);
+            await _customerRepository.DeleteAsync(customer);
+            return true;
         }
 
         public async Task<CustomerDto> GetCustomerAsync(Guid id)
@@ -71,7 +78,7 @@ namespace EmailMaketing.Customers
                     input.Sorting,
                     input.Filter
                 );
-            
+
             var customerAdd = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
             var totalCount = await _customerRepository.GetCountAsync();
             return new PagedResultDto<CustomerDto>(
@@ -83,7 +90,7 @@ namespace EmailMaketing.Customers
         public async Task<CustomerDto> ReSetPasswordAsync(Guid id, string password)
         {
             var identityUpdateDto = new IdentityUserUpdateDto();
-            var  customer = await _customerRepository.FindAsync(id);
+            var customer = await _customerRepository.FindAsync(id);
             var user = await _identityUserAppService.FindByUsernameAsync(customer.UserName);
             if (user != null)
             {
@@ -93,7 +100,8 @@ namespace EmailMaketing.Customers
                 identityUpdateDto.IsActive = user.IsActive;
                 await _identityUserAppService.UpdateAsync(user.Id, identityUpdateDto);
             }
-            else {
+            else
+            {
                 throw new UserFriendlyException(L["Not Found"]);
             }
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
@@ -104,7 +112,7 @@ namespace EmailMaketing.Customers
             var identityUpdateUserDto = new IdentityUserUpdateDto();
             var customer = await _customerRepository.FindAsync(id);
             var user = await _identityUserAppService.FindByUsernameAsync(customer.UserName);
-            if (user !=null)
+            if (user != null)
             {
                 customer.UserName = input.UserName;
                 customer.Email = input.Email;

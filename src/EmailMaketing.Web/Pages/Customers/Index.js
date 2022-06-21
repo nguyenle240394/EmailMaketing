@@ -15,7 +15,7 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
-               
+
                 {
                     title: l('User Name'),
                     data: "userName"
@@ -110,7 +110,14 @@ $(function () {
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });
-
+    createModal.onOpen(function () {
+        $('#Customer_FullName').keypress(function (e) {
+            var keyCode = e.which;
+            if ((keyCode <= 48 && keyCode != 32) || (keyCode > 48 && keyCode < 65) || (keyCode > 90 && keyCode < 97) || keyCode > 122) {
+                return false;
+            }
+        });
+    });
     editModal.onResult(function () {
         dataTable.ajax.reload();
     });
@@ -124,7 +131,10 @@ $(function () {
         e.preventDefault();
         createModal.open();
     });
-   
+    $('#Customer_FullName').keypress(function (e) {
+        console.log(e);
+    });
+
 });
 function ChangeStatus(id, status) {
     if ($('#a' + id).is(':checked')) {
@@ -164,5 +174,7 @@ function ChangeStatus(id, status) {
                 }
             }
         });
-    
+
 };
+
+

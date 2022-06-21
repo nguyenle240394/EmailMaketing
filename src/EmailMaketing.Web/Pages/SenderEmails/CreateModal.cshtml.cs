@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
@@ -41,13 +42,21 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         {
             if(_currentUser.UserName != "admin")
             {
-                var userId = _currentUser.Id; // Lay userId hien tai
+                var userId = _currentUser.Id; //Lay userId hien tai
                 var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
                 SenderEmail.CustomerID = customer.Id;
             }
             else
             {
                 SenderEmail.CustomerID = null;
+            }
+            var listemail = await _senderEmailAppService.GetListSenderAsync();
+            foreach (var item in listemail)
+            {
+                if (item.Email == SenderEmail.Email)
+                {
+                    throw new UserFriendlyException(L["Email is already exists"]);
+                }
             }
             var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
             await _senderEmailAppService.CreateAsync(senderemails);

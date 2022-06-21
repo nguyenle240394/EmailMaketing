@@ -10,6 +10,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Users;
 
 namespace EmailMaketing.SenderEmails
 {
@@ -19,14 +20,18 @@ namespace EmailMaketing.SenderEmails
         private readonly ISenderEmailRepository _senderEmailRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IIdentityUserRepository _identityUserRepository;
+        private readonly ICurrentUser _currentUser;
+
         public SenderEmailAppService(
             ISenderEmailRepository senderEmailRepository,
             ICustomerRepository customerRepository,
-            IIdentityUserRepository identityUserRepository)
+            IIdentityUserRepository identityUserRepository,
+            ICurrentUser currentUser)
         {
             _senderEmailRepository = senderEmailRepository;
             _customerRepository = customerRepository;
             _identityUserRepository = identityUserRepository;
+            _currentUser = currentUser;
         }
 
         public async Task<SenderEmailDto> CreateAsync(CreateUpdateSenderEmailDto input)
@@ -38,9 +43,25 @@ namespace EmailMaketing.SenderEmails
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var items = await _senderEmailRepository.FindAsync(id);
-            await _senderEmailRepository.DeleteAsync(items);
-            return true;
+            var  sender = await _senderEmailRepository.FindAsync(id);
+            if (sender.CustomerID != null)
+            {
+                var userId = _currentUser.Id;
+                var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+                if (sender.CustomerID == customer.Id)
+                {
+                    await _senderEmailRepository.DeleteAsync(sender);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<List<SenderEmailDto>> GetListSenderAsync()
@@ -49,30 +70,30 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(sender);
         }
 
-        /*public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
-        {
-            //Set a default sorting, if not provided
-            if (input.Sorting.IsNullOrWhiteSpace())
-            {
-                input.Sorting = nameof(SenderEmail.Email);
-            }
+        //public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
+        //{
+        //    //Set a default sorting, if not provided
+        //    if (input.Sorting.IsNullOrWhiteSpace())
+        //    {
+        //        input.Sorting = nameof(SenderEmail.Email);
+        //    }
 
 
-            var senderemail = await _senderEmailRepository.GetListAsync(
-                input.SkipCount,
-                input.MaxResultCount,
-                input.Sorting,
-                input.Filter);
-            //Convert to DTOs
-            var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
-            //Get the total count with another query (required for the paging)
-            var totalcount = await _senderEmailRepository.GetCountAsync();
-            return new PagedResultDto<SenderEmailDto>
-            {
-                TotalCount = totalcount,
-                Items = senderEmailDtos
-            };
-        }*/
+        //    var senderemail = await _senderEmailRepository.GetListAsync(
+        //        input.SkipCount,
+        //        input.MaxResultCount,
+        //        input.Sorting,
+        //        input.Filter);
+        //    //Convert to DTOs
+        //    var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
+        //    //Get the total count with another query (required for the paging)
+        //    var totalcount = await _senderEmailRepository.GetCountAsync();
+        //    return new PagedResultDto<SenderEmailDto>
+        //    {
+        //        TotalCount = totalcount,
+        //        Items = senderEmailDtos
+        //    };
+        //}
 
         public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {
@@ -114,5 +135,6 @@ namespace EmailMaketing.SenderEmails
             await _senderEmailRepository.UpdateAsync(items);
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }
+
     }
 }

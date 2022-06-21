@@ -52,7 +52,7 @@ $(function () {
                                     visible: abp.auth.isGranted('EmailMaketing.SenderEmails.Delete'),
                                     confirmMessage: function (data) {
                                         return l(
-                                            'SenderEmailDeletionConfirmationMessage',
+                                            'Sender Email Deletion Confirmation Message',
                                             data.record.name
                                         );
                                     },

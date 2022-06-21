@@ -41,9 +41,10 @@ namespace EmailMaketing.Web.Pages.Customers
             public Guid Id { get; set; }
             [HiddenInput]
             public Guid UserID { get; set; }
+            [HiddenInput]
+            public string Password { get; set; }
             [DisplayName("User Name")]
             public string UserName { get; set; }
-            public string Password { get; set; }
             [DisplayName("Full Name")]
             /*[RegularExpression("[a-zA-Z]Vs")]*/
             public string FullName { get; set; }

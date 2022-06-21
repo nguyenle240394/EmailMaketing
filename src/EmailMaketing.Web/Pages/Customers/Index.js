@@ -4,13 +4,14 @@ $(function () {
     l = abp.localization.getResource('EmailMaketing');
     var createModal = new abp.ModalManager(abp.appPath + 'Customers/CreateModal');
     var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
+    var resetPasswordModal = new abp.ModalManager(abp.appPath + 'Customers/ResetPassword');
 
     dataTable = $('#CustomerTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
             order: [[1, "asc"]],
-            searching: false,
+            searching: true,
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
@@ -65,6 +66,7 @@ $(function () {
                             [
                                 {
                                     text: l('Edit'),
+                                    iconClass: "fa fa-pencil-square-o",
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),
                                     action: function (data) {
                                         editModal.open({ id: data.record.id });
@@ -72,6 +74,7 @@ $(function () {
                                 },
                                 {
                                     text: l('Delete'),
+                                    iconClass: "fa fa-trash-o",
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
                                     confirmMessage: function (data) {
                                         return l('CustomerDeletionConfirmationMessage', data.record.name);
@@ -89,7 +92,15 @@ $(function () {
 
                                             });
                                     }
-                                }
+                                },
+                                {
+                                    text: l('Reset Password'),
+                                    iconClass: "fa fa-key",
+                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
+                                    action: function (data) {
+                                        resetPasswordModal.open({ id: data.record.id });
+                                    }
+                                },
                             ]
                     }
                 }
@@ -101,6 +112,10 @@ $(function () {
     });
 
     editModal.onResult(function () {
+        dataTable.ajax.reload();
+    });
+
+    resetPasswordModal.onResult(function () {
         dataTable.ajax.reload();
     });
 

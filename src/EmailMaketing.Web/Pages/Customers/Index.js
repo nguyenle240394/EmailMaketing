@@ -77,7 +77,7 @@ $(function () {
                                     iconClass: "fa fa-trash-o",
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
                                     confirmMessage: function (data) {
-                                        return l('CustomerDeletionConfirmationMessage', data.record.name);
+                                        return l('Deleting Customer', data.record.name);
                                     },
                                     action: function (data) {
                                         emailMaketing.customers.customer
@@ -87,7 +87,7 @@ $(function () {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
                                                 } else {
-                                                    abp.message.error(l("Notify Delete Bill"));
+                                                    abp.message.error(l("Customer have data"));
                                                 }
 
                                             });
@@ -144,7 +144,8 @@ function ChangeStatus(id, status) {
 
             if (confirmed) {
                 emailMaketing.customers.customer.changeStatus(id.substring(1))
-                abp.message.success(l('Successfully'), l('Congratulations'));
+                /*abp.message.success(l('Successfully'), l('Congratulations'));*/
+                abp.notify.info(l('Successfully'));
 
                 if ($('#a' + id).is(':checked')) {
                     $("#a" + id).prop("checked", false);

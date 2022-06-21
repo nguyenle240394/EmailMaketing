@@ -42,26 +42,7 @@ namespace EmailMaketing.SenderEmails
         }
 
         public async Task<bool> DeleteAsync(Guid id)
-        {/*
-            if (_currentUser.UserName != "admin")
-            {
-                var senderid = await _senderEmailRepository.GetAsync(id);
-                var userId = _currentUser.Id;
-                //var customerid = await _customerRepository.FindAsync(x => x.UserID == senderid.CustomerID); //get customerid
-                if (senderid.CustomerID == userId)
-                {
-                    await _senderEmailRepository.DeleteAsync(senderid.Id);
-                }
-            }
-            else
-            {
-                var senderid = await _senderEmailRepository.FindAsync(id);
-                var senderemail = ObjectMapper.Map<SenderEmail, SenderEmailDto>(senderid);
-                await _senderEmailRepository.DeleteAsync(senderemail.Id);
-            }
-            return true;*/
-
-
+        {
             var  sender = await _senderEmailRepository.FindAsync(id);
             if (sender.CustomerID != null)
             {
@@ -154,5 +135,6 @@ namespace EmailMaketing.SenderEmails
             await _senderEmailRepository.UpdateAsync(items);
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }
+
     }
 }

@@ -23,5 +23,7 @@ namespace EmailMaketing.SenderEmails
           string sorting,
           string filter = null,
           CancellationToken cancellationToken = default);
+
+        
     }
 }

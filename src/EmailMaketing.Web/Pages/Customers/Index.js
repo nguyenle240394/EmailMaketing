@@ -144,7 +144,8 @@ function ChangeStatus(id, status) {
 
             if (confirmed) {
                 emailMaketing.customers.customer.changeStatus(id.substring(1))
-                abp.message.success(l('Successfully'), l('Congratulations'));
+                /*abp.message.success(l('Successfully'), l('Congratulations'));*/
+                abp.notify.info(l('Successfully'));
 
                 if ($('#a' + id).is(':checked')) {
                     $("#a" + id).prop("checked", false);

@@ -40,15 +40,19 @@ $(function () {
                             [
                                 {
                                     text: l('Edit'),
+                                    iconClass: "fa fa-pencil-square-o",
+                                    visible: abp.auth.isGranted('EmailMaketing.SenderEmails.Edit'),
                                     action: function (data) {
                                         editModal.open({ id: data.record.senderEmail.id });
                                     }
                                 },
                                 {
                                     text: l('Delete'),
+                                    iconClass: "fa fa-trash-o",
+                                    visible: abp.auth.isGranted('EmailMaketing.SenderEmails.Delete'),
                                     confirmMessage: function (data) {
                                         return l(
-                                            'Sender Email Deletion Confirmation Message',
+                                            'SenderEmailDeletionConfirmationMessage',
                                             data.record.name
                                         );
                                     },

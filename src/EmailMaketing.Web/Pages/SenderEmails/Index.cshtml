@@ -6,6 +6,7 @@
 @using EmailMaketing.Permissions
 @using Volo.Abp.Users
 @model EmailMaketing.Web.Pages.SenderEmails.IndexModel
+@inject IAuthorizationService AuthorizationService
 @inject IHtmlLocalizer<EmailMaketingResource> L
 @inject ICurrentUser CurrentUser
 @section scripts{
@@ -19,10 +20,13 @@
                 <abp-card-title>@L["Sender Email"]</abp-card-title>
             </abp-column>
             <abp-column size-md="_6" class="text-end">
-                <abp-button id="NewSenderEmailButton"
-                            text="@L["New Sender Email"].Value"
-                            icon="plus"
-                            button-type="Primary"/>
+                @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Create))
+                {
+                    <abp-button id="NewSenderEmailButton"
+                                text="@L["New Sender Email"].Value"
+                                icon="plus"
+                                button-type="Primary"/>
+                }
             </abp-column>
         </abp-row>
     </abp-card-header>

@@ -48,7 +48,6 @@ public class EmailMaketingMenuContributor : IMenuContributor
         if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
         {
             context.Menu.AddItem(
-
                 new ApplicationMenuItem(
                         "EmailMaketing.SenderEmails",
                         l["Menu:SenderEmails"],

@@ -107,6 +107,10 @@ public class EmailMaketingWebModule : AbpModule
             options.Conventions.AuthorizePage("/Customers/Index", EmailMaketingPermissions.Customers.Default);
             options.Conventions.AuthorizePage("/Customers/CreateModal", EmailMaketingPermissions.Customers.Create);
             options.Conventions.AuthorizePage("/Customers/EditModal", EmailMaketingPermissions.Customers.Edit);
+
+            options.Conventions.AuthorizePage("/SenderEmails/Index", EmailMaketingPermissions.SenderEmails.Default);
+            options.Conventions.AuthorizePage("/SenderEmails/CreateModal", EmailMaketingPermissions.SenderEmails.Create);
+            options.Conventions.AuthorizePage("/SenderEmails/EditModal", EmailMaketingPermissions.SenderEmails.Edit);
         });
 
     }

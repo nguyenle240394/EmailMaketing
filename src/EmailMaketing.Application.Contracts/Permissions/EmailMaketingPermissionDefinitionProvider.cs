@@ -18,10 +18,10 @@ public class EmailMaketingPermissionDefinitionProvider : PermissionDefinitionPro
         emailMaketingPermission.AddChild(EmailMaketingPermissions.Customers.Delete, L("Permission:Customers.Delete"));
 
 
-        //var senderEmailPermission = emailMaketingGroup.AddPermission(EmailMaketingPermissions.SenderEmails.Default, L("Permission:SenderEmails"));
-        //senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Create, L("Permission:SenderEmails.Create"));
-        //senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Edit, L("Permission:SenderEmails.Edit"));
-        //senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Delete, L("Permission:SenderEmails.Delete"));
+        var senderEmailPermission = emailMaketingGroup.AddPermission(EmailMaketingPermissions.SenderEmails.Default, L("Permission:SenderEmails"));
+        senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Create, L("Permission:SenderEmails.Create"));
+        senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Edit, L("Permission:SenderEmails.Edit"));
+        senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Delete, L("Permission:SenderEmails.Delete"));
 
     }
 

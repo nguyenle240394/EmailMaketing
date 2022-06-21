@@ -45,8 +45,9 @@ public class EmailMaketingMenuContributor : IMenuContributor
             );
 
         }
-
-        context.Menu.AddItem(
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
+        {
+            context.Menu.AddItem(
 
                 new ApplicationMenuItem(
                         "EmailMaketing.SenderEmails",
@@ -54,6 +55,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         url: "/SenderEmails"
                     )
             );
+        }
 
         if (MultiTenancyConsts.IsEnabled)
         {

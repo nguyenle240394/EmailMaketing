@@ -9,7 +9,7 @@ namespace EmailMaketing.SenderEmails
 {
     public interface ISenderEmailAppService : IApplicationService
     {
-        Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input);
+        Task<List<SenderEmailDto>> GetListSenderAsync();
         Task<SenderEmailDto> GetSenderEmailAsync(Guid Id);
         Task<SenderEmailDto> CreateAsync(CreateUpdateSenderEmailDto input);
         Task<SenderEmailDto> UpdateAsync(Guid id, CreateUpdateSenderEmailDto input);       

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Volo.Abp.Users;
 
@@ -25,6 +26,33 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             _customerRepository = customerRepository;
             _senderEmailAppService = senderEmailAppService;
         }
+
+        public async Task<IActionResult> OnPostExportAsync()
+        {
+            var memoryStream = new MemoryStream();
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Users Sheet");
+
+                worksheet.Column(1).Width = 30;
+                worksheet.Column(2).Width = 30;
+                worksheet.Column(3).Width = 30;
+
+                var email = worksheet.Cell(1, 1);
+                var password = worksheet.Cell(1, 2);
+
+                email.Value = "Email";
+                email.Style.Font.Bold = true;
+                password.Value = "Password";
+                password.Style.Font.Bold = true;
+                workbook.SaveAs(memoryStream);
+            }
+            memoryStream.Position = 0;
+            return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+
+
         public async Task<IActionResult> OnPostImportAsync(IFormFile excel)
         {
             if (excel == null)
@@ -70,7 +98,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                 }
             }
             await _senderEmailAppService.CreateManyAsync(senderEmail);
-            return NoContent();
+            return RedirectToAction("Index", "SenderEmails");
         }
     }
 }

@@ -44,8 +44,10 @@ namespace EmailMaketing.SenderEmails
         public async Task<List<SenderEmailDto>> CreateManyAsync(List<CreateUpdateSenderEmailDto> senders)
         {
             var SenderEmails = ObjectMapper.Map<List<CreateUpdateSenderEmailDto>, List<SenderEmail>>(senders);
-            var count = SenderEmails.Count;
             await _senderEmailRepository.InsertManyAsync(SenderEmails);
+            var senderEmailDeletes = await _senderEmailRepository.GetListAsync();
+            var count = senderEmailDeletes.Count();
+            await _senderEmailRepository.DeleteAsync(senderEmailDeletes[count-1]);
             return ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(SenderEmails);
         }
 

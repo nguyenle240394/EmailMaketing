@@ -137,6 +137,7 @@ $(function () {
 
 });
 function ChangeStatus(id, status) {
+    dataTable.ajax.reload();
     if ($('#a' + id).is(':checked')) {
         $("#a" + id).prop("checked", false);
     }

@@ -33,20 +33,38 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             {
                 var worksheet = workbook.Worksheet("Users Sheet");
                 var count = 0;
-                
-                foreach (var row in worksheet.Rows())
+                if (_currentUser.UserName != "admin")
                 {
-                    count += 1;
-                    var userId = _currentUser.Id; //Lay userId hien tai
-                    var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
-                    if (count > 1)
+                    foreach (var row in worksheet.Rows())
                     {
-                        senderEmail.Add(new CreateUpdateSenderEmailDto()
+                        count += 1;
+                        var userId = _currentUser.Id; //Lay userId hien tai
+                        var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+                        if (count > 1)
                         {
-                            Email = row.Cell(1).Value.ToString(),
-                            Password = row.Cell(2).Value.ToString(),
-                            CustomerID = customer.Id
-                    });
+                            senderEmail.Add(new CreateUpdateSenderEmailDto()
+                            {
+                                Email = row.Cell(1).Value.ToString(),
+                                Password = row.Cell(2).Value.ToString(),
+                                CustomerID = customer.Id
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var row in worksheet.Rows())
+                    {
+                        count += 1;
+                        if (count > 1)
+                        {
+                            senderEmail.Add(new CreateUpdateSenderEmailDto()
+                            {
+                                Email = row.Cell(1).Value.ToString(),
+                                Password = row.Cell(2).Value.ToString(),
+                                CustomerID = null
+                            });
+                        }
                     }
                 }
             }

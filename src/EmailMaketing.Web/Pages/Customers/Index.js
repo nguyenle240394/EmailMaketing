@@ -117,6 +117,17 @@ $(function () {
                 return false;
             }
         });
+
+        $('#showpass').on('click', function () {
+            var passInput = $("#Customer_Password");
+            if (passInput.attr('type') === 'text') {
+                passInput.attr('type', 'password');
+            } else {
+                passInput.attr('type', 'text');
+            }
+        });
+
+
     });
     editModal.onResult(function () {
         dataTable.ajax.reload();

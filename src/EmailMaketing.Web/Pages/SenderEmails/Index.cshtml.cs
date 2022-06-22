@@ -15,13 +15,15 @@ namespace EmailMaketing.Web.Pages.SenderEmails
     {
         private readonly ICurrentUser _currentUser;
         private readonly ICustomerRepository _customerRepository;
-
+        private readonly SenderEmailAppService _senderEmailAppService;
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
 
-        public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository)
+        public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,
+            SenderEmailAppService senderEmailAppService)
         {
             _currentUser = currentUser;
             _customerRepository = customerRepository;
+            _senderEmailAppService = senderEmailAppService;
         }
         public async Task<IActionResult> OnPostImportAsync(IFormFile excel)
         {
@@ -61,13 +63,13 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                             senderEmail.Add(new CreateUpdateSenderEmailDto()
                             {
                                 Email = row.Cell(1).Value.ToString(),
-                                Password = row.Cell(2).Value.ToString(),
-                                CustomerID = null
+                                Password = row.Cell(2).Value.ToString()
                             });
                         }
                     }
                 }
             }
+            await _senderEmailAppService.CreateManyAsync(senderEmail);
             return NoContent();
         }
     }

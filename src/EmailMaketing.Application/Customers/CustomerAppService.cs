@@ -72,6 +72,10 @@ namespace EmailMaketing.Customers
 
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomerInput input)
         {
+            if (input.Sorting.IsNullOrEmpty())
+            {
+                input.Sorting = nameof(Customer.CreationTime);
+            }
             var customers = await _customerRepository.GetListAsync(
                     input.SkipCount,
                     input.MaxResultCount,

@@ -25,7 +25,7 @@ namespace EmailMaketing.Customers
                 .WhereIf<Customer, IMongoQueryable<Customer>>(
                     !filter.IsNullOrWhiteSpace(),
                     customer => customer.FullName.Contains(filter)
-                ).OrderByDescending(c => c.CreationTime)
+                ).OrderBy(sorting)
                 .As<IMongoQueryable<Customer>>()
                 .Skip(SkipCount)
                 .Take(maxResultCount)

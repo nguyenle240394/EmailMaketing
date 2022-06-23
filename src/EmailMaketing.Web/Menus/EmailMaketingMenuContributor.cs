@@ -24,17 +24,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
         var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<EmailMaketingResource>();
 
-        if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
-        {
-            context.Menu.AddItem(
-                new ApplicationMenuItem(
-                        "EmailMaketing.SenderEmails",
-                        l["Menu:SenderEmails"],
-                        url: "/SenderEmails"
-                    )
-            );
-        }
-
+   
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

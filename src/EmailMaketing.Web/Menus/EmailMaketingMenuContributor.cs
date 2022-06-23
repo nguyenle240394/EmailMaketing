@@ -35,6 +35,36 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 order: 0
             )
         );
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
+        {
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                        "EmailMaketing.Customers",
+                        l["Menu:Customers"],
+                        url: "/Customers"
+                    )
+            );
+        }
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
+        {
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                        "EmailMaketing.SenderEmails",
+                        l["Menu:SenderEmails"],
+                        url: "/SenderEmails"
+                    )
+            );
+        }
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                        "EmailMaketing.ContentEmails",
+                        l["Menu:ContentEmails"],
+                        url: "/abc"
+                    )
+            );
+
+
+
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

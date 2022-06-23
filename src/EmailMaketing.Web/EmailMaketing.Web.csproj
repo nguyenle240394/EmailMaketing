@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\FormContentEmail.css" />
+    <Content Include="Pages\ContentEmails\FormContentEmail.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +59,12 @@
     <PackageReference Include="Volo.Abp.Account.Web.IdentityServer" Version="5.3.0" />
     <PackageReference Include="Volo.Abp.TenantManagement.Web" Version="5.3.0" />
     <PackageReference Include="Volo.Abp.SettingManagement.Web" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\FilesUpload\" />
+    <Folder Include="wwwroot\FilesUpload\11223344\" />
+    <Folder Include="wwwroot\TempFile\" />
   </ItemGroup>
 
 </Project>

@@ -47,14 +47,14 @@ namespace EmailMaketing.ContentEmails
 
         }
 
-        public async Task<ContentEmailDto> UpdateDataAsync(Guid id, ContentEmailDto input)
+        public async Task<ContentEmailDto> UpdateDataAsync(Guid id, CreateUpdateContentEmailDto input)
         {
             var ContentEmails = await _ContentEmailRepository.FindAsync(id);
             ContentEmails.Subject = input.Subject;
             ContentEmails.Body = input.Body;
             ContentEmails.SenderEmail = input.SenderEmail;
-            ContentEmails.Time = input.Time;
             ContentEmails.Status = input.Status;
+            ContentEmails.Attachment = input.Attachment;
             await _ContentEmailRepository.UpdateAsync(ContentEmails);
             return ObjectMapper.Map<ContentEmail, ContentEmailDto>(ContentEmails);
         }

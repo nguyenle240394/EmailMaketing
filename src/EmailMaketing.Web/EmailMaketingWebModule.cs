@@ -40,6 +40,7 @@ using Volo.Abp.VirtualFileSystem;
 using EmailMaketing.Mails;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Hangfire;
+using EmailMaketing.Web.Pages.ContentEmails;
 
 namespace EmailMaketing.Web;
 
@@ -83,6 +84,14 @@ public class EmailMaketingWebModule : AbpModule
     //}
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        Configure<AbpBackgroundJobOptions>(options =>
+        {
+            options.IsJobExecutionEnabled = true; //Disables job execution
+        });
+        Configure<AbpBackgroundJobWorkerOptions>(options =>
+        {
+            options.DefaultTimeout = 864000; //10 days (as seconds)
+        });
 
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
@@ -206,7 +215,9 @@ public class EmailMaketingWebModule : AbpModule
                 options.CustomSchemaIds(type => type.FullName);
             }
         );
+        services.AddTransient<ISendEmailAppServices, SendMailService>();
     }
+
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {

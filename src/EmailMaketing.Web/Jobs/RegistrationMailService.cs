@@ -26,7 +26,7 @@ namespace EmailMaketing.Jobs
                     EmailAddress= emailAddress,
                     Subject = "You've successfully registered!",
                     Body = "this is gmail"
-                }, BackgroundJobPriority.High, TimeSpan.FromSeconds(1)
+                },  BackgroundJobPriority.High, TimeSpan.FromSeconds(10)
             );
         }
     }

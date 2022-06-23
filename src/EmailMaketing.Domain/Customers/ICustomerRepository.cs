@@ -5,9 +5,9 @@ using Volo.Abp.Domain.Repositories;
 
 namespace EmailMaketing.Customers
 {
-    public interface ICustomerReository : IRepository<Customer, Guid>
+    public interface ICustomerRepository : IRepository<Customer, Guid>
     {
-        Task<List<Customer>> GetListAysnc(
+        Task<List<Customer>> GetListAsync(
                 int SkipCount,
                 int maxResultCount,
                 string sorting,

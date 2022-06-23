@@ -22,6 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
+
+    <None Include="Pages\Customers\CreateModal.cshtml" />
+    <None Include="Pages\Customers\EditModal.cshtml" />
+    <None Include="Pages\Customers\Index.cshtml" />
+
+    <None Include="Pages\SenderEmails\CreateModal.cshtml" />
+    <None Include="Pages\SenderEmails\EditModal.cshtml" />
+    <None Include="Pages\SenderEmails\Index.cshtml" />
     <Content Include="Pages\ContentEmails\FormContentEmail.css" />
   </ItemGroup>
 
@@ -37,6 +45,7 @@
   <ItemGroup>
     <PackageReference Include="Abp.MailKit" Version="7.2.1" />
     <PackageReference Include="Bootstrap.v3.Datetimepicker" Version="4.17.49" />
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="Hangfire.Core" Version="1.7.29" />
     <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="MimeKit" Version="3.3.0" />

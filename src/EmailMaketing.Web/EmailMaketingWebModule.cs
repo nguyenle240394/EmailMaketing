@@ -40,6 +40,8 @@ using Volo.Abp.VirtualFileSystem;
 using EmailMaketing.Mails;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Hangfire;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using EmailMaketing.Permissions;
 
 namespace EmailMaketing.Web;
 
@@ -104,7 +106,21 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
+
       //  configureHangfire(context, configuration);
+
+
+        Configure<RazorPagesOptions>(options =>
+        {
+            options.Conventions.AuthorizePage("/Customers/Index", EmailMaketingPermissions.Customers.Default);
+            options.Conventions.AuthorizePage("/Customers/CreateModal", EmailMaketingPermissions.Customers.Create);
+            options.Conventions.AuthorizePage("/Customers/EditModal", EmailMaketingPermissions.Customers.Edit);
+
+            options.Conventions.AuthorizePage("/SenderEmails/Index", EmailMaketingPermissions.SenderEmails.Default);
+            options.Conventions.AuthorizePage("/SenderEmails/CreateModal", EmailMaketingPermissions.SenderEmails.Create);
+            options.Conventions.AuthorizePage("/SenderEmails/EditModal", EmailMaketingPermissions.SenderEmails.Edit);
+        });
+
     }
     private void ConfigureUrls(IConfiguration configuration)
     {
@@ -166,9 +182,10 @@ public class EmailMaketingWebModule : AbpModule
     {
         Configure<AbpLocalizationOptions>(options =>
         {
-            options.Languages.Add(new LanguageInfo("ar", "ar", "العربية"));
-            options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
+            options.Languages.Add(new LanguageInfo("vi", "vi", "VietNamese"));
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
+            /*options.Languages.Add(new LanguageInfo("ar", "ar", "العربية"));
+            options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
             options.Languages.Add(new LanguageInfo("en-GB", "en-GB", "English (UK)"));
             options.Languages.Add(new LanguageInfo("hu", "hu", "Magyar"));
             options.Languages.Add(new LanguageInfo("fi", "fi", "Finnish"));
@@ -184,7 +201,7 @@ public class EmailMaketingWebModule : AbpModule
             options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
             options.Languages.Add(new LanguageInfo("zh-Hant", "zh-Hant", "繁體中文"));
             options.Languages.Add(new LanguageInfo("de-DE", "de-DE", "Deutsch", "de"));
-            options.Languages.Add(new LanguageInfo("es", "es", "Español"));
+            options.Languages.Add(new LanguageInfo("es", "es", "Español"));*/
         });
     }
 

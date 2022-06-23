@@ -2,20 +2,42 @@
 using MimeKit;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Services;
 
-namespace EmailMaketing.Web
+namespace EmailMaketing.ContentEmails
 {
-    public class SendMailService : ISendEmailAppServices
+    public class SendEmailAppService : ApplicationService, ISendEmailAppServices
     {
-        public SendMailService()
+        public string CheckEmail(string Address, string pass)
         {
-
+            try
+            {
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate(Address, pass);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
-        // private readonly MailSettings mailSettings;
-        public async Task SendMail(MailContent emailParameter, string emailaddress, string name, string pass, List<string> listfile)
-        {
 
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage, string name, string emailaddress, string pass, List<string> listfile)
+        {
+            await SendMail(new BodyEmail()
+            {
+                To = email,
+                Subject = subject,
+                Body = htmlMessage
+            }, emailaddress, name, pass, listfile);
+        }
+
+        public async Task SendMail(BodyEmail body, string emailaddress, string name, string pass, List<string> listfile)
+        {
             //string emailaddress = "Henrydao0810@gmail.com";
             //string name = "Tran Van Dao";
             string host = "smtp.gmail.com";
@@ -23,8 +45,8 @@ namespace EmailMaketing.Web
             var email = new MimeMessage();
             email.Sender = new MailboxAddress(name, emailaddress);
             email.From.Add(new MailboxAddress(name, emailaddress));
-            email.To.Add(MailboxAddress.Parse(emailParameter.To));
-            email.Subject = emailParameter.Subject;
+            email.To.Add(MailboxAddress.Parse(body.To));
+            email.Subject = body.Subject;
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
             try
             {
@@ -36,7 +58,7 @@ namespace EmailMaketing.Web
                         builder.Attachments.Add(file);
                     }
                 }
-                builder.HtmlBody = emailParameter.Body;
+                builder.HtmlBody = body.Body;
                 email.Body = builder.ToMessageBody();
                 smtp.Connect(host, port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(emailaddress, pass);
@@ -50,31 +72,6 @@ namespace EmailMaketing.Web
             }
 
             smtp.Disconnect(true);
-
-        }
-        //leuzxdmiwryorxxi pass application
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage, string name, string emailaddress, string pass, List<string> listfile)
-        {
-            await SendMail(new MailContent()
-            {
-                To = email,
-                Subject = subject,
-                Body = htmlMessage
-            }, emailaddress, name, pass, listfile);
-        }
-        public string checkemail(string email, string pass)
-        {
-            try
-            {
-                using var smtp = new MailKit.Net.Smtp.SmtpClient();
-                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate(email, pass);
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
         }
     }
 }

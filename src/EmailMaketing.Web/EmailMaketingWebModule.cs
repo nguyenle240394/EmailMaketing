@@ -231,7 +231,6 @@ public class EmailMaketingWebModule : AbpModule
                 options.CustomSchemaIds(type => type.FullName);
             }
         );
-        services.AddTransient<ISendEmailAppServices, SendMailService>();
     }
 
 

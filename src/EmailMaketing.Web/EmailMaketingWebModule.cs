@@ -40,7 +40,6 @@ using Volo.Abp.VirtualFileSystem;
 using EmailMaketing.Mails;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Hangfire;
-using EmailMaketing.Web.Pages.ContentEmails;
 
 namespace EmailMaketing.Web;
 

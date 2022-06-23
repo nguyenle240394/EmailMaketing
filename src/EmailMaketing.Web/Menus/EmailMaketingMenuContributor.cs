@@ -24,27 +24,6 @@ public class EmailMaketingMenuContributor : IMenuContributor
         var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<EmailMaketingResource>();
 
-        /*context.Menu.Items.Insert(
-            0,
-            new ApplicationMenuItem(
-                EmailMaketingMenus.Home,
-                l["Menu:Home"],
-                "~/",
-                icon: "fas fa-home",
-                order: 0
-            )
-        );*/
-        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
-        {
-            context.Menu.AddItem(
-                new ApplicationMenuItem(
-                        "EmailMaketing.Customers",
-                        l["Menu:Customers"],
-                        url: "/Customers"
-                    )
-            );
-
-        }
         if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
         {
             context.Menu.AddItem(

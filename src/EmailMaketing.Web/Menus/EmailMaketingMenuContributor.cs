@@ -33,17 +33,6 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 order: 0
             )
         );
-        context.Menu.Items.Insert(
-            0,
-            new ApplicationMenuItem(
-                EmailMaketingMenus.Home,
-                l["Menu:Content"],
-                "~/",
-                icon: "fa fa-envelope",
-                order: 0
-            )
-        );
-
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

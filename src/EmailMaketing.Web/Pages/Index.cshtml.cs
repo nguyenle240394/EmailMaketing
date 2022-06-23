@@ -19,6 +19,8 @@ public class IndexModel : EmailMaketingPageModel
         {
             return Redirect("/Account/Login");
         }
-        return Page();
+        else {
+            return Redirect("/Customers");
+        }
     }
 }

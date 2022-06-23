@@ -24,7 +24,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
         var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<EmailMaketingResource>();
 
-        context.Menu.Items.Insert(
+        /*context.Menu.Items.Insert(
             0,
             new ApplicationMenuItem(
                 EmailMaketingMenus.Home,
@@ -33,7 +33,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 icon: "fas fa-home",
                 order: 0
             )
-        );
+        );*/
         if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
         {
             context.Menu.AddItem(

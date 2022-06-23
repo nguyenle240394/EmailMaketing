@@ -43,7 +43,7 @@ $(function () {
                         if (data.status == 1)
                             check = "checked";
                         var str = '<label class="switch">' +
-                            `<input type = "checkbox" id="a${data.id}" ${check} onclick="ChangeStatus(this.id,${data.status})">` +
+                            `<input type = "checkbox" id="${data.id}" ${check} onclick="ChangeStatus(this.id,${data.status})">` +
                             '<span class="slider round"></span>' +
                             '</label >';
                         return str;
@@ -148,42 +148,44 @@ $(function () {
 
 });
 function ChangeStatus(id, status) {
-    dataTable.ajax.reload();
-    if ($('#a' + id).is(':checked')) {
-        $("#a" + id).prop("checked", false);
+    if ($(id).is(':checked')) {
+        $(id).prop("checked", false);
     }
     else {
-        $("#a" + id).prop("checked", true);
+        $(id).prop("checked", true);
     }
     dataTable.ajax.reload();
     var mess = l('Block The User');
     if (status == 0) {
         mess = l('Unlock The User');
     }
-    console.log(id.substring(1))
     abp.message.confirm(mess, l('Notify'))
         .then(function (confirmed) {
 
             if (confirmed) {
-                emailMaketing.customers.customer.changeStatus(id.substring(1))
+                emailMaketing.customers.customer.changeStatus(id)
                 /*abp.message.success(l('Successfully'), l('Congratulations'));*/
                 abp.notify.info(l('Successfully'));
-
-                if ($('#a' + id).is(':checked')) {
-                    $("#a" + id).prop("checked", false);
+                dataTable.ajax.reload();
+                if ($(id).is(':checked')) {
+                    $(id).prop("checked", false);
+                    dataTable.ajax.reload();
                 }
                 else {
-                    $("#a" + id).prop("checked", true);
+                    $(id).prop("checked", true);
+                    dataTable.ajax.reload();
                 }
                 dataTable.ajax.reload();
             }
             else {
-                if ($('#a' + id).is(':checked')) {
-                    $("#a" + id).prop("checked", false);
+                if ($(id).is(':checked')) {
+                    $(id).prop("checked", false);
+                    dataTable.ajax.reload();
                 }
                 else {
-                    $("#a" + id).prop("checked", true);
+                    $(id).prop("checked", true);
                 }
+                dataTable.ajax.reload();
             }
         });
 

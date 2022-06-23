@@ -26,6 +26,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
     {
         private readonly ContentEmailAppService _ContentEmailAppService;
         private readonly RegistrationMailService _RegistrationMailService;
+        private readonly SendEmailAppService _sendEmailAppService;
         private readonly IHostingEnvironment _environment;
         public List<ContentEmailDto> ContentEmail { get; set; }
         public ContentEmailDto SelectEmail { get; set; }
@@ -33,11 +34,12 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         [BindProperty]
         public IFormFile FileUpload { get; set; }
         public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService, 
-            IHostingEnvironment environment)
+            IHostingEnvironment environment, SendEmailAppService sendEmailAppService)
         {
             _ContentEmailAppService = contentEmailAppService;
             _RegistrationMailService = registrationMailService;
             _environment = environment;
+            _sendEmailAppService = sendEmailAppService;
         }
         string iduser = "";
         private static string foderfileUser = "";
@@ -70,7 +72,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
         public async Task<IActionResult> OnPostSendPreview()
         {
-            var service = new SendMailService();
             if (Request.Form.Files.Count > 0)
             {
                 var files = Request.Form.Files;
@@ -96,14 +97,13 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             }
 
             //  await _RegistrationMailService.RegisterAsync("asdfsfasdf");
-            await service.SendEmailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Tran Van Dao", "Henrydao0810@gmail.com", "leuzxdmiwryorxxi", listsfile);
+            await _sendEmailAppService.SendEmailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Tran Van Dao", "Henrydao0810@gmail.com", "leuzxdmiwryorxxi", listsfile);
             listsfile.Clear();
             return new JsonResult("OK");
         }
         public async Task<IActionResult> OnPostAddEmail(string id)
         {
-            var ss = new SendMailService();
-            string result = ss.checkemail("henrydao0810@gmail.com", "leuzxdmiwryorxxi");
+            string result = _sendEmailAppService.CheckEmail("henrydao0810@gmail.com", "leuzxdmiwryorxxi");
             Guid g = new Guid("11223344-5566-7788-99AA-BBCCDDEEFF00");
             var Data = new CreateUpdateContentEmailDto();
             Data.Subject = "No Subject";
@@ -226,7 +226,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var listEmailReceive = Request.Form["toemail"].ToString().Split(',');
             if (listEmailReceive.Length > 0)
             {
-                var service = new SendMailService();
                 string htmlbody = "";
                 var linesbody = Request.Form["body"].ToString().Split("/");
                 foreach (var line in linesbody)
@@ -242,7 +241,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                     for (int j = count; j < countEmailSender;)
                     {
                         htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
-                        await service.SendEmailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, name, emailaddress, pass, listsfile);
+                        await _sendEmailAppService.SendEmailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, name, emailaddress, pass, listsfile);
                         await Task.Delay(3000);
                         if (count == countEmailSender - 1)
                         {

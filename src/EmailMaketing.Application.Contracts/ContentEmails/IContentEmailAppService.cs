@@ -10,7 +10,7 @@ namespace EmailMaketing.ContentEmails
     public interface IContentEmailAppService : IApplicationService
     {
         Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input);
-        Task<List<ContentEmailDto>> GetListEmailAsync(Guid id);
+        Task<List<ContentEmailDto>> GetListsEmailAsync(Guid id);
         Task<ContentEmailDto> GetEmailAsync(Guid id);
 
         Task<bool> DeleteAsync(Guid id);

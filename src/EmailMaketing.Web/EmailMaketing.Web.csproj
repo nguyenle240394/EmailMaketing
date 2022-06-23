@@ -72,7 +72,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\FilesUpload\" />
-    <Folder Include="wwwroot\FilesUpload\11223344\" />
     <Folder Include="wwwroot\TempFile\" />
   </ItemGroup>
 

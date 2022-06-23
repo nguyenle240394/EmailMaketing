@@ -38,13 +38,12 @@ namespace EmailMaketing.ContentEmails
             return ObjectMapper.Map<ContentEmail, ContentEmailDto>(GetaEmail);
         }
 
-        public async Task<List<ContentEmailDto>> GetListEmailAsync(Guid id)
+        public async Task<List<ContentEmailDto>> GetListsEmailAsync(Guid id)
         {
             var ContentEmails = await _ContentEmailRepository.GetListAsync();
             var listContentEmails = ContentEmails.Where(x => x.CustomerID == id).ToList();
             var ContentEmaiDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(listContentEmails);
             return ContentEmaiDtos;
-
         }
 
         public async Task<ContentEmailDto> UpdateDataAsync(Guid id, CreateUpdateContentEmailDto input)

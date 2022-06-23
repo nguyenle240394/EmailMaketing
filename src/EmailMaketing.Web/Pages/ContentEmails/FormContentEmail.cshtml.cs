@@ -19,6 +19,7 @@ using System.Threading;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
+using Volo.Abp.Users;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
 {
@@ -28,18 +29,20 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly RegistrationMailService _RegistrationMailService;
         private readonly SendEmailAppService _sendEmailAppService;
         private readonly IHostingEnvironment _environment;
+        private readonly ICurrentUser _currentUser;
         public List<ContentEmailDto> ContentEmail { get; set; }
         public ContentEmailDto SelectEmail { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
         public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService, 
-            IHostingEnvironment environment, SendEmailAppService sendEmailAppService)
+            IHostingEnvironment environment, SendEmailAppService sendEmailAppService, ICurrentUser currentUser)
         {
             _ContentEmailAppService = contentEmailAppService;
             _RegistrationMailService = registrationMailService;
             _environment = environment;
             _sendEmailAppService = sendEmailAppService;
+            _currentUser = currentUser;
         }
         string iduser = "";
         private static string foderfileUser = "";
@@ -60,12 +63,12 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             {
 
             }
-            ContentEmail = await _ContentEmailAppService.GetListEmailAsync(g);
+            ContentEmail = await _ContentEmailAppService.GetListsEmailAsync(g);
         }
         public async Task<JsonResult> OnGetIndex()
         {
-            Guid g = new Guid("11223344-5566-7788-99AA-BBCCDDEEFF00");
-            ContentEmail = await _ContentEmailAppService.GetListEmailAsync(g);
+            Guid? Idcustomer = _currentUser.Id;
+            ContentEmail = await _ContentEmailAppService.GetListsEmailAsync((Guid)Idcustomer);
             SelectEmail = ContentEmail.FirstOrDefault();
             return new JsonResult(SelectEmail);
         }
@@ -99,19 +102,24 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             //  await _RegistrationMailService.RegisterAsync("asdfsfasdf");
             await _sendEmailAppService.SendEmailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Tran Van Dao", "Henrydao0810@gmail.com", "leuzxdmiwryorxxi", listsfile);
             listsfile.Clear();
+            var path = Path.Combine(_environment.ContentRootPath, "wwwroot/TempFile");
+            DirectoryInfo di = new DirectoryInfo(path);
+            foreach (FileInfo file in di.EnumerateFiles())
+            {
+                file.Delete();
+            }
             return new JsonResult("OK");
         }
         public async Task<IActionResult> OnPostAddEmail(string id)
         {
-            string result = _sendEmailAppService.CheckEmail("henrydao0810@gmail.com", "leuzxdmiwryorxxi");
-            Guid g = new Guid("11223344-5566-7788-99AA-BBCCDDEEFF00");
+            Guid? Idcustomer = _currentUser.Id;
             var Data = new CreateUpdateContentEmailDto();
             Data.Subject = "No Subject";
             Data.Time = System.DateTime.Now;
-            Data.CustomerID = g;
+            Data.CustomerID = (Guid)Idcustomer;
             Data.Status = false;
             await _ContentEmailAppService.CreateAsync(Data);
-            ContentEmail = await _ContentEmailAppService.GetListEmailAsync(g);
+            ContentEmail = await _ContentEmailAppService.GetListsEmailAsync((Guid)Idcustomer);
             var item = ContentEmail.LastOrDefault();
             string valueid = item.Id.ToString();   
             return new JsonResult(valueid);

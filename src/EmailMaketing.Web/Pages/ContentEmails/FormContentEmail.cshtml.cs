@@ -27,7 +27,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
     {
         private readonly ContentEmailAppService _ContentEmailAppService;
         private readonly RegistrationMailService _RegistrationMailService;
-        private readonly SendEmailAppService _sendEmailAppService;
         private readonly IHostingEnvironment _environment;
         private readonly ICurrentUser _currentUser;
         public List<ContentEmailDto> ContentEmail { get; set; }
@@ -36,12 +35,11 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         [BindProperty]
         public IFormFile FileUpload { get; set; }
         public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService, 
-            IHostingEnvironment environment, SendEmailAppService sendEmailAppService, ICurrentUser currentUser)
+            IHostingEnvironment environment, ICurrentUser currentUser)
         {
             _ContentEmailAppService = contentEmailAppService;
             _RegistrationMailService = registrationMailService;
             _environment = environment;
-            _sendEmailAppService = sendEmailAppService;
             _currentUser = currentUser;
         }
         string iduser = "";
@@ -100,7 +98,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             }
 
             //  await _RegistrationMailService.RegisterAsync("asdfsfasdf");
-            await _sendEmailAppService.SendEmailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Tran Van Dao", "Henrydao0810@gmail.com", "leuzxdmiwryorxxi", listsfile);
+            await _ContentEmailAppService.SendMailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Tran Van Dao", "Henrydao0810@gmail.com", "leuzxdmiwryorxxi", listsfile);
             listsfile.Clear();
             var path = Path.Combine(_environment.ContentRootPath, "wwwroot/TempFile");
             DirectoryInfo di = new DirectoryInfo(path);
@@ -249,7 +247,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                     for (int j = count; j < countEmailSender;)
                     {
                         htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
-                        await _sendEmailAppService.SendEmailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, name, emailaddress, pass, listsfile);
+                        await _ContentEmailAppService.SendMailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, name, emailaddress, pass, listsfile);
                         await Task.Delay(3000);
                         if (count == countEmailSender - 1)
                         {

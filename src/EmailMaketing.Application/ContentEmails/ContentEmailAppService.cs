@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MailKit.Security;
+using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +16,22 @@ namespace EmailMaketing.ContentEmails
         {
             _ContentEmailRepository = contentEmailRepository;
         }
+
+        public string CheckEmail(string Address, string pass)
+        {
+            try
+            {
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate(Address, pass);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         public async Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input)
         {
             var contentEmail = ObjectMapper.Map<CreateUpdateContentEmailDto, ContentEmail>(input);
@@ -44,6 +62,44 @@ namespace EmailMaketing.ContentEmails
             var listContentEmails = ContentEmails.Where(x => x.CustomerID == id).ToList();
             var ContentEmaiDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(listContentEmails);
             return ContentEmaiDtos;
+        }
+
+        public async Task SendMailAsync(string to, string subject, string body, string emailaddress, string name, string pass, List<string> listfile)
+        {
+            //string emailaddress = "Henrydao0810@gmail.com";
+            //string name = "Tran Van Dao";
+            string host = "smtp.gmail.com";
+            int port = 587;
+            var email = new MimeMessage();
+            email.Sender = new MailboxAddress(name, emailaddress);
+            email.From.Add(new MailboxAddress(name, emailaddress));
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            try
+            {
+                var builder = new BodyBuilder();
+                if (listfile.Count > 0)
+                {
+                    foreach (var file in listfile)
+                    {
+                        builder.Attachments.Add(file);
+                    }
+                }
+                builder.HtmlBody = body;
+                email.Body = builder.ToMessageBody();
+                smtp.Connect(host, port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(emailaddress, pass);
+                await smtp.SendAsync(email);
+            }
+            catch (Exception ex)
+            {
+                System.IO.Directory.CreateDirectory("mailssave");
+                var emailsavefile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
+                await email.WriteToAsync(emailsavefile);
+            }
+
+            smtp.Disconnect(true);
         }
 
         public async Task<ContentEmailDto> UpdateDataAsync(Guid id, CreateUpdateContentEmailDto input)

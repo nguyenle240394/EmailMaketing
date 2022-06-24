@@ -1,17 +1,9 @@
 using EmailMaketing.ContentEmails;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using MailKit;
-using EmailMaketing.Mails;
-using MimeKit;
 using System;
-using MailKit.Security;
-using System.Net.Mail;
-using System.Net;
 using EmailMaketing.Jobs;
 using Abp.BackgroundJobs;
 using System.Collections.Generic;
@@ -42,13 +34,11 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             _environment = environment;
             _currentUser = currentUser;
         }
-        string iduser = "";
         private static string foderfileUser = "";
         public async Task OnGetAsync()
         {
-            iduser = "11223344-5566-7788-99AA-BBCCDDEEFF00";
-            Guid g = new Guid(iduser);
-            foderfileUser = iduser.Split("-")[0]; // Your code goes here
+            Guid? Idcustomer = _currentUser.Id;
+            foderfileUser = Idcustomer.ToString().Split("-")[0]; // Your code goes here
             var directory = Path.Combine(_environment.ContentRootPath, "wwwroot/FilesUpload", foderfileUser);
             try
             {
@@ -61,7 +51,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             {
 
             }
-            ContentEmail = await _ContentEmailAppService.GetListsEmailAsync(g);
+            ContentEmail = await _ContentEmailAppService.GetListsEmailAsync((Guid)Idcustomer);
         }
         public async Task<JsonResult> OnGetIndex()
         {
@@ -98,7 +88,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             }
 
             //  await _RegistrationMailService.RegisterAsync("asdfsfasdf");
-            await _ContentEmailAppService.SendMailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Tran Van Dao", "Henrydao0810@gmail.com", "leuzxdmiwryorxxi", listsfile);
+            await _ContentEmailAppService.SendMailAsync(Request.Form["email"].ToString(), Request.Form["subject"], htmlbody, "Henrydao0810@gmail.com", "Tran Van Dao", "leuzxdmiwryorxxi", listsfile);
             listsfile.Clear();
             var path = Path.Combine(_environment.ContentRootPath, "wwwroot/TempFile");
             DirectoryInfo di = new DirectoryInfo(path);
@@ -222,6 +212,8 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
             return new String(stringChars);
         }
+        private static int CountEmailSended = 0;
+        private static string Confirm = "";
         public async Task<IActionResult> OnPostSendMutiEmail()
         {
             await saveEmail();
@@ -247,7 +239,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                     for (int j = count; j < countEmailSender;)
                     {
                         htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
-                        await _ContentEmailAppService.SendMailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, name, emailaddress, pass, listsfile);
+                        CountEmailSended = await _ContentEmailAppService.SendMailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, emailaddress, name, pass, listsfile);
                         await Task.Delay(3000);
                         if (count == countEmailSender - 1)
                         {
@@ -256,17 +248,26 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                         break;
                     }
                 }
+                Confirm = "Finished";
                 listsfile.Clear();
                 return new JsonResult("OK");
             }
             listsfile.Clear();
             return new JsonResult("NOK");
         }
-        private static int test = 0;
         public JsonResult OnPostRuntimeValue()
         {
-            test++;
-            return new JsonResult(test);
+            if (Confirm == "Finished")
+            {
+                _ContentEmailAppService.coutEmailSended = 0;
+                CountEmailSended = 0;
+                Confirm = "";
+                return new JsonResult("OK");
+            }
+            else
+            {
+                return new JsonResult(CountEmailSended);
+            }
         }
         public async Task<IActionResult> OnPostTestfile()
         {

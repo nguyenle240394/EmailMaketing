@@ -520,6 +520,7 @@ var vbody = "";
 var vfromemail = "";
 var vtoemail = "";
 var  vstatus = false;
+var countemailsend = 0;
 //save email
 function getinforemail(){
     vsubject = $("#inputsubject").val();
@@ -548,6 +549,7 @@ function getinforemail(){
     }
     lines = $('#to-recipients').val().split('\n');
     k = lines.length;
+    countemailsend = k;
     if (k > 1) {
         for(var i = 0;i < k;i++){
             if (i == k - 1) {
@@ -610,7 +612,7 @@ $(".btn-saveemail").click(function(e) {
     alert("You must select email before delete");
     }
 });
-
+var arlertCount = null;
 $("#btn-sendimmediately").click(function(e){
     e.preventDefault();
     Getfile();
@@ -621,6 +623,9 @@ $("#btn-sendimmediately").click(function(e){
     fileData.append("fromemail", vfromemail);
     fileData.append("status", vstatus);
     fileData.append("toemail", vtoemail);
+    $(".alert-success").text("Ready send Email");
+    $(".alert-success").addClass("show");
+    arlertCount = setInterval(runtime, 1000);
         $.ajax({
             type: "POST",
             url: '@Url.Page("FormContentEmail","SendMutiEmail")',
@@ -629,7 +634,8 @@ $("#btn-sendimmediately").click(function(e){
             dataType: 'json',
             data: fileData,
             success: function(result) {   
-                alert("OK");
+                setTimeout(closealert, 1500);
+                clearInterval(arlertCount);
             },
             error: function() {
                 alert("error");
@@ -690,8 +696,6 @@ $(".preview-btn").click(function(e){
             dataType: 'json',
             data: fileData,
             success: function(result) {   
-                $(".alert-success").text("Send test email successful");
-                $(".alert-success").addClass("show");
                 setTimeout(closealert, 1500);
             },
             error: function() {
@@ -711,16 +715,10 @@ function runtime(){
         dataType: 'json',
         data: {id: 1},
         success: function(result) {
-            console.log(result);
-            if(result == 210)
-            {
-                console.log("123");
-                clearInterval(a);
-            }
+         $(".alert-success").text("sent successed " + result + "/" + countemailsend + " emails");
         },
         error: function() {
         }
     });
 }
-var a = setInterval(runtime, 1000);
 </script>

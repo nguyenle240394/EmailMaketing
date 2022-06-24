@@ -2,7 +2,9 @@
 using MimeKit;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -15,21 +17,6 @@ namespace EmailMaketing.ContentEmails
         public ContentEmailAppService(IContentEmailRepository contentEmailRepository)
         {
             _ContentEmailRepository = contentEmailRepository;
-        }
-
-        public string CheckEmail(string Address, string pass)
-        {
-            try
-            {
-                using var smtp = new MailKit.Net.Smtp.SmtpClient();
-                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate(Address, pass);
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
         }
 
         public async Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input)
@@ -63,21 +50,21 @@ namespace EmailMaketing.ContentEmails
             var ContentEmaiDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(listContentEmails);
             return ContentEmaiDtos;
         }
-
-        public async Task SendMailAsync(string to, string subject, string body, string emailaddress, string name, string pass, List<string> listfile)
+        public int coutEmailSended = 0;
+        public async Task<int> SendMailAsync(string to, string subject, string body, string emailaddress, string name, string pass, List<string> listfile)
         {
             //string emailaddress = "Henrydao0810@gmail.com";
             //string name = "Tran Van Dao";
             string host = "smtp.gmail.com";
             int port = 587;
             var email = new MimeMessage();
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            try
+            { 
             email.Sender = new MailboxAddress(name, emailaddress);
             email.From.Add(new MailboxAddress(name, emailaddress));
             email.To.Add(MailboxAddress.Parse(to));
             email.Subject = subject;
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            try
-            {
                 var builder = new BodyBuilder();
                 if (listfile.Count > 0)
                 {
@@ -91,6 +78,7 @@ namespace EmailMaketing.ContentEmails
                 smtp.Connect(host, port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(emailaddress, pass);
                 await smtp.SendAsync(email);
+                coutEmailSended++;
             }
             catch (Exception ex)
             {
@@ -100,6 +88,7 @@ namespace EmailMaketing.ContentEmails
             }
 
             smtp.Disconnect(true);
+            return coutEmailSended;
         }
 
         public async Task<ContentEmailDto> UpdateDataAsync(Guid id, CreateUpdateContentEmailDto input)
@@ -112,6 +101,60 @@ namespace EmailMaketing.ContentEmails
             ContentEmails.Attachment = input.Attachment;
             await _ContentEmailRepository.UpdateAsync(ContentEmails);
             return ObjectMapper.Map<ContentEmail, ContentEmailDto>(ContentEmails);
+        }
+
+        public string CheckEmailExist(string addressEmail)
+        {
+
+            TcpClient tClient = new TcpClient("gmail-smtp-in.l.google.com", 25);
+            string CRLF = "\r\n";
+            byte[] dataBuffer;
+            string ResponseString;
+            NetworkStream netStream = tClient.GetStream();
+            StreamReader reader = new StreamReader(netStream);
+            ResponseString = reader.ReadLine();
+
+            /* Perform HELO  to SMTP Server and get Response */
+            dataBuffer = Encoding.ASCII.GetBytes("HELO KirtanHere" + CRLF);
+            netStream.Write(dataBuffer, 0, dataBuffer.Length);
+            ResponseString = reader.ReadLine();
+            dataBuffer = Encoding.ASCII.GetBytes("MAIL FROM:<henrydao0810@gmail.com>" + CRLF);
+            netStream.Write(dataBuffer, 0, dataBuffer.Length);
+            ResponseString = reader.ReadLine();
+
+            /* Read Response of the RCPT TO Message to know from google if it exist or not */
+            dataBuffer = Encoding.ASCII.GetBytes("RCPT TO:<"+ addressEmail +">" + CRLF);
+            netStream.Write(dataBuffer, 0, dataBuffer.Length);
+            ResponseString = reader.ReadLine();
+            if (GetResponseCode(ResponseString) == 550)
+            {
+                tClient.Close();
+                return "Email address does not exist!" + ResponseString;
+            }
+            else
+            {
+                tClient.Close();
+                return "OK";
+            }
+        }
+        private int GetResponseCode(string ResponseString)
+        {
+            return int.Parse(ResponseString.Substring(0, 3));
+        }
+
+        public string CheckAuthencation(string addressEmail, string pass)
+        {
+            try
+            {
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate(addressEmail, pass);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }

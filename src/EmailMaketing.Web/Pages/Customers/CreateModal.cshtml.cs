@@ -1,3 +1,4 @@
+using EmailMaketing.ContentEmails;
 using EmailMaketing.Customers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +17,18 @@ namespace EmailMaketing.Web.Pages.Customers
     {
         private readonly ICustomerAppService _customerAppService;
         private readonly IdentityUserAppService _identityUserAppService;
+        private readonly ContentEmailAppService _contentEmailAppService;
 
         [BindProperty]
         public CreateCustomerViewModal Customer { get; set; }
         [BindProperty]
         public IdentityUserCreateDto AppUser { get; set; }
-        public CreateModalModel(ICustomerAppService customerAppService, IdentityUserAppService identityUserAppService)
+        public CreateModalModel(ICustomerAppService customerAppService, IdentityUserAppService identityUserAppService,
+           ContentEmailAppService contentEmailAppService )
         {
             _customerAppService = customerAppService;
             _identityUserAppService = identityUserAppService;
+            _contentEmailAppService = contentEmailAppService;
         }
         public void OnGet()
         {
@@ -45,7 +49,16 @@ namespace EmailMaketing.Web.Pages.Customers
             }
             AppUser.UserName = Customer.UserName;
             AppUser.Password = Customer.Password;
-            AppUser.Email = Customer.Email;
+
+            var checkEmail = _contentEmailAppService.CheckEmailExist(Customer.Email);
+            if (checkEmail == "OK")
+            {
+                AppUser.Email = Customer.Email;
+            }
+            else {
+                throw new UserFriendlyException(L["Email address does not exist!"]);
+            }
+            
             await _identityUserAppService.CreateAsync(AppUser);
 
             var userId = await _identityUserAppService.FindByUsernameAsync(AppUser.UserName);

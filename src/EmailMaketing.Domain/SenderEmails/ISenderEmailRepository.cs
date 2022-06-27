@@ -24,6 +24,6 @@ namespace EmailMaketing.SenderEmails
           string filter = null,
           CancellationToken cancellationToken = default);
 
-        
+        Task<SenderEmail> FindByEmailAsync(string name);
     }
 }

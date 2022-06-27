@@ -42,6 +42,11 @@ using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Hangfire;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using EmailMaketing.Permissions;
+using MongoDB.Driver;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo.Migration.Strategies.Backup;
+using Hangfire;
 
 namespace EmailMaketing.Web;
 
@@ -59,7 +64,7 @@ namespace EmailMaketing.Web;
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
     )]
-[DependsOn(typeof(AbpBackgroundJobsModule))]
+[DependsOn(typeof(AbpBackgroundJobsHangfireModule))]
 public class EmailMaketingWebModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -76,13 +81,6 @@ public class EmailMaketingWebModule : AbpModule
             );
         });
     }
-    //private void configureHangfire(ServiceConfigurationContext context, IConfiguration configuration)
-    //{
-    //    //context.Services.AddHangfire(config =>
-    //    //{
-    //    //  //  config.UseMongoStorage(configuration.GetConnectionString("Default"));
-    //    //});
-    //}
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpBackgroundJobOptions>(options =>
@@ -107,7 +105,7 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
 
-      //  configureHangfire(context, configuration);
+        ConfigureHangfire(context, configuration);
 
 
         Configure<RazorPagesOptions>(options =>
@@ -121,6 +119,30 @@ public class EmailMaketingWebModule : AbpModule
             options.Conventions.AuthorizePage("/SenderEmails/EditModal", EmailMaketingPermissions.SenderEmails.Edit);
         });
 
+    }
+    private void ConfigureHangfire(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        var mongoUrlBuilder = new MongoUrlBuilder(configuration.GetConnectionString("Default"));
+        var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
+        var migrattionOptions = new MongoMigrationOptions
+        {
+            MigrationStrategy = new MigrateMongoMigrationStrategy(),
+            BackupStrategy = new CollectionMongoBackupStrategy(),
+        };
+        context.Services.AddHangfire(config => 
+        {
+            config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
+            config.UseSimpleAssemblyNameTypeSerializer();
+            config.UseRecommendedSerializerSettings();
+            config.UseMongoStorage(mongoClient, mongoUrlBuilder.DatabaseName, new MongoStorageOptions()
+            {
+                MigrationOptions = migrattionOptions,
+                Prefix = "Hangfire",
+                CheckConnection = true,
+                InvisibilityTimeout=TimeSpan.FromSeconds(1),
+                ByPassMigration = true
+            });
+        });
     }
     private void ConfigureUrls(IConfiguration configuration)
     {
@@ -273,5 +295,6 @@ public class EmailMaketingWebModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+        app.UseHangfireDashboard();
     }
 }

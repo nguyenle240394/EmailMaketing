@@ -47,6 +47,7 @@
     <PackageReference Include="Bootstrap.v3.Datetimepicker" Version="4.17.49" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="Hangfire.Core" Version="1.7.29" />
+    <PackageReference Include="Hangfire.Mongo" Version="0.7.27" />
     <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="MimeKit" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

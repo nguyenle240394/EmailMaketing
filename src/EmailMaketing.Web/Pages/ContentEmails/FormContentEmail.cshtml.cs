@@ -71,7 +71,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                 };
                 
                 await _backgroundJobManager.EnqueueAsync(sendEmailArgs, BackgroundJobPriority.High, TimeSpan.FromSeconds(5));
-                await Task.Delay(300000);
+                await Task.Delay(30000);
             }
             
             ////////////////////////////////////////////////////////////////////

@@ -1,17 +1,17 @@
-using EmailMaketing.ContentEmails;
+﻿using EmailMaketing.ContentEmails;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 using System;
 using EmailMaketing.Jobs;
-using Abp.BackgroundJobs;
 using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
 using Volo.Abp.Users;
+using Volo.Abp.BackgroundJobs;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
 {
@@ -21,22 +21,60 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly RegistrationMailService _RegistrationMailService;
         private readonly IHostingEnvironment _environment;
         private readonly ICurrentUser _currentUser;
+        private readonly IBackgroundJobManager _backgroundJobManager;
+
         public List<ContentEmailDto> ContentEmail { get; set; }
         public ContentEmailDto SelectEmail { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
         public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService, 
-            IHostingEnvironment environment, ICurrentUser currentUser)
+            IHostingEnvironment environment, ICurrentUser currentUser, IBackgroundJobManager backgroundJobManager)
         {
             _ContentEmailAppService = contentEmailAppService;
             _RegistrationMailService = registrationMailService;
             _environment = environment;
             _currentUser = currentUser;
+            _backgroundJobManager = backgroundJobManager;
         }
         private static string foderfileUser = "";
+        private string randomtext()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[30];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new String(stringChars);
+        }
         public async Task OnGetAsync()
         {
+
+            for (int i = 0; i < 100; i++)
+            {
+                
+                string htmlbody = "";
+                htmlbody = "<p>" + randomtext() + "<p>";
+                var sendEmailArgs = new SendEmailArgs()
+                { 
+                    To = "mrlong.itqn@gmail.com",
+                    Subject = "Test gửi 100 email",
+                    Body = "Ráng nhận tinh nhắn nha sếp " + htmlbody,
+                    EmailAddress = "HenryDao0810@gmail.com",
+                    Name = "Nguyen le",
+                    Password = "leuzxdmiwryorxxi",
+                    File = new List<string>()
+                };
+                
+                await _backgroundJobManager.EnqueueAsync(sendEmailArgs, BackgroundJobPriority.High, TimeSpan.FromSeconds(5));
+                await Task.Delay(300000);
+            }
+            
+            ////////////////////////////////////////////////////////////////////
             Guid? Idcustomer = _currentUser.Id;
             foderfileUser = Idcustomer.ToString().Split("-")[0]; // Your code goes here
             var directory = Path.Combine(_environment.ContentRootPath, "wwwroot/FilesUpload", foderfileUser);
@@ -199,7 +237,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             await saveEmail();
             return new JsonResult("OK");
         }
-        private string randomtext()
+        /*private string randomtext()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var stringChars = new char[30];
@@ -211,7 +249,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             }
 
             return new String(stringChars);
-        }
+        }*/
         private static int CountEmailSended = 0;
         private static string Confirm = "";
         public async Task<IActionResult> OnPostSendMutiEmail()

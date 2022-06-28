@@ -14,10 +14,12 @@ namespace EmailMaketing.Jobs
     public class SendEmailJob : AsyncBackgroundJob<SendEmailArgs>, ITransientDependency
     {
         private readonly ContentEmailAppService _contentEmailAppService;
+        private readonly IBackgroundJobManager _backgroundJobManager;
 
-        public SendEmailJob(ContentEmailAppService contentEmailAppService)
+        public SendEmailJob(ContentEmailAppService contentEmailAppService, IBackgroundJobManager backgroundJobManager)
         {
             _contentEmailAppService = contentEmailAppService;
+            _backgroundJobManager = backgroundJobManager;
         }
         public override async Task ExecuteAsync(SendEmailArgs args)
         {
@@ -30,6 +32,8 @@ namespace EmailMaketing.Jobs
                     args.Password,
                     args.File
                 );
+            await _backgroundJobManager.EnqueueAsync(args, BackgroundJobPriority.High, TimeSpan.FromSeconds(5));
+            await Task.Delay(30000);
         }
     }
 }

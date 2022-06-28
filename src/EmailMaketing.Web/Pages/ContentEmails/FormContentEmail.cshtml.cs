@@ -53,28 +53,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         }
         public async Task OnGetAsync()
         {
-
-            for (int i = 0; i < 100; i++)
-            {
-                
-                string htmlbody = "";
-                htmlbody = "<p>" + randomtext() + "<p>";
-                var sendEmailArgs = new SendEmailArgs()
-                { 
-                    To = "mrlong.itqn@gmail.com",
-                    Subject = "Test gửi 100 email",
-                    Body = "Ráng nhận tinh nhắn nha sếp " + htmlbody,
-                    EmailAddress = "HenryDao0810@gmail.com",
-                    Name = "Nguyen le",
-                    Password = "leuzxdmiwryorxxi",
-                    File = new List<string>()
-                };
-                
-                await _backgroundJobManager.EnqueueAsync(sendEmailArgs, BackgroundJobPriority.High, TimeSpan.FromSeconds(5));
-                await Task.Delay(30000);
-            }
-            
-            ////////////////////////////////////////////////////////////////////
+            await _RegistrationMailService.RegisterAsync();
             Guid? Idcustomer = _currentUser.Id;
             foderfileUser = Idcustomer.ToString().Split("-")[0]; // Your code goes here
             var directory = Path.Combine(_environment.ContentRootPath, "wwwroot/FilesUpload", foderfileUser);

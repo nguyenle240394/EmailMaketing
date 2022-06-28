@@ -26,8 +26,8 @@ namespace EmailMaketing.Jobs
             var listEmail = new List<SendEmailArgs>();
             listEmail.Add(new SendEmailArgs {
                 To = "nguyenle.httdn@gmail.com",
-                Subject = "Test gửi 100 email",
-                Body = "Ráng nhận tinh nhắn nha sếp " + htmlbody,
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
                 EmailAddress = "HenryDao0810@gmail.com",
                 Name = "Nguyen le",
                 Password = "leuzxdmiwryorxxi",
@@ -37,8 +37,8 @@ namespace EmailMaketing.Jobs
             listEmail.Add(new SendEmailArgs
             {
                 To = "phongnguyen.httdn@gmail.com",
-                Subject = "Test gửi 100 email",
-                Body = "Ráng nhận tinh nhắn nha sếp " + htmlbody,
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
                 EmailAddress = "HenryDao0810@gmail.com",
                 Name = "Nguyen le",
                 Password = "leuzxdmiwryorxxi",
@@ -48,8 +48,8 @@ namespace EmailMaketing.Jobs
             listEmail.Add(new SendEmailArgs
             {
                 To = "letg3313@gmail.com",
-                Subject = "Test gửi 100 email",
-                Body = "Ráng nhận tinh nhắn nha sếp " + htmlbody,
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
                 EmailAddress = "HenryDao0810@gmail.com",
                 Name = "Nguyen le",
                 Password = "leuzxdmiwryorxxi",

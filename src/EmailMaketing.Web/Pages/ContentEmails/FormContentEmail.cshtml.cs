@@ -12,6 +12,8 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
 using Volo.Abp.Users;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.SignalR;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
 {
@@ -21,20 +23,23 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly RegistrationMailService _RegistrationMailService;
         private readonly IHostingEnvironment _environment;
         private readonly ICurrentUser _currentUser;
+        private readonly IHubContext<SignalServer> _hubcontext;
         public List<ContentEmailDto> ContentEmail { get; set; }
         public ContentEmailDto SelectEmail { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
         public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService, 
-            IHostingEnvironment environment, ICurrentUser currentUser)
+            IHostingEnvironment environment, ICurrentUser currentUser, IHubContext<SignalServer> hubContext)
         {
             _ContentEmailAppService = contentEmailAppService;
             _RegistrationMailService = registrationMailService;
             _environment = environment;
             _currentUser = currentUser;
+            _hubcontext = hubContext;
         }
         private static string foderfileUser = "";
+        string str = "dfasd <abc> hasdfh kfkdsk ";
         public async Task OnGetAsync()
         {
             Guid? Idcustomer = _currentUser.Id;
@@ -212,7 +217,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
             return new String(stringChars);
         }
-        private static int CountEmailSended = 0;
+        private static string CountEmailSended = "";
         private static string Confirm = "";
         public async Task<IActionResult> OnPostSendMutiEmail()
         {
@@ -222,7 +227,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             string name = "Tran Van Dao";
 
             var listEmailReceive = Request.Form["toemail"].ToString().Split(',');
-            if (listEmailReceive.Length > 0)
+            if (listEmailReceive.Length > 0 && listEmailReceive != null)
             {
                 string htmlbody = "";
                 var linesbody = Request.Form["body"].ToString().Split("/");
@@ -236,33 +241,47 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                 for (int i = 0; i < countEmailReceiver; i++)
                 {
                     count++;
-                    for (int j = count; j < countEmailSender;)
+                    var result =  _ContentEmailAppService.CheckEmailExist(listEmailReceive[i]);
+                    if (result == "OK")
                     {
-                        htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
-                        CountEmailSended = await _ContentEmailAppService.SendMailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, emailaddress, name, pass, listsfile);
-                        await Task.Delay(3000);
-                        if (count == countEmailSender - 1)
+                        for (int j = count; j < countEmailSender;)
                         {
-                            count = -1;
+                            htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
+                            int countSent = await _ContentEmailAppService.SendMailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, emailaddress, name, pass, listsfile);
+                            CountEmailSended = countSent.ToString();
+                            await Task.Delay(3000);
+                            if (count == countEmailSender - 1)
+                            {
+                                count = -1;
+                            }
+                            break;
                         }
-                        break;
+                    }
+                    else
+                    {
+                        count = -1;
+                        CountEmailSended = result.Split('<', '>')[1] + ".";
+                        await _hubcontext.Clients.All.SendAsync("RefreshVariable");
+                        await Task.Delay(3000);
                     }
                 }
                 Confirm = "Finished";
+                await _hubcontext.Clients.All.SendAsync("RefreshVariable");
                 listsfile.Clear();
                 return new JsonResult("OK");
             }
             listsfile.Clear();
             return new JsonResult("NOK");
         }
+        public static int checkcount = 0;
         public JsonResult OnPostRuntimeValue()
         {
             if (Confirm == "Finished")
             {
                 _ContentEmailAppService.coutEmailSended = 0;
-                CountEmailSended = 0;
+                CountEmailSended = "";
                 Confirm = "";
-                return new JsonResult("OK");
+                return new JsonResult("GGGGGGOK");
             }
             else
             {
@@ -274,8 +293,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             if (Request.Form.Files.Count > 0)
             {
                 var files = Request.Form.Files;
-                //var id = Request.Form["id"];
-                //iterating through multiple file collection
                 try
                 {
                     foreach (var FileUpload in files)
@@ -304,5 +321,5 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         public string toemail { get; set; }
         public string status { get; set; }
         public DateTime datetime { get; set; }
-    }  
+    } 
 }

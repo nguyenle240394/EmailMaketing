@@ -42,6 +42,7 @@ using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Hangfire;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using EmailMaketing.Permissions;
+using EmailMaketing.Web.Pages.ContentEmails;
 
 namespace EmailMaketing.Web;
 
@@ -106,6 +107,7 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
+        context.Services.AddSignalR();
 
       //  configureHangfire(context, configuration);
 
@@ -255,6 +257,11 @@ public class EmailMaketingWebModule : AbpModule
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapHub<SignalServer>("/SignalServer");
+        });
         app.UseJwtTokenMiddleware();
 
         if (MultiTenancyConsts.IsEnabled)

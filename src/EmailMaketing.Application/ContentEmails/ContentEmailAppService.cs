@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 
@@ -105,37 +106,43 @@ namespace EmailMaketing.ContentEmails
 
         public string CheckEmailExist(string addressEmail)
         {
-
-            TcpClient tClient = new TcpClient("gmail-smtp-in.l.google.com", 25);
-            string CRLF = "\r\n";
-            byte[] dataBuffer;
-            string ResponseString;
-            NetworkStream netStream = tClient.GetStream();
-            StreamReader reader = new StreamReader(netStream);
-            ResponseString = reader.ReadLine();
-
-            /* Perform HELO  to SMTP Server and get Response */
-            dataBuffer = Encoding.ASCII.GetBytes("HELO KirtanHere" + CRLF);
-            netStream.Write(dataBuffer, 0, dataBuffer.Length);
-            ResponseString = reader.ReadLine();
-            dataBuffer = Encoding.ASCII.GetBytes("MAIL FROM:<henrydao0810@gmail.com>" + CRLF);
-            netStream.Write(dataBuffer, 0, dataBuffer.Length);
-            ResponseString = reader.ReadLine();
-
-            /* Read Response of the RCPT TO Message to know from google if it exist or not */
-            dataBuffer = Encoding.ASCII.GetBytes("RCPT TO:<"+ addressEmail +">" + CRLF);
-            netStream.Write(dataBuffer, 0, dataBuffer.Length);
-            ResponseString = reader.ReadLine();
-            if (GetResponseCode(ResponseString) == 550)
+            if (EmailIsValid(addressEmail))
             {
-                tClient.Close();
-                return "Email address does not exist!" + ResponseString;
+                TcpClient tClient = new TcpClient("gmail-smtp-in.l.google.com", 25);
+                string CRLF = "\r\n";
+                byte[] dataBuffer;
+                string ResponseString;
+                NetworkStream netStream = tClient.GetStream();
+                StreamReader reader = new StreamReader(netStream);
+                ResponseString = reader.ReadLine();
+
+                /* Perform HELO  to SMTP Server and get Response */
+                dataBuffer = Encoding.ASCII.GetBytes("HELO KirtanHere" + CRLF);
+                netStream.Write(dataBuffer, 0, dataBuffer.Length);
+                ResponseString = reader.ReadLine();
+                dataBuffer = Encoding.ASCII.GetBytes("MAIL FROM:<henrydao0810@gmail.com>" + CRLF);
+                netStream.Write(dataBuffer, 0, dataBuffer.Length);
+                ResponseString = reader.ReadLine();
+
+                /* Read Response of the RCPT TO Message to know from google if it exist or not */
+                dataBuffer = Encoding.ASCII.GetBytes("RCPT TO:<" + addressEmail + ">" + CRLF);
+                netStream.Write(dataBuffer, 0, dataBuffer.Length);
+                ResponseString = reader.ReadLine();
+                if (GetResponseCode(ResponseString) == 550)
+                {
+                    tClient.Close();
+                    return "Email <" + addressEmail + "> does not exist!" + ResponseString;
+                }
+                else
+                {
+                    tClient.Close();
+                    return "OK";
+                }
             }
             else
             {
-                tClient.Close();
-                return "OK";
-            }
+                return "Email <" + addressEmail + "> not a email";
+            }    
         }
         private int GetResponseCode(string ResponseString)
         {
@@ -155,6 +162,22 @@ namespace EmailMaketing.ContentEmails
             {
                 return ex.Message;
             }
+        }
+        static Regex ValidEmailRegex = CreateValidEmailRegex();
+        private static Regex CreateValidEmailRegex()
+        {
+            string validEmailPattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
+                + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
+                + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+
+            return new Regex(validEmailPattern, RegexOptions.IgnoreCase);
+        }
+
+        internal static bool EmailIsValid(string emailAddress)
+        {
+            bool isValid = ValidEmailRegex.IsMatch(emailAddress);
+
+            return isValid;
         }
     }
 }

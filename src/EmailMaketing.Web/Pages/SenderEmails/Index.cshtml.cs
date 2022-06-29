@@ -1,5 +1,6 @@
 using Abp.UI;
 using ClosedXML.Excel;
+using EmailMaketing.ContentEmails;
 using EmailMaketing.Customers;
 using EmailMaketing.SenderEmails;
 using Microsoft.AspNetCore.Http;
@@ -17,16 +18,24 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         private readonly ICurrentUser _currentUser;
         private readonly ICustomerRepository _customerRepository;
         private readonly SenderEmailAppService _senderEmailAppService;
+        private readonly ContentEmailAppService _contentEmailAppService;
+
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
 
         public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,
-            SenderEmailAppService senderEmailAppService)
+            SenderEmailAppService senderEmailAppService,
+            ContentEmailAppService contentEmailAppService)
         {
             _currentUser = currentUser;
             _customerRepository = customerRepository;
             _senderEmailAppService = senderEmailAppService;
+            _contentEmailAppService = contentEmailAppService;
         }
-
+        /*public async Task OnGetAsync()
+        {
+            Alerts.Warning("abcbbb", "title");
+            await Task.CompletedTask;
+        }*/
         public async Task<IActionResult> OnPostExportAsync()
         {
             var memoryStream = new MemoryStream();
@@ -53,7 +62,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
 
 
-        public async Task<IActionResult> OnPostImportAsync(IFormFile excel)
+        public async Task OnPostImportAsync(IFormFile excel)
         {
             if (excel == null)
             {
@@ -63,42 +72,44 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             {
                 var worksheet = workbook.Worksheet("Users Sheet");
                 var count = 0;
-                if (_currentUser.UserName != "admin")
+
+                foreach (var row in worksheet.Rows())
                 {
-                    foreach (var row in worksheet.Rows())
+                    var email = row.Cell(1).Value.ToString();
+                    var pass = row.Cell(2).Value.ToString();
+                    var emailExist = _contentEmailAppService.CheckEmailExist(email);
+                    var emailcheck = _contentEmailAppService.CheckAuthencation(email, pass);
+                    count += 1;
+                    var userId = _currentUser.Id; //Lay userId hien tai
+                    var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+                    if (count > 1)
                     {
-                        count += 1;
-                        var userId = _currentUser.Id; //Lay userId hien tai
-                        var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
-                        if (count > 1)
+                        if (emailExist == "OK" && emailcheck == "Success")
                         {
-                            senderEmail.Add(new CreateUpdateSenderEmailDto()
+                            if (_currentUser.UserName != "admin")
                             {
-                                Email = row.Cell(1).Value.ToString(),
-                                Password = row.Cell(2).Value.ToString(),
-                                CustomerID = customer.Id
-                            });
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var row in worksheet.Rows())
-                    {
-                        count += 1;
-                        if (count > 1)
-                        {
-                            senderEmail.Add(new CreateUpdateSenderEmailDto()
+                                senderEmail.Add(new CreateUpdateSenderEmailDto()
+                                {
+                                    Email = email,
+                                    Password = pass,
+                                    CustomerID = customer.Id
+                                });
+                            }
+                            else
                             {
-                                Email = row.Cell(1).Value.ToString(),
-                                Password = row.Cell(2).Value.ToString()
-                            });
+                                senderEmail.Add(new CreateUpdateSenderEmailDto()
+                                {
+                                    Email = email,
+                                    Password = pass
+                                });
+                            }
                         }
                     }
                 }
             }
             await _senderEmailAppService.CreateManyAsync(senderEmail);
-            return RedirectToAction("Index", "SenderEmails");
+            /*return RedirectToAction("Index", "SenderEmails");*/
         }
+        
     }
 }

@@ -138,7 +138,7 @@ namespace EmailMaketing.Jobs
 
             foreach (var item in listEmail)
             {
-                await _backgroundJobManager.EnqueueAsync(item, BackgroundJobPriority.High, TimeSpan.FromMinutes(1));
+                /*await _backgroundJobManager.EnqueueAsync(item, BackgroundJobPriority.High, TimeSpan.FromMinutes(1));*/
 
             }
 

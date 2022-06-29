@@ -32,8 +32,8 @@ namespace EmailMaketing.Jobs
                     args.Password,
                     args.File
                 );
-            await _backgroundJobManager.EnqueueAsync(args, BackgroundJobPriority.High, TimeSpan.FromMinutes(2));
-            await Task.Delay(120000);
+            /*await _backgroundJobManager.EnqueueAsync(args, BackgroundJobPriority.High, TimeSpan.FromMinutes(2));
+            await Task.Delay(120000);*/
         }
     }
 }

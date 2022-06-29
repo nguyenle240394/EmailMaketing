@@ -17,10 +17,10 @@ $(function () {
                     title: l('Email'),
                     data: "senderEmail.email",
                 },
-                {
+                /*{
                     title: l('Password'),
                     data: "senderEmail.password"
-                },
+                },*/
                 {
                     title: l('Customer Name'),
                     data: "customer",
@@ -90,12 +90,3 @@ $(function () {
     });
 
 });
-
-$(function onchangeButton() {
-    var dataInput = $('#ImportExcel').val;
-    if (dataInput != null) {
-        document.getElementById("ImportExcelButton").disabled = true;
-    } else {
-        document.getElementById("ImportExcelButton").disabled = false;
-    }
-}); 

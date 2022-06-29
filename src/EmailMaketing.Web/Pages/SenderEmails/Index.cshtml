@@ -13,7 +13,6 @@
     <abp-script src="/Pages/SenderEmails/Index.js" />
 }
 
-
     <abp-card>
         <abp-card-header>
             <abp-row>
@@ -27,8 +26,8 @@
                         <abp-column size-sm="_8">
                             <form method="post" asp-page-handler="Import" enctype="multipart/form-data">
                                 <abp-row>
-                                    <abp-column size-sm="_8"><input type="file" name="excel" class="form-control" /></abp-column>
-                                    <abp-column size-sm="_4"><abp-button button-type="Primary" type="submit">Import Excel</abp-button></abp-column>
+                                    <abp-column size-sm="_8"><input id="ImportExcel" type="file" name="excel" class="form-control" /></abp-column>
+                                    <abp-column size-sm="_4"><abp-button id="ImportExcelButton" button-type="Primary" type="submit" disabled="false" >Import Excel</abp-button></abp-column>
                                 </abp-row>
                             </form>
                         </abp-column>

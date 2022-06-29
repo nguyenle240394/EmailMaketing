@@ -88,4 +88,14 @@ $(function () {
         e.preventDefault();
         createModal.open();
     });
+
 });
+
+$(function onchangeButton() {
+    var dataInput = $('#ImportExcel').val;
+    if (dataInput != null) {
+        document.getElementById("ImportExcelButton").disabled = true;
+    } else {
+        document.getElementById("ImportExcelButton").disabled = false;
+    }
+}); 

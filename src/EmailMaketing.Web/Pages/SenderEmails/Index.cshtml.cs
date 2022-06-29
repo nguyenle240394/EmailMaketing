@@ -65,10 +65,10 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         public async Task OnPostImportAsync(IFormFile excel)
         {
-            if (excel == null)
-            {
-                throw new UserFriendlyException(L["Execl emty"]);
-            }
+            //if (excel == null)
+            //{
+            //    throw new UserFriendlyException(L["Execl does not exist!"]);
+            //}
             using (var workbook = new XLWorkbook(excel.OpenReadStream()))
             {
                 var worksheet = workbook.Worksheet("Users Sheet");

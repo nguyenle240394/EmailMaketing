@@ -18,12 +18,16 @@ namespace EmailMaketing.Jobs
             _backgroundJobManager = backgroundJobManager;
         }
 
-        public async Task RegisterAsync()
+        /*public async Task sendeMail1N()
         {
             string htmlbody = "";
             htmlbody = "<p>" + randomtext() + "<p>";
 
             var listEmail = new List<SendEmailArgs>();
+            var listEmailReceiver = new List<string>() { "phongnguyen.httdn@gmail.com", "letg3313@gmail.com", "mrlong.itqn@gmail.com", "ndlong@sdc.udn.vn" };
+
+
+
             listEmail.Add(new SendEmailArgs {
                 To = "ndlong@sdc.udn.vn",
                 Subject = "Test gửi email 1-n",
@@ -69,10 +73,70 @@ namespace EmailMaketing.Jobs
             foreach (var item in listEmail)
             {
                 await _backgroundJobManager.EnqueueAsync(item, BackgroundJobPriority.High, TimeSpan.FromMinutes(1));
-               
             }
             
-        }
+        }*/
+
+
+        /*public async Task sendeMailNN()
+        {
+            string htmlbody = "";
+            htmlbody = "<p>" + randomtext() + "<p>";
+
+            var listEmail = new List<SendEmailArgs>();
+            listEmail.Add(new SendEmailArgs
+            {
+                To = "ndlong@sdc.udn.vn",
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
+                EmailAddress = "HenryDao0810@gmail.com",
+                Name = "Nguyen le",
+                Password = "leuzxdmiwryorxxi",
+                File = new List<string>()
+            });
+
+            listEmail.Add(new SendEmailArgs
+            {
+                To = "mrlong.itqn@gmail.com",
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
+                EmailAddress = "HenryDao0810@gmail.com",
+                Name = "Nguyen le",
+                Password = "leuzxdmiwryorxxi",
+                File = new List<string>()
+            });
+
+            listEmail.Add(new SendEmailArgs
+            {
+                To = "letg3313@gmail.com",
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
+                EmailAddress = "HenryDao0810@gmail.com",
+                Name = "Nguyen le",
+                Password = "leuzxdmiwryorxxi",
+                File = new List<string>()
+            });
+            listEmail.Add(new SendEmailArgs
+            {
+                To = "phongnguyen.httdn@gmail.com",
+                Subject = "Test gửi email 1-n",
+                Body = "Dang gui email 1-n " + htmlbody,
+                EmailAddress = "HenryDao0810@gmail.com",
+                Name = "Nguyen le",
+                Password = "leuzxdmiwryorxxi",
+                File = new List<string>()
+            });
+
+            foreach (var item in listEmail)
+            {
+                await _backgroundJobManager.EnqueueAsync(item, BackgroundJobPriority.High, TimeSpan.FromMinutes(1));
+
+            }
+
+        }*/
+
+
+
         private string randomtext()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

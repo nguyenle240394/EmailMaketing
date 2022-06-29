@@ -67,7 +67,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         {
             if (excel == null)
             {
-                throw new UserFriendlyException("Execl emty");
+                throw new UserFriendlyException(L["Execl emty"]);
             }
             using (var workbook = new XLWorkbook(excel.OpenReadStream()))
             {

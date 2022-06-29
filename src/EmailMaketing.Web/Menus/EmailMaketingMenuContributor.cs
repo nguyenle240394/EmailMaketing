@@ -45,7 +45,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                     )
             );
         }
-        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
         {
             context.Menu.AddItem(
                 new ApplicationMenuItem(

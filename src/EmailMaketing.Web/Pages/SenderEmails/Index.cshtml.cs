@@ -21,6 +21,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
         private readonly ContentEmailAppService _contentEmailAppService;
 
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
+        public List<CreateUpdateSenderEmailDto> emailError = new List<CreateUpdateSenderEmailDto>();
 
         public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,
             SenderEmailAppService senderEmailAppService,
@@ -82,9 +83,12 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                     count += 1;
                     var userId = _currentUser.Id; //Lay userId hien tai
                     var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+
+                    var emailsenderExist = await _senderEmailAppService.CheckEmailExist(email);
+                    
                     if (count > 1)
                     {
-                        if (emailExist == "OK" && emailcheck == "Success")
+                        if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist==false)
                         {
                             if (_currentUser.UserName != "admin")
                             {
@@ -104,12 +108,20 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                                 });
                             }
                         }
+                        else
+                        {
+                            emailError.Add(new CreateUpdateSenderEmailDto() { Email = email });
+                        }
                     }
                 }
             }
-            await _senderEmailAppService.CreateManyAsync(senderEmail);
+
+            if (senderEmail.Count>0)
+            {
+                await _senderEmailAppService.CreateManyAsync(senderEmail);
+            }
             /*return RedirectToAction("Index", "SenderEmails");*/
         }
-        
+
     }
 }

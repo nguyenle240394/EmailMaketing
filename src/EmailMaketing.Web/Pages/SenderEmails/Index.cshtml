@@ -13,6 +13,7 @@
     <abp-script src="/Pages/SenderEmails/Index.js" />
 }
 
+
     <abp-card>
         <abp-card-header>
             <abp-row>
@@ -20,22 +21,21 @@
                     <abp-card-title>@L["Sender Email"]</abp-card-title>
                 </abp-column>
             </abp-row>
-
             <abp-row>
                 <abp-column size-md="_6">
                     <abp-row>
                         <abp-column size-sm="_8">
-                        <form method="post" asp-page-handler="Import" enctype="multipart/form-data">
-                            <abp-row>
-                                <abp-column size-sm="_8"><input type="file" name="excel" class="form-control" /></abp-column>
-                                <abp-column size-sm="_4"><abp-button button-type="Primary" type="submit">Inport Excel</abp-button></abp-column>
-                            </abp-row>
-                        </form>
+                            <form method="post" asp-page-handler="Import" enctype="multipart/form-data">
+                                <abp-row>
+                                    <abp-column size-sm="_8"><input type="file" name="excel" class="form-control" /></abp-column>
+                                    <abp-column size-sm="_4"><abp-button button-type="Primary" type="submit">Import Excel</abp-button></abp-column>
+                                </abp-row>
+                            </form>
                         </abp-column>
                         <abp-column size-sm="_4">
-                        <form method="post" asp-page-handler="Export">
-                            <abp-button button-type="Primary" type="submit">template Excel</abp-button>
-                        </form>
+                            <form method="post" asp-page-handler="Export">
+                                <abp-button button-type="Primary" type="submit">Template Excel</abp-button>
+                            </form>
                         </abp-column>
                     </abp-row>
                 </abp-column>
@@ -53,4 +53,19 @@
     <abp-card-body>
         <abp-table striped-rows="true" id="SenderEmailTable"></abp-table>
     </abp-card-body>
+    @if (@Model.emailError.Count() > 0)
+    {
+        <abp-card-footer>
+            <table>
+                <tr><th> Email Error</th> </tr>
+                @foreach (var item in @Model.emailError)
+                {
+                    <tr style="width:auto">
+                        <td>@item.Email</td>
+                    </tr>
+                }
+            </table>
+        </abp-card-footer>
+    }
+
 </abp-card>

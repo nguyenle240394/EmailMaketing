@@ -84,6 +84,7 @@ namespace EmailMaketing.Web.Pages.Customers
             public string FullName { get; set; }
             [Required]
             [RegularExpression("[0-9]{10}")]
+            [DisplayName("Phone Number")]
             public string PhoneNumber { get; set; }
             [Required]
             [EmailAddress]

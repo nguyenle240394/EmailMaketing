@@ -20,6 +20,12 @@ namespace EmailMaketing.SenderEmails
             : base(dbContextProvider)
         { }
 
+        public async Task<SenderEmail> FindByEmailAsync(string email)
+        {
+            var queryable = await GetMongoQueryableAsync();
+            return await queryable.FirstOrDefaultAsync(s => s.Email == email);
+        }
+
         public async Task<List<SenderEmail>> GetListAsync(
             int skipCount,
             int maxResultCount,

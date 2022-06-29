@@ -50,7 +50,7 @@ $(function () {
                     }
                 },
                 {
-                    title: l('CreationTime'), data: "creationTime",
+                    title: l('Creation Time'), data: "creationTime",
                     render: function (data) {
                         return luxon
                             .DateTime

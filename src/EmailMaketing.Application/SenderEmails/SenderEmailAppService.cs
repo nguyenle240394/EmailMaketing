@@ -85,6 +85,16 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(sender);
         }
 
+        public async Task<bool> CheckEmailExist(string email)
+        {
+            var emailExist = await _senderEmailRepository.FindByEmailAsync(email);
+            if (emailExist != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
         //public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
         //{
         //    //Set a default sorting, if not provided

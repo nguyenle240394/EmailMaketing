@@ -265,8 +265,9 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                         await Task.Delay(3000);
                     }
                 }
-                Confirm = "Finished";
-                await _hubcontext.Clients.All.SendAsync("RefreshVariable");
+                _ContentEmailAppService.coutEmailSended = 0;
+                CountEmailSended = "";
+                Confirm = "";
                 listsfile.Clear();
                 return new JsonResult("OK");
             }
@@ -276,17 +277,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         public static int checkcount = 0;
         public JsonResult OnPostRuntimeValue()
         {
-            if (Confirm == "Finished")
-            {
-                _ContentEmailAppService.coutEmailSended = 0;
-                CountEmailSended = "";
-                Confirm = "";
-                return new JsonResult("GGGGGGOK");
-            }
-            else
-            {
-                return new JsonResult(CountEmailSended);
-            }
+            return new JsonResult(CountEmailSended);
         }
         public async Task<IActionResult> OnPostTestfile()
         {

@@ -1,4 +1,5 @@
 ﻿
+using EmailMaketing.SenderEmails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,15 @@ namespace EmailMaketing.Jobs
     public class RegistrationMailService : ApplicationService
     {
         private readonly IBackgroundJobManager _backgroundJobManager;
+        private readonly SenderEmailAppService _senderEmailAppService;
 
-        public RegistrationMailService(IBackgroundJobManager backgroundJobManager)
+        public RegistrationMailService(IBackgroundJobManager backgroundJobManager, SenderEmailAppService senderEmailAppService)
         {
             _backgroundJobManager = backgroundJobManager;
+            _senderEmailAppService = senderEmailAppService;
         }
 
-        /*public async Task sendeMail1N()
+        public async Task sendeMail1N()
         {
             string htmlbody = "";
             htmlbody = "<p>" + randomtext() + "<p>";
@@ -28,7 +31,8 @@ namespace EmailMaketing.Jobs
 
 
 
-            listEmail.Add(new SendEmailArgs {
+            listEmail.Add(new SendEmailArgs
+            {
                 To = "ndlong@sdc.udn.vn",
                 Subject = "Test gửi email 1-n",
                 Body = "Dang gui email 1-n " + htmlbody,
@@ -74,58 +78,32 @@ namespace EmailMaketing.Jobs
             {
                 await _backgroundJobManager.EnqueueAsync(item, BackgroundJobPriority.High, TimeSpan.FromMinutes(1));
             }
-            
-        }*/
 
-
-        /*public async Task sendeMailNN()
+        }
+        public async Task sendeMailNN()
         {
             string htmlbody = "";
-            htmlbody = "<p>" + randomtext() + "<p>";
+            htmlbody = "<p>" + randomtext() +"<p>";
 
             var listEmail = new List<SendEmailArgs>();
-            listEmail.Add(new SendEmailArgs
-            {
-                To = "ndlong@sdc.udn.vn",
-                Subject = "Test gửi email 1-n",
-                Body = "Dang gui email 1-n " + htmlbody,
-                EmailAddress = "HenryDao0810@gmail.com",
-                Name = "Nguyen le",
-                Password = "leuzxdmiwryorxxi",
-                File = new List<string>()
-            });
+            var listEmailReceiver = new List<string>() { "phongnguyen.httdn@gmail.com", "letg3313@gmail.com", "mrlong.itqn@gmail.com", "ndlong@sdc.udn.vn" };
+            var listEmailSender = await _senderEmailAppService.GetListSenderAsync();
 
-            listEmail.Add(new SendEmailArgs
+            foreach (var emailReceiver in listEmailReceiver)
             {
-                To = "mrlong.itqn@gmail.com",
-                Subject = "Test gửi email 1-n",
-                Body = "Dang gui email 1-n " + htmlbody,
-                EmailAddress = "HenryDao0810@gmail.com",
-                Name = "Nguyen le",
-                Password = "leuzxdmiwryorxxi",
-                File = new List<string>()
-            });
-
-            listEmail.Add(new SendEmailArgs
-            {
-                To = "letg3313@gmail.com",
-                Subject = "Test gửi email 1-n",
-                Body = "Dang gui email 1-n " + htmlbody,
-                EmailAddress = "HenryDao0810@gmail.com",
-                Name = "Nguyen le",
-                Password = "leuzxdmiwryorxxi",
-                File = new List<string>()
-            });
-            listEmail.Add(new SendEmailArgs
-            {
-                To = "phongnguyen.httdn@gmail.com",
-                Subject = "Test gửi email 1-n",
-                Body = "Dang gui email 1-n " + htmlbody,
-                EmailAddress = "HenryDao0810@gmail.com",
-                Name = "Nguyen le",
-                Password = "leuzxdmiwryorxxi",
-                File = new List<string>()
-            });
+                foreach (var emailSender in listEmailSender)
+                {
+                    listEmail.Add(new SendEmailArgs { 
+                        To = emailReceiver,
+                        Subject = "Gửi email nhiều nhiều",
+                        Body= "Thử gửi email nhiều nhiều" + htmlbody,
+                        EmailAddress = emailSender.Email,
+                        Name = "Nguyen Le",
+                        Password = emailSender.Password,
+                        File = new List<string>()
+                    });
+                }
+            }
 
             foreach (var item in listEmail)
             {
@@ -133,10 +111,7 @@ namespace EmailMaketing.Jobs
 
             }
 
-        }*/
-
-
-
+        }
         private string randomtext()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

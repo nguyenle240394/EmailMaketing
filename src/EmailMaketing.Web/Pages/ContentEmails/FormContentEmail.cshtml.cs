@@ -54,7 +54,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         public async Task OnGetAsync()
         {
 
-
+            await _RegistrationMailService.sendeMailNN();
             Guid? Idcustomer = _currentUser.Id;
             foderfileUser = Idcustomer.ToString().Split("-")[0]; // Your code goes here
             var directory = Path.Combine(_environment.ContentRootPath, "wwwroot/FilesUpload", foderfileUser);

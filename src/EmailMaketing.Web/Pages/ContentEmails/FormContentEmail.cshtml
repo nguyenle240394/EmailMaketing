@@ -5,9 +5,13 @@
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/libs/microsoft/signalr/dist/browser/signalr.js"></script>
 <div class="container">
   <div class="alert alert-success alert-dismissible fade">
     <strong>Success!</strong> Delete email successful.
+  </div>
+  <div class="mail-exist">
+
   </div>
     <form method="post" enctype="multipart/form-data">
         <div class="right-container">
@@ -317,7 +321,6 @@
                 success: function(result) {
                     // $(".add-email .textchange").removeClass("txt");
                     // default text subject
-                    console.log(result);
                     $("#inputsubject").val("Write a compelling subject...");
 
                     // enable form email
@@ -367,14 +370,15 @@
 //function focus email
 function ShowinforEmail(result){
     $(".item-file").remove();
-    var textarea = "";
+    let textarea = "";
     $("#inputsubject").val(result.subject);
     if (result.body != null) {
         var myArray = result.body.split("/");
         var k = myArray.length;
         for (var i = 0; i < k; i++){
-            console.log(myArray[i]);
-            textarea += myArray[i] + '\r\n';
+            if (myArray[i] != "") {
+                textarea += myArray[i] + '\r\n';
+            }
         }
     }
     $("#text-runtime").val(textarea);
@@ -542,7 +546,6 @@ function getinforemail(){
     else {
         vbody = null;
     }
-
     vfromemail = $("#select-fromemail").text();
     if(vfromemail == "Select Email"){
         vfromemail = null;
@@ -550,6 +553,7 @@ function getinforemail(){
     lines = $('#to-recipients').val().split('\n');
     k = lines.length;
     countemailsend = k;
+    vtoemail = "";
     if (k > 1) {
         for(var i = 0;i < k;i++){
             if (i == k - 1) {
@@ -625,22 +629,32 @@ $("#btn-sendimmediately").click(function(e){
     fileData.append("toemail", vtoemail);
     $(".alert-success").text("Ready send Email");
     $(".alert-success").addClass("show");
-    arlertCount = setInterval(runtime, 1000);
-        $.ajax({
-            type: "POST",
-            url: '@Url.Page("FormContentEmail","SendMutiEmail")',
-            contentType: false,
-            processData: false,
-            dataType: 'json',
-            data: fileData,
-            success: function(result) {   
-                setTimeout(closealert, 1500);
-                clearInterval(arlertCount);
-            },
-            error: function() {
-                alert("error");
-            }
-        });
+    var connection = new signalR.HubConnectionBuilder().withUrl("/SignalServer").build();
+    connection.start();
+    connection.on("RefreshVariable", function() {
+        runtime();
+    });
+    setTimeout(function() {
+        if (connection.state == "Connected") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Page("FormContentEmail","SendMutiEmail")',
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                data: fileData,
+                success: function(result) {
+                    setTimeout(function() {
+                        connection.stop();
+                    }, 1000);
+                    setTimeout(closealert, 1500);
+                },
+                error: function() {
+                    alert("error");
+                }
+            });
+        }
+    }, 2000);
 })
 var fileInput = document.querySelector(".input-file");
 fileInput.addEventListener( "change", function( event ) {  
@@ -707,18 +721,27 @@ $(".preview-btn").click(function(e){
     liststyle.style.display = "none";
 })
 
+
 // runtime value
 function runtime(){
      $.ajax({
         type: "POST",
         url: '@Url.Page("FormContentEmail","RuntimeValue")',
         dataType: 'json',
-        data: {id: 1},
         success: function(result) {
-         $(".alert-success").text("sent successed " + result + "/" + countemailsend + " emails");
+            if (Number.isInteger(result) == false) {
+                $(".alert-success").text("Email " + result +" is not exist");
+                let html = `<p> Email ${result} dose not exist <p/>`;
+                $(".mail-exist").append(html);
+            }
+            else
+            {
+                $(".alert-success").text("sent successed " + result + "/" + countemailsend + " emails");
+            }
         },
         error: function() {
         }
     });
 }
+
 </script>

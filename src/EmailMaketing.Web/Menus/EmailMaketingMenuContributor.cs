@@ -59,7 +59,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 new ApplicationMenuItem(
                         "EmailMaketing.ContentEmails",
                         l["Menu:ContentEmails"],
-                        url: "/abc"
+                        url: "/ContentEmails/SendEmailModal"
                     )
             );
 

@@ -1,4 +1,5 @@
-﻿using MailKit.Security;
+﻿using EmailMaketing.SenderEmails;
+using MailKit.Security;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
 namespace EmailMaketing.ContentEmails
@@ -15,9 +17,12 @@ namespace EmailMaketing.ContentEmails
     public class ContentEmailAppService : ApplicationService, IContentEmailAppService
     {
         private readonly IContentEmailRepository _ContentEmailRepository;
-        public ContentEmailAppService(IContentEmailRepository contentEmailRepository)
-        {
+        private readonly ISenderEmailRepository _senderEmailRepository;
+
+        public ContentEmailAppService(IContentEmailRepository contentEmailRepository, 
+            ISenderEmailRepository senderEmailRepository )        {
             _ContentEmailRepository = contentEmailRepository;
+            _senderEmailRepository = senderEmailRepository;
         }
 
         public async Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input)
@@ -97,7 +102,7 @@ namespace EmailMaketing.ContentEmails
             var ContentEmails = await _ContentEmailRepository.FindAsync(id);
             ContentEmails.Subject = input.Subject;
             ContentEmails.Body = input.Body;
-            ContentEmails.SenderEmail = input.SenderEmail;
+            /*ContentEmails.SenderEmail = input.SenderEmail;*/
             ContentEmails.Status = input.Status;
             ContentEmails.Attachment = input.Attachment;
             await _ContentEmailRepository.UpdateAsync(ContentEmails);
@@ -178,6 +183,15 @@ namespace EmailMaketing.ContentEmails
             bool isValid = ValidEmailRegex.IsMatch(emailAddress);
 
             return isValid;
+        }
+
+        public async Task<ListResultDto<SenderLookup>> GetSenderLookupAsync()
+        {
+            var sender = await _senderEmailRepository.GetListAsync();
+            var senderEmailLookup = ObjectMapper.Map<List<SenderEmail>, List<SenderLookup>>(sender);
+            return new ListResultDto<SenderLookup>(
+                    senderEmailLookup
+                );
         }
     }
 }

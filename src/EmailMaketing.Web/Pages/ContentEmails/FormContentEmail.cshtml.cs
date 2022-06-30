@@ -152,7 +152,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var Data = new CreateUpdateContentEmailDto();
             Data.Subject = Request.Form["subject"];
             Data.Body = Request.Form["body"];
-            Data.SenderEmail = Request.Form["fromemail"];
+            /*Data.SenderEmail = Request.Form["fromemail"];*/
             Data.Status = Convert.ToBoolean(Request.Form["status"]);
             string attachment = null;
             string code = Request.Form["id"].ToString().Split("-")[0];

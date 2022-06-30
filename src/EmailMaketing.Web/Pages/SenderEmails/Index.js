@@ -14,6 +14,10 @@ $(function () {
             ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getListWithNavigation),
             columnDefs: [
                 {
+                    title: l('STT'),
+                    data: "stt"
+                },
+                {
                     title: l('Email'),
                     data: "senderEmail.email"
                 },

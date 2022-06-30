@@ -60,21 +60,27 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                 SenderEmail.CustomerID = null;
             }
             var listemail = await _senderEmailAppService.GetListSenderAsync();
-            foreach (var item in listemail)
+            var emailExist = _contentEmailAppService.CheckEmailExist(SenderEmail.Email);
+            var emailcheck = _contentEmailAppService.CheckAuthencation(SenderEmail.Email, SenderEmail.Password);
+            var emailsenderExist = await _senderEmailAppService.CheckEmailExist(SenderEmail.Email);
+
+            if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist == false)
             {
-                var emailExist = _contentEmailAppService.CheckEmailExist(item.Email);
-                var checkEmail = _contentEmailAppService.CheckAuthencation(item.Email, item.Password);
-                var senderEmailExist = await _senderEmailAppService.CheckEmailExist(item.Email);
-                if (emailExist == "OK" && checkEmail == "Success" && senderEmailExist == false)
-                {
-                    var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
-                    await _senderEmailAppService.CreateAsync(senderemails);
-                }
-                else
-                {
-                    throw new UserFriendlyException(L["Email is already exists"]);
-                }
+                var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
+                await _senderEmailAppService.CreateAsync(senderemails);
             }
+            else {
+                throw new UserFriendlyException(L["Email is already exists"]);
+            }
+                /*foreach (var item in listemail)
+                {
+                    if (item.Email == SenderEmail.Email)
+                    {
+                        throw new UserFriendlyException(L["Email is already exists"]);
+                    }
+                }*/
+            /*var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);*/
+            /*await _senderEmailAppService.CreateAsync(senderemails);*/
             return NoContent();
         }
 

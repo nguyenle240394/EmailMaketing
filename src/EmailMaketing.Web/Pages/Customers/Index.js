@@ -15,7 +15,10 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
-
+                {
+                    title: l('STT'),
+                    data: "stt"
+                },
                 {
                     title: l('User Name'),
                     data: "userName"

@@ -84,6 +84,12 @@ namespace EmailMaketing.Customers
                 );
 
             var customerAdd = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
+            var stt = 1;
+            foreach (var item in customerAdd)
+            {
+                item.Stt = stt++;
+            }
+            
             var totalCount = await _customerRepository.GetCountAsync();
             return new PagedResultDto<CustomerDto>(
                     totalCount,

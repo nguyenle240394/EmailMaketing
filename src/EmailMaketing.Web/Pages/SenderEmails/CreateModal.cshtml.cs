@@ -70,7 +70,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                 await _senderEmailAppService.CreateAsync(senderemails);
             }
             else {
-                throw new UserFriendlyException(L["Email is already exists"]);
+                throw new UserFriendlyException(L["Sender email error."]);
             }
                 /*foreach (var item in listemail)
                 {

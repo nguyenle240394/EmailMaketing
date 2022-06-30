@@ -61,8 +61,6 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-
-
         public async Task OnPostImportAsync(IFormFile excel)
         {
             if (excel != null)

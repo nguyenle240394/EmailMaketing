@@ -15,7 +15,7 @@ $(function () {
             columnDefs: [
                 {
                     title: l('Email'),
-                    data: "senderEmail.email",
+                    data: "senderEmail.email"
                 },
                 {
                     title: l('Password'),

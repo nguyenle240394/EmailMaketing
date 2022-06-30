@@ -70,17 +70,8 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                 await _senderEmailAppService.CreateAsync(senderemails);
             }
             else {
-                throw new UserFriendlyException(L["Sender email error."]);
+                throw new UserFriendlyException(L["Error sender email"]);
             }
-                /*foreach (var item in listemail)
-                {
-                    if (item.Email == SenderEmail.Email)
-                    {
-                        throw new UserFriendlyException(L["Email is already exists"]);
-                    }
-                }*/
-            /*var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);*/
-            /*await _senderEmailAppService.CreateAsync(senderemails);*/
             return NoContent();
         }
 

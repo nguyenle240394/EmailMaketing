@@ -65,56 +65,63 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         public async Task OnPostImportAsync(IFormFile excel)
         {
-            using (var workbook = new XLWorkbook(excel.OpenReadStream()))
+            if (excel != null)
             {
-                var worksheet = workbook.Worksheet("Users Sheet");
-                var count = 0;
-
-                foreach (var row in worksheet.Rows())
+                using (var workbook = new XLWorkbook(excel.OpenReadStream()))
                 {
-                    var email = row.Cell(1).Value.ToString();
-                    var pass = row.Cell(2).Value.ToString();
-                    var emailExist = _contentEmailAppService.CheckEmailExist(email);
-                    var emailcheck = _contentEmailAppService.CheckAuthencation(email, pass);
-                    count += 1;
-                    var userId = _currentUser.Id; //Lay userId hien tai
-                    var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+                    var worksheet = workbook.Worksheet("Users Sheet");
+                    var count = 0;
 
-                    var emailsenderExist = await _senderEmailAppService.CheckEmailExist(email);
-                    
-                    if (count > 1)
+                    foreach (var row in worksheet.Rows())
                     {
-                        if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist==false)
+                        var email = row.Cell(1).Value.ToString();
+                        var pass = row.Cell(2).Value.ToString();
+                        var emailExist = _contentEmailAppService.CheckEmailExist(email);
+                        var emailcheck = _contentEmailAppService.CheckAuthencation(email, pass);
+                        count += 1;
+                        var userId = _currentUser.Id; //Lay userId hien tai
+                        var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
+
+                        var emailsenderExist = await _senderEmailAppService.CheckEmailExist(email);
+
+                        if (count > 1)
                         {
-                            if (_currentUser.UserName != "admin")
+                            if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist == false)
                             {
-                                senderEmail.Add(new CreateUpdateSenderEmailDto()
+                                if (_currentUser.UserName != "admin")
                                 {
-                                    Email = email,
-                                    Password = pass,
-                                    CustomerID = customer.Id
-                                });
+                                    senderEmail.Add(new CreateUpdateSenderEmailDto()
+                                    {
+                                        Email = email,
+                                        Password = pass,
+                                        CustomerID = customer.Id
+                                    });
+                                }
+                                else
+                                {
+                                    senderEmail.Add(new CreateUpdateSenderEmailDto()
+                                    {
+                                        Email = email,
+                                        Password = pass
+                                    });
+                                }
                             }
                             else
                             {
-                                senderEmail.Add(new CreateUpdateSenderEmailDto()
-                                {
-                                    Email = email,
-                                    Password = pass
-                                });
+                                emailError.Add(new CreateUpdateSenderEmailDto() { Email = email });
                             }
-                        }
-                        else
-                        {
-                            emailError.Add(new CreateUpdateSenderEmailDto() { Email = email });
                         }
                     }
                 }
-            }
 
-            if (senderEmail.Count>0)
+                if (senderEmail.Count > 0)
+                {
+                    await _senderEmailAppService.CreateManyAsync(senderEmail);
+                }
+            }
+            else
             {
-                await _senderEmailAppService.CreateManyAsync(senderEmail);
+                throw new UserFriendlyException(L["Please chosen an excel file"]);
             }
             /*return RedirectToAction("Index", "SenderEmails");*/
         }

@@ -118,6 +118,5 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             }
             /*return RedirectToAction("Index", "SenderEmails");*/
         }
-
     }
 }

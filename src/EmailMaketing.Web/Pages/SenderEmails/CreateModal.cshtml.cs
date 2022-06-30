@@ -1,4 +1,5 @@
 using AutoMapper.Internal.Mappers;
+using EmailMaketing.ContentEmails;
 using EmailMaketing.Customers;
 using EmailMaketing.SenderEmails;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +20,24 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 {
     public class CreateModalModel : EmailMaketingPageModel
     {
-        private readonly ISenderEmailAppService _senderEmailAppService;
+        private readonly SenderEmailAppService _senderEmailAppService;
         private readonly ICustomerRepository _customerRepository;
+        private readonly ContentEmailAppService _contentEmailAppService;
         private readonly ICurrentUser _currentUser;
+
         public CreateModalModel(
-            ISenderEmailAppService senderEmailAppService, ICurrentUser currentUser, ICustomerRepository customerRepository)
+            SenderEmailAppService senderEmailAppService, 
+            ICurrentUser currentUser, 
+            ICustomerRepository customerRepository,
+            ContentEmailAppService contentEmailAppService)
         {
             _senderEmailAppService = senderEmailAppService;
             _currentUser = currentUser;
             _customerRepository = customerRepository;
+            _contentEmailAppService = contentEmailAppService;
         }
+
+        public List<CreateUpdateSenderEmailDto> emailError = new List<CreateUpdateSenderEmailDto>();
 
         [BindProperty]
         public CreateSenderEmailViewModal SenderEmail { get; set; }
@@ -53,13 +62,19 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             var listemail = await _senderEmailAppService.GetListSenderAsync();
             foreach (var item in listemail)
             {
-                if (item.Email == SenderEmail.Email)
+                var emailExist = _contentEmailAppService.CheckEmailExist(item.Email);
+                var checkEmail = _contentEmailAppService.CheckAuthencation(item.Email, item.Password);
+                var senderEmailExist = await _senderEmailAppService.CheckEmailExist(item.Email);
+                if (emailExist == "OK" && checkEmail == "Success" && senderEmailExist == false)
+                {
+                    var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
+                    await _senderEmailAppService.CreateAsync(senderemails);
+                }
+                else
                 {
                     throw new UserFriendlyException(L["Email is already exists"]);
                 }
             }
-            var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
-            await _senderEmailAppService.CreateAsync(senderemails);
             return NoContent();
         }
 

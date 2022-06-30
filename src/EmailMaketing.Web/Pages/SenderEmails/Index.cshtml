@@ -27,10 +27,10 @@
                         <form method="post" asp-page-handler="Import" enctype="multipart/form-data">
                             <abp-row>
                                 <abp-column size-sm="_8">
-                                    <input id="ImportExcel" type="file" name="excel" class="form-control" />
+                                    <input id="ImportExcel" type="file" name="excel" class="form-control" accept=".xls, .xlsx" />
                                 </abp-column>
                                 <abp-column size-sm="_4">
-                                    <abp-button id="ImportExcelButton" button-type="Primary" type="submit" >Import Excel</abp-button>
+                                    <abp-button id="ImportExcelButton" button-type="Primary" type="submit" disabled="true" >Import Excel</abp-button>
                                 </abp-column>
                             </abp-row>
                         </form>

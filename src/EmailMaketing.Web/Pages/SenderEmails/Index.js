@@ -92,5 +92,15 @@ $(function () {
         e.preventDefault();
         createModal.open();
     });
-
 });
+
+$(function () {
+    $(document).ready(function () {
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            if (fileName != null) {
+                $('#ImportExcelButton').reload(document.getElementById("ImportExcelButton").disabled = false);
+            }
+        });
+    });
+})

@@ -136,6 +136,12 @@ namespace EmailMaketing.SenderEmails
                 input.Filter);
             //Convert to DTOs
             var senderWithNavigationDtos = ObjectMapper.Map<List<SenderWithNavigation>, List<SenderWithNavigationDto>>(senderemail);
+            var stt = 1;
+            foreach(var item in senderWithNavigationDtos)
+            {
+                item.Stt = stt;
+                stt++;
+            }
             //Get the total count with another query (required for the paging)
             var totalcount = await _senderEmailRepository.GetCountAsync();
             return new PagedResultDto<SenderWithNavigationDto>

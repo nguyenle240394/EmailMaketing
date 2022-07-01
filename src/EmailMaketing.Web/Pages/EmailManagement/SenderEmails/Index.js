@@ -1,8 +1,8 @@
 ﻿
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
-    var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
-    var editModal = new abp.ModalManager(abp.appPath + 'SenderEmails/EditModal');
+    var createModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/CreateModal');
+    var editModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/EditModal');
 
     var dataTable = $('#SenderEmailTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -14,8 +14,12 @@ $(function () {
             ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getListWithNavigation),
             columnDefs: [
                 {
+                    title: l('STT'),
+                    data: "stt"
+                },
+                {
                     title: l('Email'),
-                    data: "senderEmail.email",
+                    data: "senderEmail.email"
                 },
                 {
                     title: l('Password'),
@@ -89,3 +93,14 @@ $(function () {
         createModal.open();
     });
 });
+
+$(function () {
+    $(document).ready(function () {
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            if (fileName != null) {
+                $('#ImportExcelButton').reload(document.getElementById("ImportExcelButton").disabled = false);
+            }
+        });
+    });
+})

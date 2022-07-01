@@ -9,6 +9,6 @@ namespace EmailMaketing.ContentEmails
 {
     public interface IContentEmailRepository: IRepository<ContentEmail, Guid>
     {
-
+        
     }
 }

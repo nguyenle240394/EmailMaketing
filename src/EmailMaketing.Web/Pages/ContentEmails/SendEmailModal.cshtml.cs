@@ -1,5 +1,6 @@
 using EmailMaketing.ContentEmails;
 using EmailMaketing.SenderEmails;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
@@ -20,19 +22,23 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly ContentEmailAppService _contentEmailAppService;
         private readonly ICurrentUser _currentUser;
         private readonly SenderEmailAppService _senderEmailAppService;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         [BindProperty]
         public CreateContentViewModal ContentEmail { get; set; }
         public List<SelectListItem> SenderEmails { get; set; }
-        public IFormFile File { get; set; }
-
+        private List<string> listsfile = new List<string>();
+        [BindProperty]
+        public IFormFile FileUpload { get; set; }
         public SendEmailModalModel(ContentEmailAppService contentEmailAppService,
             ICurrentUser currentUser,
-            SenderEmailAppService senderEmailAppService)
+            SenderEmailAppService senderEmailAppService,
+            IHostingEnvironment hostingEnvironment)
         {
             _contentEmailAppService = contentEmailAppService;
             _currentUser = currentUser;
             _senderEmailAppService = senderEmailAppService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task OnGetAsync()
@@ -47,6 +53,13 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         public async Task<IActionResult> OnPostAsync()
         {
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
+            var file = Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot/FilesUpload", FileUpload.FileName);
+            listsfile.Add(file);
+            using (var fileStream = new FileStream(file, FileMode.Create))
+            {
+                await FileUpload.CopyToAsync(fileStream);
+            }
+
             foreach (var item in ContentEmail.SenderEmailId)
             {
                 var sender = await _senderEmailAppService.GetSenderEmailAsync(item);
@@ -68,14 +81,14 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                     {
                         if (listEmailReceive[i] != "")
                         {
-                            /*await _contentEmailAppService.SendMailAsync(
+                            await _contentEmailAppService.SendMailAsync(
                             listEmailReceive[i],
                             ContentEmail.Subject,
                             htmlbody,
                             sender.Email,
                             ContentEmail.Name,
                             sender.Password,
-                            File);*/
+                            listsfile);
                         }
 
                     }

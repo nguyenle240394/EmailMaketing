@@ -56,8 +56,30 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 )
             );
         }
-        if(await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
+        {
             context.Menu.AddItem(
+            new ApplicationMenuItem(
+                "EmailMaketing",
+                l["Menu:ContentEmails"],
+                icon: "fa fa-envelope"
+            ).AddItem(
+                new ApplicationMenuItem(
+                    "EmailMaketing.ContentEmails",
+                    l["Menu:EmailIsSend"],
+                    url: "/ContentEmails/EmailWasSendModal"
+                )
+            ).AddItem(
+            new ApplicationMenuItem(
+                    "EmailMaketing.ContentEmails",
+                    l["Menu:NewLetter"],
+                    url: "/ContentEmails/SendEmailModal"
+                    )
+            )
+            );
+                    
+        }
+        context.Menu.AddItem(
                 new ApplicationMenuItem(
                         "EmailMaketing.ContentEmails",
                         l["Menu:ContentEmails"],
@@ -65,6 +87,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         url: "/ContentEmails/SendEmailModal"
                     )
             );
+        
 
 
 

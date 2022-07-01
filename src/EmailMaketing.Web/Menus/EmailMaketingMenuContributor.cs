@@ -54,14 +54,8 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         url: "/EmailManagement/SenderEmails")
                 )
             );
-            /*context.Menu.AddItem(
-                new ApplicationMenuItem(
-                        "EmailMaketing.SenderEmails",
-                        l["Menu:SenderEmails"],
-                        url: "/SenderEmails"
-                    )
-            );*/
         }
+        if(await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
             context.Menu.AddItem(
                 new ApplicationMenuItem(
                         "EmailMaketing.ContentEmails",

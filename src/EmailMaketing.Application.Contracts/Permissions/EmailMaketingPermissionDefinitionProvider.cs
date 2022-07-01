@@ -23,6 +23,8 @@ public class EmailMaketingPermissionDefinitionProvider : PermissionDefinitionPro
         senderEmailPermission.AddChild(EmailMaketingPermissions.EmailManagement.SenderEmails.Edit, L("Permission:EmailManagement.SenderEmails.Edit"));
         senderEmailPermission.AddChild(EmailMaketingPermissions.EmailManagement.SenderEmails.Delete, L("Permission:EmailManagement.SenderEmails.Delete"));
 
+        var contentEmailPermission = emailMaketingGroup.AddPermission(EmailMaketingPermissions.ContentEmails.Default, L("Permission:ContentEmails"));
+
     }
 
     private static LocalizableString L(string name)

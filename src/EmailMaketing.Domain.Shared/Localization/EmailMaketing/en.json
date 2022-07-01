@@ -16,6 +16,7 @@
     "Permission:SenderEmails": "SenderEmails Management",
     "Permission:SenderEmails.Create": "Creating new senderEmails",
     "Permission:SenderEmails.Edit": "Editing the senderEmails",
-    "Permission:SenderEmails.Delete": "Deleting the senderEmails"
+    "Permission:SenderEmails.Delete": "Deleting the senderEmails",
+    "Permission:ContentEmails": "Content Email Management"
   }
 }

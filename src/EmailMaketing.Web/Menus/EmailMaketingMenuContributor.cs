@@ -41,6 +41,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 new ApplicationMenuItem(
                         "EmailMaketing.Customers",
                         l["Menu:Customers"],
+                        icon: "fa fa-address-card",
                         url: "/Customers"
                     )
             );
@@ -60,6 +61,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 new ApplicationMenuItem(
                         "EmailMaketing.ContentEmails",
                         l["Menu:ContentEmails"],
+                        icon: "fa fa-envelope",
                         url: "/ContentEmails/SendEmailModal"
                     )
             );

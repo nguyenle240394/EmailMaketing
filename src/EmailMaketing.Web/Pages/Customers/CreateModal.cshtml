@@ -15,11 +15,17 @@
                 <abp-input asp-for="Customer.UserName" />
                 <abp-row>
                     <abp-column size-md="_12">
-                        <abp-input asp-for="Customer.Password" type="Password" />
+                        @*<abp-input asp-for="Customer.Password" type="Password" />*@
+                        <label>Password</label>
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="password">
+                            <span class="input-group-text bg-primary" id="spanShow" style="display:block" ><i class="fa fa-eye" aria-hidden="true" id="showEyes"></i></span>
+                            <span class="input-group-text" id="spanHiden" style="display:none"><i class="fa fa-eye-slash" aria-hidden="true" id="hideEyes"></i></span>
+                        </div>
                     </abp-column>
-                    <abp-column size-md="_4" text-align="center">
-                        <input type="checkbox" id="showpass"> Show password</input>
-                    </abp-column>
+                    @*<abp-column size-md="_4" text-align="center">
+                    <input type="checkbox" id="showpass"> Show password</input>
+                    </abp-column>*@
                 </abp-row>
                 <abp-input asp-for="Customer.FullName" />
                 <abp-input asp-for="Customer.Email" />

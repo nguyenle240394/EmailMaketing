@@ -68,14 +68,14 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                     {
                         if (listEmailReceive[i] != "")
                         {
-                            await _contentEmailAppService.SendMailAsync(
+                            /*await _contentEmailAppService.SendMailAsync(
                             listEmailReceive[i],
                             ContentEmail.Subject,
                             htmlbody,
                             sender.Email,
                             ContentEmail.Name,
                             sender.Password,
-                            File);
+                            File);*/
                         }
 
                     }

@@ -1,8 +1,8 @@
 ﻿
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
-    var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
-    var editModal = new abp.ModalManager(abp.appPath + 'SenderEmails/EditModal');
+    var createModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/CreateModal');
+    var editModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/EditModal');
 
     var dataTable = $('#SenderEmailTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({

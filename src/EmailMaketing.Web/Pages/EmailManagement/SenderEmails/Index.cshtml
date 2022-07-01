@@ -10,7 +10,7 @@
 @inject IHtmlLocalizer<EmailMaketingResource> L
 @inject ICurrentUser CurrentUser
 @section scripts{
-    <abp-script src="/Pages/SenderEmails/Index.js" />
+    <abp-script src="/Pages/EmailManagement/SenderEmails/Index.js" />
 }
 
 <abp-card>
@@ -43,7 +43,7 @@
                 </abp-row>
             </abp-column>
             <abp-column size-md="_6" class="text-end">
-                @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Create))
+                @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.EmailManagement.SenderEmails.Create))
             {
                 <abp-button id="NewSenderEmailButton"
                         text="@L["New Sender Email"].Value"

@@ -27,9 +27,9 @@
     <None Include="Pages\Customers\EditModal.cshtml" />
     <None Include="Pages\Customers\Index.cshtml" />
 
-    <None Include="Pages\SenderEmails\CreateModal.cshtml" />
-    <None Include="Pages\SenderEmails\EditModal.cshtml" />
-    <None Include="Pages\SenderEmails\Index.cshtml" />
+    <None Include="Pages\EmailManagement\SenderEmails\CreateModal.cshtml" />
+    <None Include="Pages\EmailManagement\SenderEmails\EditModal.cshtml" />
+    <None Include="Pages\EmailManagement\SenderEmails\Index.cshtml" />
     <Content Include="Pages\ContentEmails\FormContentEmail.css" />
   </ItemGroup>
 

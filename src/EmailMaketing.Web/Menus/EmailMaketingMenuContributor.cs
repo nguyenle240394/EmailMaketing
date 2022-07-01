@@ -45,15 +45,22 @@ public class EmailMaketingMenuContributor : IMenuContributor
                     )
             );
         }
-        if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.EmailManagement.SenderEmails.Default))
         {
-            context.Menu.AddItem(
+            context.Menu.AddItem(new ApplicationMenuItem("EmailMaketing.EmailManagement", l["Menu:EmailManagement"])
+                .AddItem(new ApplicationMenuItem(
+                        "EmailMaketing.EmailManagement.SenderEmails",
+                        l["Menu:SenderEmails"],
+                        url: "/EmailManagement/SenderEmails")
+                )
+            );
+            /*context.Menu.AddItem(
                 new ApplicationMenuItem(
                         "EmailMaketing.SenderEmails",
                         l["Menu:SenderEmails"],
                         url: "/SenderEmails"
                     )
-            );
+            );*/
         }
             context.Menu.AddItem(
                 new ApplicationMenuItem(

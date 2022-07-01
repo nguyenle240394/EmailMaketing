@@ -20,11 +20,11 @@ $(function () {
                 {
                     title: l('Email'),
                     data: "senderEmail.email"
-                },/*
+                },
                 {
                     title: l('Password'),
                     data: "senderEmail.password"
-                },*/
+                },
                 {
                     title: l('Customer Name'),
                     data: "customer",

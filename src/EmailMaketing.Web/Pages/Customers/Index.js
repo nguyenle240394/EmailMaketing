@@ -2,7 +2,13 @@
 var l;
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
-    var createModal = new abp.ModalManager(abp.appPath + 'Customers/CreateModal');
+    var createModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'Customers/CreateModal',
+        scriptUrl: '/Pages/Customers/CreateCusotmer.js'
+    });
+
+    /*viewUrl: abp.appPath + 'Categories/CreateModal',
+        scriptUrl : '/Pages/Categories/Create.js'*/
     var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
     var resetPasswordModal = new abp.ModalManager(abp.appPath + 'Customers/ResetPassword');
 

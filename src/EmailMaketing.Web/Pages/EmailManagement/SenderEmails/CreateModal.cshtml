@@ -10,15 +10,25 @@
 
 <abp-card>
     <form method="post" asp-page="/EmailManagement/SenderEmails/CreateModal">
-        <abp-card-header></abp-card-header>
-        <abp-card-body>
-            <div>
-                <label>Email<sup>*</sup></label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" asp-for="SenderEmail.Email" required/>
-                    <abp-button type="button" button-type="Primary">Test</abp-button>
+        <abp-modal>
+            <abp-modal-header>@L["New Sender Email"].Value</abp-modal-header>
+            <abp-modal-body>
+                <div>
+                    <label>Email<sup>*</sup></label>
+                    <div class="input-group mb-3">
+                        <input id="emailinput" name="emailinput" type="text" class="form-control" asp-for="SenderEmail.Email" required/>
+                        <abp-button id="checkemail" name="checkemail" type="button" button-type="Primary">Check</abp-button>
+                    </div>
                 </div>
-            </div>
-        </abp-card-body>
+                <div>
+                    <label>Password<sup>*</sup></label>
+                    <div class="input-group mb-3">
+                        <input id="passwordinput" name="passwordinput" type="text" class="form-control" asp-for="SenderEmail.Email" required/>
+                        <abp-button id="checkpassword" name="checkpassword" type="button" button-type="Primary">Check</abp-button>
+                    </div>
+                </div>
+            </abp-modal-body>
+            <abp-modal-footer buttons="@(AbpModalButtons.Cancel| AbpModalButtons.Save)"></abp-modal-footer>
+        </abp-modal>
     </form>
 </abp-card>

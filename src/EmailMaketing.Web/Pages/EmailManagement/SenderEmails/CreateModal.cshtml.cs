@@ -64,14 +64,13 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             var emailcheck = _contentEmailAppService.CheckAuthencation(SenderEmail.Email, SenderEmail.Password);
             var emailsenderExist = await _senderEmailAppService.CheckEmailExist(SenderEmail.Email);
 
+            //Check email
             if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist == false)
             {
                 var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
                 await _senderEmailAppService.CreateAsync(senderemails);
             }
-            else {
-                throw new UserFriendlyException(L["Error sender email"]);
-            }
+
             return NoContent();
         }
 

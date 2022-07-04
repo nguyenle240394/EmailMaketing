@@ -8,26 +8,17 @@
     Layout = null;
 }
 
-<abp-dynamic-form abp-model="SenderEmail" asp-page="/EmailManagement/SenderEmails/CreateModal">
-    <abp-modal>
-        <abp-modal-header title="@L["New Sender Email"].Value">
-        </abp-modal-header>
-        <abp-modal-body>
-            <abp-row>
+<abp-card>
+    <form method="post" asp-page="/EmailManagement/SenderEmails/CreateModal">
+        <abp-card-header></abp-card-header>
+        <abp-card-body>
+            <div>
                 <label>Email<sup>*</sup></label>
-                <abp-button-group>
-                    <input type="text" name="emailInput" required />
-                    <abp-button button-type="Primary" type="button">Test</abp-button>
-                </abp-button-group>
-            </abp-row>
-            <abp-row>
-                <label>Password<sup>*</sup></label>
-                <abp-button-group>
-                    <input type="text" name="passwordInput" required />
-                    <abp-button button-type="Primary" type="button">Test</abp-button>
-                </abp-button-group>
-            </abp-row>
-        </abp-modal-body>
-        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
-    </abp-modal>
-</abp-dynamic-form>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" asp-for="SenderEmail.Email" required/>
+                    <abp-button type="button" button-type="Primary">Test</abp-button>
+                </div>
+            </div>
+        </abp-card-body>
+    </form>
+</abp-card>

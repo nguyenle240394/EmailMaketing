@@ -13,7 +13,20 @@
         <abp-modal-header title="@L["New Sender Email"].Value">
         </abp-modal-header>
         <abp-modal-body>
-            <abp-form-content />
+            <abp-row>
+                <label>Email<sup>*</sup></label>
+                <abp-button-group>
+                    <input type="text" name="emailInput" required />
+                    <abp-button button-type="Primary" type="button">Test</abp-button>
+                </abp-button-group>
+            </abp-row>
+            <abp-row>
+                <label>Password<sup>*</sup></label>
+                <abp-button-group>
+                    <input type="text" name="passwordInput" required />
+                    <abp-button button-type="Primary" type="button">Test</abp-button>
+                </abp-button-group>
+            </abp-row>
         </abp-modal-body>
         <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
     </abp-modal>

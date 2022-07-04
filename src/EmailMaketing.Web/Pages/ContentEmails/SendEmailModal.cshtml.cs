@@ -26,7 +26,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
         [BindProperty]
         public CreateContentViewModal ContentEmail { get; set; }
-        public List<SelectListItem> SenderEmails { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
@@ -44,54 +43,65 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         public async Task OnGetAsync()
         {
             ContentEmail = new CreateContentViewModal();
-            var senderLookup = await _contentEmailAppService.GetSenderLookupAsync();
-            SenderEmails = senderLookup.Items
+            /*var senderLookup = await _contentEmailAppService.GetSenderLookupAsync();*/
+            /*SenderEmails = senderLookup.Items
                 .Select(s => new SelectListItem(s.email, s.Id.ToString()))
-                .ToList();
+                .ToList();*/
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
-            var file = Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot/FilesUpload", FileUpload.FileName);
-            listsfile.Add(file);
-            using (var fileStream = new FileStream(file, FileMode.Create))
+            // tao bien de remove khoi arry
+            string stringToRemove = "";
+            // remove cac phan tu ""
+            listEmailReceive = listEmailReceive.Where(val => val != stringToRemove).ToArray();
+            var senderIsSendFalse = new SenderEmailDto();
+            if (FileUpload != null)
             {
-                await FileUpload.CopyToAsync(fileStream);
-            }
-
-            foreach (var item in ContentEmail.SenderEmailId)
-            {
-                var sender = await _senderEmailAppService.GetSenderEmailAsync(item);
-                if (listEmailReceive.Length > 0 && listEmailReceive != null)
+                //luu file vao thu muc wwwroot/FilesUpload
+                var file = Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot/FilesUpload", FileUpload.FileName);
+                listsfile.Add(file);
+                using (var fileStream = new FileStream(file, FileMode.Create))
                 {
-                    string htmlbody = "";
-                    var linesbody = ContentEmail.Body.ToString().Split('\r', '\n');
-                    foreach (var line in linesbody)
+                    await FileUpload.CopyToAsync(fileStream);
+                }
+            }
+            if (listEmailReceive.Length > 0 && listEmailReceive != null)
+            {
+                string htmlbody = "";
+                var linesbody = ContentEmail.Body.ToString().Split('\r', '\n');
+                foreach (var line in linesbody)
+                {
+                    if (line != "")
                     {
-                        if (line != "")
-                        {
-                            htmlbody += "<p>" + line + "</p>";
-                        }
-
+                        htmlbody += "<p>" + line + "</p>";
                     }
-                    htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
-                    var countEmailReceive = listEmailReceive.Length;
-                    for (int i = 0; i < countEmailReceive; i++)
+
+                }
+                htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
+                var countEmailReceive = listEmailReceive.Length;
+                for (int i = 0; i < countEmailReceive; i++)
+                {
+                    senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
+                    if (senderIsSendFalse == null)
                     {
-                        if (listEmailReceive[i] != "")
-                        {
-                            await _contentEmailAppService.SendMailAsync(
-                            listEmailReceive[i],
-                            ContentEmail.Subject,
-                            htmlbody,
-                            sender.Email,
-                            ContentEmail.Name,
-                            sender.Password,
-                            listsfile);
-                        }
-
+                        await _senderEmailAppService.ChangeIsSendToFalseAsync();
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
                     }
+                    if (listEmailReceive[i] != "")
+                    {
+                        await _contentEmailAppService.SendMailAsync(
+                        listEmailReceive[i],
+                        ContentEmail.Subject,
+                        htmlbody,
+                        senderIsSendFalse.Email,
+                        ContentEmail.Name,
+                        senderIsSendFalse.Password,
+                        listsfile);
+                    }
+
                 }
             }
 
@@ -130,11 +140,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             public bool Featured { get; set; }
             public Guid CustomerID { get; set; }
             public DateTime Schedule { get; set; }
-
-            [Required]
-            [SelectItems(nameof(SenderEmails))]
-            [DisplayName("Sender Email")]
-            public List<Guid> SenderEmailId { get; set; }
         }
     }
 }

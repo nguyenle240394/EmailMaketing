@@ -167,5 +167,33 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }
 
+        //get sender with IsSend = fale
+        public async Task<SenderEmailDto> SenderIsSendFalseAsync()
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            foreach (var sender in senders)
+            {
+                if (sender.IsSend == false)
+                {
+                    sender.IsSend = true;
+                    await _senderEmailRepository.UpdateAsync(sender);
+                    var senderdto = ObjectMapper.Map<SenderEmail, SenderEmailDto>(sender);
+                    return senderdto;
+                }
+            }
+            return null;
+        }
+
+        //change all sender with IsSend = true to IsSend = false
+        public async Task<bool> ChangeIsSendToFalseAsync()
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            foreach (var sender in senders)
+            {
+                sender.IsSend = false;
+                await _senderEmailRepository.UpdateAsync(sender);
+            }
+            return true;
+        }
     }
 }

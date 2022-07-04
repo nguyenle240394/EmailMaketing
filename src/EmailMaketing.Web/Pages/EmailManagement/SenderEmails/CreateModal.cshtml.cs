@@ -67,20 +67,21 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                 var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
                 await _senderEmailAppService.CreateAsync(senderemails);
             }
-            else
+            /*else
             {
-                if (emailExist != "OK")
-                {
-                    throw new UserFriendlyException(L["Email does not exist"]);
-                }
-                else if (emailcheck != "Success")
-                {
-                    throw new UserFriendlyException(L["Email or Password does not authencation"]);
-                }
-                else if (emailsenderExist == true)
-                {
-                    throw new UserFriendlyException(L["Email already exists in the list"]);
-                }
+                throw new UserFriendlyException(L["Email does not exist"]);
+            }*/
+            else if (emailExist != "OK")
+            {
+                throw new UserFriendlyException(L["Email does not exist"]);
+            }
+            else if (emailcheck != "Success")
+            {
+                throw new UserFriendlyException(L["Email or Password does not have permission to send email"]);
+            }
+            else if (emailsenderExist == true)
+            {
+                throw new UserFriendlyException(L["Email already exists in the list"]);
             }
 
             return NoContent();

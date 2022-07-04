@@ -7,9 +7,6 @@
 @{
     Layout = null;
 }
-@section scripts{
-    <abp-script src="/Pages/EmailManagement/SenderEmails/CreateModal.js" />
-}
 
 <abp-card>
     <form method="post" asp-page="/EmailManagement/SenderEmails/CreateModal">
@@ -18,17 +15,14 @@
             <abp-modal-body>
                 <div>
                     <label>Email<sup>*</sup></label>
-                        <input id="emailinput" name="emailinput" type="text" class="form-control" asp-for="SenderEmail.Email" required/>
+                        <input id="emailinput" type="text" class="form-control" asp-for="SenderEmail.Email" required/>
                 </div>
                 <div>
                     <label>Password<sup>*</sup></label>
-                        <input id="passwordinput" name="passwordinput" type="text" class="form-control" asp-for="SenderEmail.Email" required/>
-                </div>
-                <div style="text-align:right;">
-                    <abp-button id="checkemailbtn" type="button" button-type="Primary">Test sender email</abp-button>
+                        <input id="passwordinput" type="text" class="form-control" asp-for="SenderEmail.Password" required/>
                 </div>
             </abp-modal-body>
-            <abp-modal-footer buttons="@(AbpModalButtons.Cancel| AbpModalButtons.Save)"></abp-modal-footer>
+            <abp-modal-footer buttons="@(AbpModalButtons.Cancel | AbpModalButtons.Save)"></abp-modal-footer>
         </abp-modal>
     </form>
 </abp-card>

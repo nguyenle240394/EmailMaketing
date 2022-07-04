@@ -1,6 +1,10 @@
 ﻿
 $(function () {
-    l = abp.localization.getResource('EmailMaketing');
+    l = abp.localization.getResource('EmailMaketing');/*
+    var createModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'EmailManagement/SenderEmails/CreateModal',
+        scriptUrl: '/Pages/EmailManagement/SenderEmails/CreateModal.js'
+    });*/
     var createModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/CreateModal');
     var editModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/EditModal');
 
@@ -103,4 +107,4 @@ $(function () {
             }
         });
     });
-})
+});

@@ -37,6 +37,8 @@ namespace EmailMaketing.Web.Pages.Customers
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            var pass = Request.Form["password"];
+            Customer.Password = pass;
             var userExist = await _identityUserAppService.FindByEmailAsync(Customer.UserName);
             var emailExist = await _identityUserAppService.FindByEmailAsync(Customer.Email);
             if (userExist != null)
@@ -49,16 +51,8 @@ namespace EmailMaketing.Web.Pages.Customers
             }
             AppUser.UserName = Customer.UserName;
             AppUser.Password = Customer.Password;
-
-            var checkEmail = _contentEmailAppService.CheckEmailExist(Customer.Email);
-            if (checkEmail == "OK")
-            {
-                AppUser.Email = Customer.Email;
-            }
-            else {
-                throw new UserFriendlyException(L["Email address does not exist!"]);
-            }
-            
+            AppUser.Email = Customer.Email;
+          
             await _identityUserAppService.CreateAsync(AppUser);
 
             var userId = await _identityUserAppService.FindByUsernameAsync(AppUser.UserName);

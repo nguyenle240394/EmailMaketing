@@ -12,3 +12,7 @@ $('#hideEyes').on('click', function () {
     document.getElementById("spanHiden").style.display = 'none';
     console.log("1");
 });
+
+function validateform() {
+
+}

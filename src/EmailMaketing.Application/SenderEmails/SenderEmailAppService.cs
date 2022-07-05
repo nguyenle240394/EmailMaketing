@@ -95,31 +95,6 @@ namespace EmailMaketing.SenderEmails
             return false;
         }
 
-        //public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
-        //{
-        //    //Set a default sorting, if not provided
-        //    if (input.Sorting.IsNullOrWhiteSpace())
-        //    {
-        //        input.Sorting = nameof(SenderEmail.Email);
-        //    }
-
-
-        //    var senderemail = await _senderEmailRepository.GetListAsync(
-        //        input.SkipCount,
-        //        input.MaxResultCount,
-        //        input.Sorting,
-        //        input.Filter);
-        //    //Convert to DTOs
-        //    var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
-        //    //Get the total count with another query (required for the paging)
-        //    var totalcount = await _senderEmailRepository.GetCountAsync();
-        //    return new PagedResultDto<SenderEmailDto>
-        //    {
-        //        TotalCount = totalcount,
-        //        Items = senderEmailDtos
-        //    };
-        //}
-
         public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {
             //Set a default sorting, if not provided

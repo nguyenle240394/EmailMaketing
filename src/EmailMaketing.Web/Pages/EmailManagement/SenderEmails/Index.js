@@ -84,6 +84,8 @@ $(function () {
 
         })
     )
+
+
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });

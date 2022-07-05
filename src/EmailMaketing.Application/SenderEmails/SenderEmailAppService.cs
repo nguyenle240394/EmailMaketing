@@ -51,7 +51,7 @@ namespace EmailMaketing.SenderEmails
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var  sender = await _senderEmailRepository.FindAsync(id);
+            var sender = await _senderEmailRepository.FindAsync(id);
             var userIdAdmin = _currentUser.Id;
             var userAdmin = await _identityUserRepository.FindAsync((Guid)userIdAdmin);
             if (userAdmin.UserName == "admin")
@@ -127,8 +127,6 @@ namespace EmailMaketing.SenderEmails
             {
                 input.Sorting = nameof(SenderEmail.Email);
             }
-
-
             var senderemail = await _senderEmailRepository.GetListWithNavigationAsync(
                 input.SkipCount,
                 input.MaxResultCount,
@@ -144,6 +142,7 @@ namespace EmailMaketing.SenderEmails
             }
             //Get the total count with another query (required for the paging)
             var totalcount = await _senderEmailRepository.GetCountAsync();
+
             return new PagedResultDto<SenderWithNavigationDto>
             {
                 TotalCount = totalcount,

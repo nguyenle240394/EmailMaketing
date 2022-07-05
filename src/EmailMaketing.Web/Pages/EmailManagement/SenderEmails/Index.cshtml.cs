@@ -23,6 +23,8 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
         public List<CreateUpdateSenderEmailDto> emailError = new List<CreateUpdateSenderEmailDto>();
+        [BindProperty]
+        public List<SenderEmailDto> SenderEmails { get; set; }
         
 
         public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,

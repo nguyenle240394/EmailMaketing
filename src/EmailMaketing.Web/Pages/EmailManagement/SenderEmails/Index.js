@@ -1,7 +1,7 @@
 ﻿
 $(function () {
-    l = abp.localization.getResource('EmailMaketing');/*
-    var createModal = new abp.ModalManager({
+    l = abp.localization.getResource('EmailMaketing');
+    /*var createModal = new abp.ModalManager({
         viewUrl: abp.appPath + 'EmailManagement/SenderEmails/CreateModal',
         scriptUrl: '/Pages/EmailManagement/SenderEmails/CreateModal.js'
     });*/

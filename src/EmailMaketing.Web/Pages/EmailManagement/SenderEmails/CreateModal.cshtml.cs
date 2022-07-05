@@ -59,6 +59,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             {
                 SenderEmail.CustomerID = null;
             }
+
             var emailExist = _contentEmailAppService.CheckEmailExist(SenderEmail.Email);
             var emailcheck = _contentEmailAppService.CheckAuthencation(SenderEmail.Email, SenderEmail.Password);
             var emailsenderExist = await _senderEmailAppService.CheckEmailExist(SenderEmail.Email);

@@ -23,6 +23,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
         public List<CreateUpdateSenderEmailDto> emailError = new List<CreateUpdateSenderEmailDto>();
+        
 
         public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,
             SenderEmailAppService senderEmailAppService,

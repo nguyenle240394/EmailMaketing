@@ -26,6 +26,12 @@ namespace EmailMaketing.SenderEmails
             return await queryable.FirstOrDefaultAsync(s => s.Email == email);
         }
 
+        public async Task<SenderEmail> FindByIdAsync(Guid id)
+        {
+            var queryable = await GetMongoQueryableAsync();
+            return await queryable.FirstOrDefaultAsync(s => s.Id == id);
+        }
+
         public async Task<List<SenderEmail>> GetListAsync(
             int skipCount,
             int maxResultCount,

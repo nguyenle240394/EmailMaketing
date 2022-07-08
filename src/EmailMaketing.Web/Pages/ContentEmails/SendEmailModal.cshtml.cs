@@ -100,6 +100,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                         ContentEmail.Name,
                         senderIsSendFalse.Password,
                         listsfile);
+                        CreateContentEmail(senderIsSendFalse);
                     }
 
                 }
@@ -107,6 +108,17 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
 
             return RedirectToAction("SendEmailModal", "ContentEmails");
+        }
+
+        private async void CreateContentEmail(SenderEmailDto senderEmailDto)
+        {
+            var contentEmailDt0 = new CreateUpdateContentEmailDto();
+            var userId = _currentUser.Id;
+            contentEmailDt0.CustomerID = (Guid)userId;
+            contentEmailDt0.SenderEmailID = senderEmailDto.Id;
+            contentEmailDt0.Subject = ContentEmail.Subject;
+            contentEmailDt0.Body = ContentEmail.Body;
+            await _contentEmailAppService.CreateAsync(contentEmailDt0);
         }
         private string randomtext()
         {
@@ -141,6 +153,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             public bool Featured { get; set; }
             public Guid CustomerID { get; set; }
             public DateTime Schedule { get; set; }
+            public Guid SenderEmailID { get; set; }
         }
     }
 }

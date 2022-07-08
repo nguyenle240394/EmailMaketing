@@ -1,4 +1,5 @@
-﻿using EmailMaketing.SenderEmails;
+﻿using EmailMaketing.Customers;
+using EmailMaketing.SenderEmails;
 using MailKit.Security;
 using MimeKit;
 using System;
@@ -11,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Users;
 
 namespace EmailMaketing.ContentEmails
 {
@@ -18,11 +20,17 @@ namespace EmailMaketing.ContentEmails
     {
         private readonly IContentEmailRepository _ContentEmailRepository;
         private readonly ISenderEmailRepository _senderEmailRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ICurrentUser _currentUser;
 
         public ContentEmailAppService(IContentEmailRepository contentEmailRepository, 
-            ISenderEmailRepository senderEmailRepository )        {
+            ISenderEmailRepository senderEmailRepository, ICustomerRepository customerRepository,
+            ICurrentUser currentUser)        
+        {
             _ContentEmailRepository = contentEmailRepository;
             _senderEmailRepository = senderEmailRepository;
+            _customerRepository = customerRepository;
+            _currentUser = currentUser;
         }
 
         public async Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input)
@@ -193,5 +201,62 @@ namespace EmailMaketing.ContentEmails
                     senderEmailLookup
                 );
         }
+
+        public async Task<PagedResultDto<ContentEmailDto>> GetListAsync(GetContentEmailInput input)
+        {
+            string[] separatingStrings = { "</p>", "<p>" };
+            if (input.Sorting.IsNullOrWhiteSpace())
+            {
+                input.Sorting = nameof(ContentEmail.CreationTime);
+            }
+
+            var contenEmails = await _ContentEmailRepository.GetListAsync(
+                    input.SkipCount,
+                    input.MaxResultCount,
+                    input.Sorting,
+                    input.Filter
+                );
+
+            
+            var contenEmailDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(contenEmails);
+            var toalCount = await _ContentEmailRepository.GetCountAsync();
+
+            foreach (var item in contenEmailDtos)
+            {
+                var bodySplit = item.Body.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+                item.Body = bodySplit.ToString();
+                item.CustomerName = await GetCustomerNameAsync(item);
+                item.SenderEmail = await GetEmailAsync(item);
+            }
+
+            return new PagedResultDto<ContentEmailDto>(
+                    toalCount,
+                    contenEmailDtos
+                 );
+        }
+
+        private async Task<string> GetCustomerNameAsync(ContentEmailDto contentEmailDto)
+        {
+            var userName = _currentUser.Name;
+            string customerName;
+            if (userName != "admin")
+            {
+                var customer = await _customerRepository.FindByIdAsync(contentEmailDto.CustomerID);
+                customerName = customer.FullName;
+            }
+            else {
+                customerName = _currentUser.Name;
+            }
+            
+            
+            return customerName;
+        }
+        private async Task<string> GetEmailAsync(ContentEmailDto contentEmailDto)
+        {
+            var sender = await _senderEmailRepository.FindByIdAsync(contentEmailDto.SenderEmailID);
+            var senderEmail = sender.Email;
+            return senderEmail;
+        }
+
     }
 }

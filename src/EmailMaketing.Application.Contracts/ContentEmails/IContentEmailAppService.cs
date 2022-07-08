@@ -22,6 +22,7 @@ namespace EmailMaketing.ContentEmails
         string CheckAuthencation(string addressEmail, string pass);
 
         Task<ListResultDto<SenderLookup>> GetSenderLookupAsync();
+        Task<PagedResultDto<ContentEmailDto>> GetListAsync(GetContentEmailInput input);
     }
 }
  

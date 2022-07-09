@@ -18,5 +18,6 @@ namespace EmailMaketing.ContentEmails
         public DateTime Schedule { get; set; }
         public Guid SenderEmailID { get; set; }
         public string SenderEmail { get; set; }
+        public String[] BodyShow { get; set; }
     }
 }

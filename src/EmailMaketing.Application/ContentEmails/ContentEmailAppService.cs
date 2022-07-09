@@ -224,7 +224,7 @@ namespace EmailMaketing.ContentEmails
             foreach (var item in contenEmailDtos)
             {
                 var bodySplit = item.Body.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
-                item.Body = bodySplit.ToString();
+                item.BodyShow = bodySplit;
                 item.CustomerName = await GetCustomerNameAsync(item);
                 item.SenderEmail = await GetEmailAsync(item);
             }

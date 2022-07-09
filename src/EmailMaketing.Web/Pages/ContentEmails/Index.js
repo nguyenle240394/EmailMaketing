@@ -39,7 +39,7 @@ $(function () {
                 },
                 {
                     title: l('Body'),
-                    data: "body"
+                    data: "bodyShow"
                 },
                 {
                     title: l('Creation Time'), data: "creationTime",

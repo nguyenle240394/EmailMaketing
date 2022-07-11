@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
 namespace EmailMaketing.Web.Pages.SenderEmails
@@ -22,6 +23,9 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
         public List<CreateUpdateSenderEmailDto> emailError = new List<CreateUpdateSenderEmailDto>();
+        [BindProperty]
+        public List<SenderEmailDto> SenderEmails { get; set; }
+        
 
         public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,
             SenderEmailAppService senderEmailAppService,
@@ -32,11 +36,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             _senderEmailAppService = senderEmailAppService;
             _contentEmailAppService = contentEmailAppService;
         }
-        /*public async Task OnGetAsync()
-        {
-            Alerts.Warning("abcbbb", "title");
-            await Task.CompletedTask;
-        }*/
+
         public async Task<IActionResult> OnPostExportAsync()
         {
             var memoryStream = new MemoryStream();

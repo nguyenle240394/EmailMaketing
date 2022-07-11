@@ -58,26 +58,18 @@ public class EmailMaketingMenuContributor : IMenuContributor
         }
         if (await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
         {
-            context.Menu.AddItem(
-            new ApplicationMenuItem(
-                "EmailMaketing",
-                l["Menu:ContentEmails"],
-                icon: "fa fa-envelope"
-            ).AddItem(
-                new ApplicationMenuItem(
+            context.Menu.AddItem( new ApplicationMenuItem("EmailMaketing.ContentEmails", l["Menu:ContentEmails"], icon: "fa fa-envelope" )
+                .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:EmailIsSend"],
-                    url: "/ContentEmails/EmailWasSendModal"
-                )
-            ).AddItem(
-            new ApplicationMenuItem(
+                    url: "/ContentEmails/EmailWasSendModal" ) )
+                .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:NewLetter"],
                     url: "/ContentEmails/SendEmailModal"
                     )
             )
             );
-                    
         }
 
 

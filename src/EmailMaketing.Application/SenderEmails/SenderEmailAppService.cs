@@ -51,7 +51,7 @@ namespace EmailMaketing.SenderEmails
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var  sender = await _senderEmailRepository.FindAsync(id);
+            var sender = await _senderEmailRepository.FindAsync(id);
             var userIdAdmin = _currentUser.Id;
             var userAdmin = await _identityUserRepository.FindAsync((Guid)userIdAdmin);
             if (userAdmin.UserName == "admin")
@@ -95,31 +95,6 @@ namespace EmailMaketing.SenderEmails
             return false;
         }
 
-        //public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
-        //{
-        //    //Set a default sorting, if not provided
-        //    if (input.Sorting.IsNullOrWhiteSpace())
-        //    {
-        //        input.Sorting = nameof(SenderEmail.Email);
-        //    }
-
-
-        //    var senderemail = await _senderEmailRepository.GetListAsync(
-        //        input.SkipCount,
-        //        input.MaxResultCount,
-        //        input.Sorting,
-        //        input.Filter);
-        //    //Convert to DTOs
-        //    var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
-        //    //Get the total count with another query (required for the paging)
-        //    var totalcount = await _senderEmailRepository.GetCountAsync();
-        //    return new PagedResultDto<SenderEmailDto>
-        //    {
-        //        TotalCount = totalcount,
-        //        Items = senderEmailDtos
-        //    };
-        //}
-
         public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {
             //Set a default sorting, if not provided
@@ -127,8 +102,6 @@ namespace EmailMaketing.SenderEmails
             {
                 input.Sorting = nameof(SenderEmail.Email);
             }
-
-
             var senderemail = await _senderEmailRepository.GetListWithNavigationAsync(
                 input.SkipCount,
                 input.MaxResultCount,
@@ -144,6 +117,7 @@ namespace EmailMaketing.SenderEmails
             }
             //Get the total count with another query (required for the paging)
             var totalcount = await _senderEmailRepository.GetCountAsync();
+
             return new PagedResultDto<SenderWithNavigationDto>
             {
                 TotalCount = totalcount,
@@ -167,5 +141,33 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }
 
+        //get sender with IsSend = fale
+        public async Task<SenderEmailDto> SenderIsSendFalseAsync()
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            foreach (var sender in senders)
+            {
+                if (sender.IsSend == false)
+                {
+                    sender.IsSend = true;
+                    await _senderEmailRepository.UpdateAsync(sender);
+                    var senderdto = ObjectMapper.Map<SenderEmail, SenderEmailDto>(sender);
+                    return senderdto;
+                }
+            }
+            return null;
+        }
+
+        //change all sender with IsSend = true to IsSend = false
+        public async Task<bool> ChangeIsSendToFalseAsync()
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            foreach (var sender in senders)
+            {
+                sender.IsSend = false;
+                await _senderEmailRepository.UpdateAsync(sender);
+            }
+            return true;
+        }
     }
 }

@@ -205,6 +205,8 @@ namespace EmailMaketing.ContentEmails
         public async Task<PagedResultDto<ContentEmailDto>> GetListAsync(GetContentEmailInput input)
         {
             string[] separatingStrings = { "</p>", "<p>" };
+            var userName = _currentUser.UserName;
+            var userId = _currentUser.Id;
             if (input.Sorting.IsNullOrWhiteSpace())
             {
                 input.Sorting = nameof(ContentEmail.CreationTime);
@@ -217,39 +219,54 @@ namespace EmailMaketing.ContentEmails
                     input.Filter
                 );
 
-            
-            var contenEmailDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(contenEmails);
-            var toalCount = await _ContentEmailRepository.GetCountAsync();
 
-            foreach (var item in contenEmailDtos)
+            var contentEmailDtos = new List<ContentEmailDto>();
+            var contentDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(contenEmails);
+            var toalCount = await _ContentEmailRepository.GetCountAsync();
+            if (userName != "admin")
+            {
+                var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+                contentEmailDtos = contentDtos.Where(c => c.CustomerID == customer.Id).ToList();
+
+            }
+            else
+            {
+                contentEmailDtos = contentDtos;
+            }
+
+            foreach (var item in contentEmailDtos)
             {
                 var bodySplit = item.Body.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
                 item.BodyShow = bodySplit;
-                item.CustomerName = await GetCustomerNameAsync(item);
+                item.CustomerName = await GetCustomerNameAsync(item,userName, item.CustomerID);
                 item.SenderEmail = await GetEmailAsync(item);
             }
 
             return new PagedResultDto<ContentEmailDto>(
                     toalCount,
-                    contenEmailDtos
+                    contentEmailDtos
                  );
         }
 
-        private async Task<string> GetCustomerNameAsync(ContentEmailDto contentEmailDto)
+        private async Task<string> GetCustomerNameAsync(ContentEmailDto contentEmailDto, string userName, Guid id)
         {
-            var userName = _currentUser.Name;
-            string customerName;
-            if (userName != "admin")
+            if (userName == "admin")
             {
-                var customer = await _customerRepository.FindByIdAsync(contentEmailDto.CustomerID);
-                customerName = customer.FullName;
+                var userId = _currentUser.Id;
+                if (userId == id)
+                {
+                    return userName;
+                }
+                else
+                {
+                    var customerUserAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
+                    return customerUserAdmin.FullName;
+                }
             }
-            else {
-                customerName = _currentUser.Name;
-            }
-            
-            
-            return customerName;
+
+            var customerUserNoAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
+
+            return customerUserNoAdmin.FullName;
         }
         private async Task<string> GetEmailAsync(ContentEmailDto contentEmailDto)
         {

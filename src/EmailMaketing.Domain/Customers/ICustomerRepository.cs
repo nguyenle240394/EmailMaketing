@@ -13,6 +13,7 @@ namespace EmailMaketing.Customers
                 string sorting,
                 string filter
             );
-        Task<Customer> FindByIdAsync(Guid id);
+        Task<Customer> FindByCustomerWithUserIDAsync(Guid id);
+        Task<Customer> FindByCustomerWithIDAsync(Guid id);
     }
 }

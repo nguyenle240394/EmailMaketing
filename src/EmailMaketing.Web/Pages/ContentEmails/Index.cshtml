@@ -20,7 +20,8 @@
                 <abp-button id="NewLetter"
                             text="@L["New Letter"].Value"
                             icon="plus"
-                            button-type="Primary" />
+                            button-type="Primary" 
+                            onclick="location.href='@Url.Action("SendEmailModal","ContentEmails")'"/>
             </abp-column>
         </abp-row>
     </abp-card-header>

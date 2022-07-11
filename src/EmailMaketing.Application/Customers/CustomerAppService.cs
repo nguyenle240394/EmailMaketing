@@ -70,6 +70,15 @@ namespace EmailMaketing.Customers
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
 
+        public async Task<ListResultDto<GetCustomerTypeLookup>> GetCustomerTypeLookupAsync()
+        {
+            var customers = await _customerRepository.GetListAsync();
+            var customerLookupDto = ObjectMapper.Map<List<Customer>, List<GetCustomerTypeLookup>>(customers);
+            return new ListResultDto<GetCustomerTypeLookup>(
+                    customerLookupDto
+                );
+        }
+
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomerInput input)
         {
             if (input.Sorting.IsNullOrEmpty())

@@ -3,12 +3,15 @@ using EmailMaketing.Customers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.Identity;
 
 namespace EmailMaketing.Web.Pages.Customers
@@ -18,22 +21,30 @@ namespace EmailMaketing.Web.Pages.Customers
         private readonly ICustomerAppService _customerAppService;
         private readonly IdentityUserAppService _identityUserAppService;
         private readonly ContentEmailAppService _contentEmailAppService;
+        private readonly IdentityRoleAppService _identityRoleAppService;
 
         [BindProperty]
         public CreateCustomerViewModal Customer { get; set; }
         [BindProperty]
         public IdentityUserCreateDto AppUser { get; set; }
+
+        /*public List<SelectListItem> CustomerTypes { get; set; }*/
         public CreateModalModel(ICustomerAppService customerAppService, IdentityUserAppService identityUserAppService,
-           ContentEmailAppService contentEmailAppService )
+           ContentEmailAppService contentEmailAppService, IdentityRoleAppService identityRoleAppService )
         {
             _customerAppService = customerAppService;
             _identityUserAppService = identityUserAppService;
             _contentEmailAppService = contentEmailAppService;
+            _identityRoleAppService = identityRoleAppService;
         }
-        public void OnGet()
+        public async void OnGet()
         {
             AppUser = new IdentityUserCreateDto();
             Customer = new CreateCustomerViewModal();
+            /*var customerLookup = await _customerAppService.GetCustomerTypeLookupAsync();
+            CustomerTypes = customerLookup.Items
+                .Select(c => new SelectListItem(c.Name, c.Id.ToString()))
+                .ToList();*/
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -52,7 +63,7 @@ namespace EmailMaketing.Web.Pages.Customers
             AppUser.UserName = Customer.UserName;
             AppUser.Password = Customer.Password;
             AppUser.Email = Customer.Email;
-          
+
             await _identityUserAppService.CreateAsync(AppUser);
 
             var userId = await _identityUserAppService.FindByUsernameAsync(AppUser.UserName);
@@ -67,6 +78,8 @@ namespace EmailMaketing.Web.Pages.Customers
         {
             [HiddenInput]
             public Guid UserID { get; set; }
+            [Required]
+            public CustomerType Type { get; set; }
             [Required]
             [DisplayName("User Name")]
             public string UserName { get; set; }

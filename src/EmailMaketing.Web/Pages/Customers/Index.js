@@ -43,6 +43,17 @@ $(function () {
                     data: "email"
                 },
                 {
+                    title: l('Type'),
+                    data: "type",
+                    render: function (data) {
+                        if (data==0) {
+                            return "Share";
+                        } else {
+                            return "Private";
+                        }
+                    }
+                },
+                {
                     "orderable": false,
                     title: l('Status'),
                     data: { status: "status", id: "id" },

@@ -58,6 +58,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
         }
         if (await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
         {
+            
             context.Menu.AddItem( new ApplicationMenuItem("EmailMaketing.ContentEmails", l["Menu:ContentEmails"], icon: "fa fa-envelope" )
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
@@ -66,24 +67,10 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:NewLetter"],
-                    url: "/ContentEmails/SendEmailModal"
-                    )
-            )
-            );
-                    
-        }/*
-        context.Menu.AddItem(
-                new ApplicationMenuItem(
-                        "EmailMaketing.ContentEmails",
-                        l["Menu:ContentEmails"],
-                        icon: "fa fa-envelope",
-                        url: "/ContentEmails/SendEmailModal"
-                    )
-            );*/
+                    url: "/ContentEmails/SendEmailModal"))
+                    );
+        }
         
-
-
-
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

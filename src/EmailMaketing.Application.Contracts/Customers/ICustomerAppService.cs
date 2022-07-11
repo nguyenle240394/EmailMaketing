@@ -15,5 +15,6 @@ namespace EmailMaketing.Customers
         Task<CustomerDto> GetCustomerAsync(Guid id);
         Task ChangeStatus(Guid Id);
         Task<CustomerDto> ReSetPasswordAsync(Guid id, string password);
+        Task<ListResultDto<GetCustomerTypeLookup>> GetCustomerTypeLookupAsync();
     }
 }

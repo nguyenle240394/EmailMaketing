@@ -79,16 +79,6 @@ public class EmailMaketingMenuContributor : IMenuContributor
             );
                     
         }
-        context.Menu.AddItem(
-                new ApplicationMenuItem(
-                        "EmailMaketing.ContentEmails",
-                        l["Menu:ContentEmails"],
-                        icon: "fa fa-envelope",
-                        url: "/ContentEmails/SendEmailModal"
-                    )
-            );
-        
-
 
 
         if (MultiTenancyConsts.IsEnabled)

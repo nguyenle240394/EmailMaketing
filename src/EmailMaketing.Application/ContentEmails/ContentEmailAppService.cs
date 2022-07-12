@@ -227,13 +227,11 @@ namespace EmailMaketing.ContentEmails
             {
                 var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
                 contentEmailDtos = contentDtos.Where(c => c.CustomerID == customer.Id).ToList();
-
             }
             else
             {
                 contentEmailDtos = contentDtos;
             }
-
             foreach (var item in contentEmailDtos)
             {
                 var bodySplit = item.Body.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
@@ -241,7 +239,6 @@ namespace EmailMaketing.ContentEmails
                 item.CustomerName = await GetCustomerNameAsync(item,userName, item.CustomerID);
                 item.SenderEmail = await GetEmailAsync(item);
             }
-
             return new PagedResultDto<ContentEmailDto>(
                     toalCount,
                     contentEmailDtos

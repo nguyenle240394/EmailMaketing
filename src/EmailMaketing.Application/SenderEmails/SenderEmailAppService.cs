@@ -95,7 +95,69 @@ namespace EmailMaketing.SenderEmails
             return false;
         }
 
-        public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
+        public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
+        {
+            var userid = _currentUser.Id;
+            var username = _currentUser.UserName;
+            if(input.Sorting.IsNullOrWhiteSpace())
+            {
+                input.Sorting = nameof(SenderEmail.Email);
+            }
+            var senderEmail = await _senderEmailRepository.GetListAsync(
+                input.SkipCount,
+                input.MaxResultCount,
+                input.Sorting,
+                input.Filter);
+            var listSenderEmail = new List<SenderEmailDto>();
+            var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderEmail);
+            var totalcount = await _senderEmailRepository.GetCountAsync();
+            if(username != "admin")
+            {
+                var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userid);
+                listSenderEmail = senderEmailDtos.Where(c => c.CustomerID == customer.Id).ToList();
+            }
+            else
+            {
+                listSenderEmail = senderEmailDtos;
+            }
+            var stt = 1;
+            foreach (var item in listSenderEmail)
+            {
+                item.Stt = stt;
+                stt++;
+                if(item.CustomerID != null)
+                {
+                    item.CustomerName = await GetCustomerNameAsync(item, username, (Guid)item.CustomerID);
+                }
+            }
+            return new PagedResultDto<SenderEmailDto>(
+                totalcount,
+                listSenderEmail
+                );
+        }
+
+        private async Task<string> GetCustomerNameAsync(SenderEmailDto senderEmailDto, string username, Guid id)
+        {
+            if (username == "admin")
+            {
+                var userId = _currentUser.Id;
+                if (userId == id)
+                {
+                    return username;
+                }
+                else
+                {
+                    var customerUserAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
+                    return customerUserAdmin.FullName;
+                }
+            }
+
+            var customerUserNoAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
+
+            return customerUserNoAdmin.FullName;
+        }
+
+        /*public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {
             //Set a default sorting, if not provided
             if (input.Sorting.IsNullOrWhiteSpace())
@@ -110,7 +172,7 @@ namespace EmailMaketing.SenderEmails
             //Convert to DTOs
             var senderWithNavigationDtos = ObjectMapper.Map<List<SenderWithNavigation>, List<SenderWithNavigationDto>>(senderemail);
             var stt = 1;
-            foreach(var item in senderWithNavigationDtos)
+            foreach (var item in senderWithNavigationDtos)
             {
                 item.Stt = stt;
                 stt++;
@@ -123,7 +185,7 @@ namespace EmailMaketing.SenderEmails
                 TotalCount = totalcount,
                 Items = senderWithNavigationDtos
             };
-        }
+        }*/
 
         public async Task<SenderEmailDto> GetSenderEmailAsync(Guid Id)
         {

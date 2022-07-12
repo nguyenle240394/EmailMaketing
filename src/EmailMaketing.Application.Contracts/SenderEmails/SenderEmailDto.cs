@@ -7,6 +7,7 @@ namespace EmailMaketing.SenderEmails
 {
     public class SenderEmailDto : AuditedEntityDto<Guid>
     {
+        public int Stt { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public Guid? CustomerID { get; set; }

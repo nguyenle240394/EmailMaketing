@@ -108,7 +108,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             Guid? Idcustomer = _currentUser.Id;
             var Data = new CreateUpdateContentEmailDto();
             Data.Subject = "No Subject";
-            Data.Time = System.DateTime.Now;
             Data.CustomerID = (Guid)Idcustomer;
             Data.Status = false;
             await _ContentEmailAppService.CreateAsync(Data);

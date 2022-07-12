@@ -18,6 +18,18 @@ namespace EmailMaketing.Customers
         {
         }
 
+        public async Task<Customer> FindByCustomerWithIDAsync(Guid id)
+        {
+            var queryable = await GetMongoQueryableAsync();
+            return await queryable.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<Customer> FindByCustomerWithUserIDAsync(Guid id)
+        {
+            var queryable = await GetMongoQueryableAsync();
+            return await queryable.FirstOrDefaultAsync(c => c.UserID == id);
+        }
+
         public async Task<List<Customer>> GetListAsync(int SkipCount, int maxResultCount, string sorting, string filter)
         {
             var queryable = await GetMongoQueryableAsync();

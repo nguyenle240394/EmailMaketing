@@ -1,4 +1,5 @@
 using EmailMaketing.ContentEmails;
+using EmailMaketing.Customers;
 using EmailMaketing.SenderEmails;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,26 +24,29 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly ICurrentUser _currentUser;
         private readonly SenderEmailAppService _senderEmailAppService;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly ICustomerRepository _customerRepository;
 
         [BindProperty]
-        public CreateContentViewModal ContentEmail { get; set; }
+        public CreateContentEmailViewModal ContentEmail { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
         public SendEmailModalModel(ContentEmailAppService contentEmailAppService,
             ICurrentUser currentUser,
             SenderEmailAppService senderEmailAppService,
-            IHostingEnvironment hostingEnvironment)
+            IHostingEnvironment hostingEnvironment,
+            ICustomerRepository customerRepository)
         {
             _contentEmailAppService = contentEmailAppService;
             _currentUser = currentUser;
             _senderEmailAppService = senderEmailAppService;
             _hostingEnvironment = hostingEnvironment;
+            _customerRepository = customerRepository;
         }
 
         public async Task OnGetAsync()
         {
-            ContentEmail = new CreateContentViewModal();
+            ContentEmail = new CreateContentEmailViewModal();
             /*var senderLookup = await _contentEmailAppService.GetSenderLookupAsync();*/
             /*SenderEmails = senderLookup.Items
                 .Select(s => new SelectListItem(s.email, s.Id.ToString()))
@@ -100,13 +104,35 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                         ContentEmail.Name,
                         senderIsSendFalse.Password,
                         listsfile);
+                        await CreateContentEmail(senderIsSendFalse);
                     }
 
                 }
             }
 
 
-            return RedirectToAction("SendEmailModal", "ContentEmails");
+            return RedirectToAction("Index", "ContentEmails");
+        }
+
+        private async Task CreateContentEmail(SenderEmailDto senderEmailDto)
+        {
+            var userId = _currentUser.Id;
+            var userName = _currentUser.UserName;
+            if (userName == "admin")
+            {
+                ContentEmail.CustomerID = (Guid)userId;
+            }
+            else
+            {
+                var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+                ContentEmail.CustomerID = customer.Id;
+            }
+
+            ContentEmail.SenderEmailID = senderEmailDto.Id;
+            ContentEmail.Subject = ContentEmail.Subject;
+            ContentEmail.Body = ContentEmail.Body;
+            var contentDto = ObjectMapper.Map<CreateContentEmailViewModal, CreateUpdateContentEmailDto>(ContentEmail);
+            await _contentEmailAppService.CreateAsync(contentDto);
         }
         private string randomtext()
         {
@@ -122,7 +148,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             return new String(stringChars);
         }
 
-        public class CreateContentViewModal
+        public class CreateContentEmailViewModal
         {
             [DisplayName("Sender Email")]
             public string Name { get; set; }
@@ -141,6 +167,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             public bool Featured { get; set; }
             public Guid CustomerID { get; set; }
             public DateTime Schedule { get; set; }
+            public Guid SenderEmailID { get; set; }
         }
     }
 }

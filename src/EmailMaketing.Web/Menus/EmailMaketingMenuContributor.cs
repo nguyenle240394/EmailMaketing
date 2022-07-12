@@ -62,7 +62,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:EmailIsSend"],
-                    url: "/ContentEmails/EmailWasSendModal" ) )
+                    url: "/ContentEmails/Index") )
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:NewLetter"],

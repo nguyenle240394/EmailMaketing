@@ -51,7 +51,7 @@ $(function () {
                                     iconClass: "fa fa-pencil-square-o",
                                     visible: abp.auth.isGranted('EmailMaketing.SenderEmails.Edit'),
                                     action: function (data) {
-                                        editModal.open({ id: data.record.senderEmail.id });
+                                        editModal.open({ id: data.record.id });
                                     }
                                 },
                                 {

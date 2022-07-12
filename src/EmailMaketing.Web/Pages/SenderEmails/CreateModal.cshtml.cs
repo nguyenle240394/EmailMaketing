@@ -68,10 +68,6 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                 var senderemails = ObjectMapper.Map<CreateSenderEmailViewModal, CreateUpdateSenderEmailDto>(SenderEmail);
                 await _senderEmailAppService.CreateAsync(senderemails);
             }
-            /*else
-            {
-                throw new UserFriendlyException(L["Email does not exist"]);
-            }*/
             else if (emailExist != "OK")
             {
                 throw new UserFriendlyException(L["Email does not exist"]);

@@ -28,7 +28,11 @@ namespace EmailMaketing.Web.Pages.Customers
         [BindProperty]
         public IdentityUserCreateDto AppUser { get; set; }
 
-        /*public List<SelectListItem> CustomerTypes { get; set; }*/
+        public List<SelectListItem> Roles { get; set; }
+        [BindProperty]
+        public IdentityUserUpdateRolesDto UpdateRole { get; set; }
+
+        string roleRemove = "admin";
         public CreateModalModel(ICustomerAppService customerAppService, IdentityUserAppService identityUserAppService,
            ContentEmailAppService contentEmailAppService, IdentityRoleAppService identityRoleAppService )
         {
@@ -41,10 +45,12 @@ namespace EmailMaketing.Web.Pages.Customers
         {
             AppUser = new IdentityUserCreateDto();
             Customer = new CreateCustomerViewModal();
-            /*var customerLookup = await _customerAppService.GetCustomerTypeLookupAsync();
-            CustomerTypes = customerLookup.Items
-                .Select(c => new SelectListItem(c.Name, c.Id.ToString()))
-                .ToList();*/
+            UpdateRole = new IdentityUserUpdateRolesDto();
+            var roles = await _identityRoleAppService.GetAllListAsync();
+
+            var listRoles = roles.Items
+                .Select(r => new SelectListItem(r.Name, r.Id.ToString()))
+                .ToList();
         }
         public async Task<IActionResult> OnPostAsync()
         {
@@ -64,10 +70,21 @@ namespace EmailMaketing.Web.Pages.Customers
             AppUser.Password = Customer.Password;
             AppUser.Email = Customer.Email;
 
+            //create user
             await _identityUserAppService.CreateAsync(AppUser);
-
             var userId = await _identityUserAppService.FindByUsernameAsync(AppUser.UserName);
             Customer.UserID = userId.Id;
+
+            // get all roles
+            var role = await _identityRoleAppService.GetAsync(Customer.RoleID);
+
+            // set value for IdentityUserUpdateRolesDto
+            UpdateRole.RoleNames = new string[] {role.Name};
+
+            // Update Roles for user
+            await _identityUserAppService.UpdateRolesAsync(userId.Id,UpdateRole);
+
+            // create customer
             await _customerAppService.CreateAsync(
                     ObjectMapper.Map<CreateCustomerViewModal, CreateUpdateCustomer>(Customer)
                 );
@@ -78,8 +95,9 @@ namespace EmailMaketing.Web.Pages.Customers
         {
             [HiddenInput]
             public Guid UserID { get; set; }
-            [Required]
-            public CustomerType Type { get; set; }
+            [SelectItems(nameof(Roles))]
+            [DisplayName("Roles")]
+            public Guid RoleID { get; set; }
             [Required]
             [DisplayName("User Name")]
             public string UserName { get; set; }

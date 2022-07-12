@@ -51,7 +51,7 @@ $(function () {
                                     iconClass: "fa fa-pencil-square-o",
                                     visible: abp.auth.isGranted('EmailMaketing.SenderEmails.Edit'),
                                     action: function (data) {
-                                        editModal.open({ id: data.record.senderEmail.id });
+                                        editModal.open({ id: data.record.id });
                                     }
                                 },
                                 {
@@ -66,7 +66,7 @@ $(function () {
                                     },
                                     action: function (data) {
                                         emailMaketing.senderEmails.senderEmail
-                                            .delete(data.record.senderEmail.id)
+                                            .delete(data.record.id)
                                             .then(function (data) {
                                                 if (data) {
                                                     abp.notify.info(l('Successfully Deleted'));

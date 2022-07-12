@@ -203,7 +203,7 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }
 
-        //get sender with IsSend = fale
+        //get sender with IsSend = false
         public async Task<SenderEmailDto> SenderIsSendFalseAsync()
         {
             var senders = await _senderEmailRepository.GetListAsync();

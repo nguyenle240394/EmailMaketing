@@ -43,6 +43,10 @@ $(function () {
                     data: "email"
                 },
                 {
+                    title: l('Type'),
+                    data: "roleName"
+                },
+                {
                     "orderable": false,
                     title: l('Status'),
                     data: { status: "status", id: "id" },

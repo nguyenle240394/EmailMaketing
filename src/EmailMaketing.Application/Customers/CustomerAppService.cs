@@ -70,6 +70,15 @@ namespace EmailMaketing.Customers
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
 
+        public async Task<ListResultDto<GetCustomerTypeLookup>> GetCustomerTypeLookupAsync()
+        {
+            var customers = await _customerRepository.GetListAsync();
+            var customerLookupDto = ObjectMapper.Map<List<Customer>, List<GetCustomerTypeLookup>>(customers);
+            return new ListResultDto<GetCustomerTypeLookup>(
+                    customerLookupDto
+                );
+        }
+
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomerInput input)
         {
             if (input.Sorting.IsNullOrEmpty())
@@ -83,17 +92,21 @@ namespace EmailMaketing.Customers
                     input.Filter
                 );
 
-            var customerAdd = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
+            var customerDtos = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
             var stt = 1;
-            foreach (var item in customerAdd)
+            
+            foreach (var item in customerDtos)
             {
                 item.Stt = stt++;
+                var roles = await _identityUserAppService.GetRolesAsync(item.UserID);
+                item.RoleName = roles.Items.Select(x => x.Name).ToArray();
+                
             }
             
             var totalCount = await _customerRepository.GetCountAsync();
             return new PagedResultDto<CustomerDto>(
                     totalCount,
-                    customerAdd
+                    customerDtos
                 );
         }
 

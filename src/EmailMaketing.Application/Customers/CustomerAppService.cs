@@ -1,4 +1,5 @@
-﻿using EmailMaketing.SenderEmails;
+﻿using EmailMaketing.ContentEmails;
+using EmailMaketing.SenderEmails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,17 @@ namespace EmailMaketing.Customers
         private readonly ICustomerRepository _customerRepository;
         private readonly IdentityUserAppService _identityUserAppService;
         private readonly ISenderEmailAppService _senderEmailAppService;
+        private readonly ContentEmailAppService _contentEmailAppService;
 
         public CustomerAppService(ICustomerRepository customerRepository,
             IdentityUserAppService identityUserAppService,
-            ISenderEmailAppService senderEmailAppService)
+            ISenderEmailAppService senderEmailAppService,
+            ContentEmailAppService contentEmailAppService)
         {
             _customerRepository = customerRepository;
             _identityUserAppService = identityUserAppService;
             _senderEmailAppService = senderEmailAppService;
+            _contentEmailAppService = contentEmailAppService;
         }
 
         public async Task ChangeStatus(Guid Id)
@@ -48,20 +52,28 @@ namespace EmailMaketing.Customers
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<string> DeleteAsync(Guid id)
         {
             var customer = await _customerRepository.FindAsync(id);
             var senderEmails = await _senderEmailAppService.GetListSenderAsync();
+            var contenEmails = await _contentEmailAppService.GetListsEmailAsync();
+            foreach (var item in contenEmails)
+            {
+                if (item.CustomerID == customer.Id)
+                {
+                    return "Customer have data with Content";
+                }
+            }
             foreach (var item in senderEmails)
             {
                 if (item.CustomerID == customer.Id)
                 {
-                    return false;
+                    return "Customer have data with Sender Email";
                 }
             }
             await _identityUserAppService.DeleteAsync(customer.UserID);
             await _customerRepository.DeleteAsync(customer);
-            return true;
+            return "Ok";
         }
 
         public async Task<CustomerDto> GetCustomerAsync(Guid id)

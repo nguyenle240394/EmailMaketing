@@ -97,11 +97,13 @@ $(function () {
                                         emailMaketing.customers.customer
                                             .delete(data.record.id)
                                             .then(function (data) {
-                                                if (data) {
+                                                if (data== "Ok") {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
-                                                } else {
-                                                    abp.message.error(l("Customer have data"));
+                                                } else if (data == "Customer have data with Content") {
+                                                    abp.message.error(l("Customer have data with Content"));
+                                                }else {
+                                                    abp.message.error(l("Customer have data with Sender Email"));
                                                 }
 
                                             });

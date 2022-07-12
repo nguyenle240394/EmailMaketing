@@ -92,17 +92,21 @@ namespace EmailMaketing.Customers
                     input.Filter
                 );
 
-            var customerAdd = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
+            var customerDtos = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(customers);
             var stt = 1;
-            foreach (var item in customerAdd)
+            
+            foreach (var item in customerDtos)
             {
                 item.Stt = stt++;
+                var roles = await _identityUserAppService.GetRolesAsync(item.UserID);
+                item.RoleName = roles.Items.Select(x => x.Name).ToArray();
+                
             }
             
             var totalCount = await _customerRepository.GetCountAsync();
             return new PagedResultDto<CustomerDto>(
                     totalCount,
-                    customerAdd
+                    customerDtos
                 );
         }
 

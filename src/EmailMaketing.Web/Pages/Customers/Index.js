@@ -44,14 +44,7 @@ $(function () {
                 },
                 {
                     title: l('Type'),
-                    data: "type",
-                    render: function (data) {
-                        if (data==0) {
-                            return "Share";
-                        } else {
-                            return "Private";
-                        }
-                    }
+                    data: "roleName"
                 },
                 {
                     "orderable": false,

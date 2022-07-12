@@ -5,13 +5,11 @@ using Volo.Abp.Application.Dtos;
 
 namespace EmailMaketing.Customers
 {
-    public class CustomerDto: AuditedEntityDto<Guid>
+    public class CustomerDto : AuditedEntityDto<Guid>
     {
         public int Stt { get; set; }
         public Guid UserID { get; set; }
-        public CustomerType Type { get; set; }
-        public Guid CustomerTypeID { get; set; }
-        public string CustomerType { get; set; }
+        public string[] RoleName { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }

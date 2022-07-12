@@ -32,7 +32,6 @@ namespace EmailMaketing.Web.Pages.Customers
         [BindProperty]
         public IdentityUserUpdateRolesDto UpdateRole { get; set; }
 
-        string roleRemove = "admin";
         public CreateModalModel(ICustomerAppService customerAppService, IdentityUserAppService identityUserAppService,
            ContentEmailAppService contentEmailAppService, IdentityRoleAppService identityRoleAppService )
         {
@@ -48,7 +47,7 @@ namespace EmailMaketing.Web.Pages.Customers
             UpdateRole = new IdentityUserUpdateRolesDto();
             var roles = await _identityRoleAppService.GetAllListAsync();
 
-            var listRoles = roles.Items
+            Roles = roles.Items
                 .Select(r => new SelectListItem(r.Name, r.Id.ToString()))
                 .ToList();
         }

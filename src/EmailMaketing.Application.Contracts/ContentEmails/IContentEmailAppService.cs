@@ -11,6 +11,7 @@ namespace EmailMaketing.ContentEmails
     {
         Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input);
         Task<List<ContentEmailDto>> GetListsEmailAsync(Guid id);
+        Task<List<ContentEmailDto>> GetListsEmailAsync();
         Task<ContentEmailDto> GetEmailAsync(Guid id);
 
         Task<bool> DeleteAsync(Guid id);

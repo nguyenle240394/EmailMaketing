@@ -272,5 +272,10 @@ namespace EmailMaketing.ContentEmails
             return senderEmail;
         }
 
+        public async Task<List<ContentEmailDto>> GetListsEmailAsync()
+        {
+            var contenEmail = await _ContentEmailRepository.GetListAsync();
+            return ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(contenEmail);
+        }
     }
 }

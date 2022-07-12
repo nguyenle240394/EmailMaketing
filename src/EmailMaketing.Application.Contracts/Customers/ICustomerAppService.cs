@@ -10,7 +10,7 @@ namespace EmailMaketing.Customers
     {
         Task<PagedResultDto<CustomerDto>> GetListAsync(GetCustomerInput input);
         Task<CustomerDto> CreateAsync(CreateUpdateCustomer input);
-        Task<bool> DeleteAsync(Guid id);
+        Task<string> DeleteAsync(Guid id);
         Task<CustomerDto> UpdateAsync(Guid id, CreateUpdateCustomer input);
         Task<CustomerDto> GetCustomerAsync(Guid id);
         Task ChangeStatus(Guid Id);

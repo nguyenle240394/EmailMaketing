@@ -118,9 +118,9 @@ public class EmailMaketingWebModule : AbpModule
             options.Conventions.AuthorizePage("/Customers/CreateModal", EmailMaketingPermissions.Customers.Create);
             options.Conventions.AuthorizePage("/Customers/EditModal", EmailMaketingPermissions.Customers.Edit);
 
-            options.Conventions.AuthorizePage("/EmailManagement/SenderEmails/Index", EmailMaketingPermissions.EmailManagement.SenderEmails.Default);
-            options.Conventions.AuthorizePage("/EmailManagement/SenderEmails/CreateModal", EmailMaketingPermissions.EmailManagement.SenderEmails.Create);
-            options.Conventions.AuthorizePage("/EmailManagement/SenderEmails/EditModal", EmailMaketingPermissions.EmailManagement.SenderEmails.Edit);
+            options.Conventions.AuthorizePage("/SenderEmails/Index", EmailMaketingPermissions.SenderEmails.Default);
+            options.Conventions.AuthorizePage("/SenderEmails/CreateModal", EmailMaketingPermissions.SenderEmails.Create);
+            options.Conventions.AuthorizePage("/SenderEmails/EditModal", EmailMaketingPermissions.SenderEmails.Edit);
 
             options.Conventions.AuthorizePage("/ContentEmails/SendEmailModal", EmailMaketingPermissions.ContentEmails.Default);
         });

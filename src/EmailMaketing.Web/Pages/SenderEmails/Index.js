@@ -5,8 +5,8 @@ $(function () {
         viewUrl: abp.appPath + 'EmailManagement/SenderEmails/CreateModal',
         scriptUrl: '/Pages/EmailManagement/SenderEmails/CreateModal.js'
     });*/
-    var createModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/CreateModal');
-    var editModal = new abp.ModalManager(abp.appPath + 'EmailManagement/SenderEmails/EditModal');
+    var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
+    var editModal = new abp.ModalManager(abp.appPath + 'SenderEmails/EditModal');
 
     var dataTable = $('#SenderEmailTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -84,8 +84,7 @@ $(function () {
 
         })
     )
-
-
+    
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });

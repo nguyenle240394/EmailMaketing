@@ -15,15 +15,12 @@ public static class EmailMaketingPermissions
         public const string Delete = Default + ".Delete";
     }
 
-    public static class EmailManagement
+    public static class SenderEmails
     {
-        public static class SenderEmails
-        {
-            public const string Default = GroupName + ".SenderEmails";
-            public const string Create = Default + ".Create";
-            public const string Edit = Default + ".Edit";
-            public const string Delete = Default + ".Delete";
-        }
+        public const string Default = GroupName + ".SenderEmails";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
     }
 
     public static class ContentEmails

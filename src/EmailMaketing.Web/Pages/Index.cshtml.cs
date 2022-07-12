@@ -20,7 +20,7 @@ public class IndexModel : EmailMaketingPageModel
             return Redirect("/Account/Login");
         }
         else {
-            return Redirect("/EmailManagement/SenderEmails");
+            return Redirect("/SenderEmails");
         }
     }
 }

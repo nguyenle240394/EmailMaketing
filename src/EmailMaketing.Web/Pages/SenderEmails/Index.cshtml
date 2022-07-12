@@ -21,28 +21,33 @@
             </abp-column>
         </abp-row>
         <abp-row>
-            <abp-column size-md="_6">
+            <abp-column size-md="_7">
                 <abp-row>
                     <abp-column size-sm="_8">
                         <form method="post" asp-page-handler="Import" enctype="multipart/form-data">
                             <abp-row>
-                                <abp-column size-sm="_8">
+                                <abp-column size-sm="_7">
                                     <input id="ImportExcel" type="file" name="excel" class="form-control" accept=".xls, .xlsx" />
                                 </abp-column>
-                                <abp-column size-sm="_4">
-                                    <abp-button id="ImportExcelButton" button-type="Primary" type="submit" disabled="true" >Import Excel</abp-button>
+                                <abp-column size-sm="_5">
+                                    <abp-button id="ImportExcelButton" button-type="Primary" type="submit" disabled="true" >
+                                        <i class="fa fa-upload" aria-hidden="true"></i> Import Excel
+                                    </abp-button>
                                 </abp-column>
                             </abp-row>
                         </form>
                     </abp-column>
-                    <abp-column size-sm="_4">
+                    <abp-column size-sm="_4" style="text-align:left;">
                         <form method="post" asp-page-handler="Export">
-                            <abp-button button-type="Primary" type="submit">Template Excel</abp-button>
+                            <abp-button button-type="Primary" type="submit">
+                                <i class="fa fa-file" aria-hidden="true"></i> Template Excel
+                            </abp-button>
                         </form>
-                    </abp-column>
+                    </abp-column> 
                 </abp-row>
             </abp-column>
-            <abp-column size-md="_6" class="text-end">
+                   
+            <abp-column size-md="_5" class="text-end">
                 @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Create))
             {
                 <abp-button id="NewSenderEmailButton"

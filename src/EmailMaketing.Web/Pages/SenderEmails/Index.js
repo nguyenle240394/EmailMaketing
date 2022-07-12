@@ -66,7 +66,7 @@ $(function () {
                                     },
                                     action: function (data) {
                                         emailMaketing.senderEmails.senderEmail
-                                            .delete(data.record.senderEmail.id)
+                                            .delete(data.record.id)
                                             .then(function (data) {
                                                 if (data) {
                                                     abp.notify.info(l('Successfully Deleted'));

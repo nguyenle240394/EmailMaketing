@@ -42,8 +42,7 @@ public class EmailMaketingMenuContributor : IMenuContributor
                         "EmailMaketing.Customers",
                         l["Menu:Customers"],
                         icon: "fa fa-address-card",
-                        url: "/Customers"
-                    )
+                        url: "/Customers")
             );
         }
         if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
@@ -52,13 +51,14 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 new ApplicationMenuItem(
                         "EmailMaketing.SenderEmails",
                         l["Menu:SenderEmails"],
+                        icon: "fa fa-envelope",
                         url: "/SenderEmails")
             );
         }
         if (await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
         {
             
-            context.Menu.AddItem( new ApplicationMenuItem("EmailMaketing.ContentEmails", l["Menu:ContentEmails"], icon: "fa fa-envelope" )
+            context.Menu.AddItem( new ApplicationMenuItem("EmailMaketing.ContentEmails", l["Menu:ContentEmails"], icon: "fa fa-paper-plane")
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:EmailIsSend"],

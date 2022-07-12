@@ -11,6 +11,7 @@ $(function () {
         scriptUrl : '/Pages/Categories/Create.js'*/
     var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
     var resetPasswordModal = new abp.ModalManager(abp.appPath + 'Customers/ResetPassword');
+    var editRole = new abp.ModalManager(abp.appPath + 'Customers/EditRoleModal')
 
     dataTable = $('#CustomerTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -114,6 +115,14 @@ $(function () {
                                         resetPasswordModal.open({ id: data.record.id });
                                     }
                                 },
+                                {
+                                    text: l('Edit Roles'),
+                                    iconClass: "fa fa-key",
+                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
+                                    action: function (data) {
+                                        editRole.open({ id: data.record.id });
+                                    }
+                                },
                             ]
                     }
                 }
@@ -150,6 +159,9 @@ $(function () {
         dataTable.ajax.reload();
     });
 
+    editRole.onResult(function () {
+        dataTable.ajax.reload();
+    });
 
     $('#NewCustomerButton').click(function (e) {
         e.preventDefault();

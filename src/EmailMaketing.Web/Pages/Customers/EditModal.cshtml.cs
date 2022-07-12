@@ -1,10 +1,15 @@
 using EmailMaketing.Customers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
+using Volo.Abp.Identity;
 
 namespace EmailMaketing.Web.Pages.Customers
 {
@@ -12,19 +17,22 @@ namespace EmailMaketing.Web.Pages.Customers
     public class EditModalModel : EmailMaketingPageModel
     {
         private readonly CustomerAppService _customerAppService;
+        private readonly IdentityRoleAppService _identityRoleAppService;
+        private readonly IdentityUserAppService _identityUserAppService;
 
         [BindProperty]
         public EditCustomerViewModal Customer { get; set; }
-
-        public EditModalModel(CustomerAppService customerAppService)
+       
+        public EditModalModel(CustomerAppService customerAppService, IdentityRoleAppService identityRoleAppService, IdentityUserAppService identityUserAppService)
         {
             _customerAppService = customerAppService;
+            _identityRoleAppService = identityRoleAppService;
+            _identityUserAppService = identityUserAppService;
         }
         public async Task OnGetAsync(Guid id)
         {
             var customerDto = await _customerAppService.GetCustomerAsync(id);
             Customer = ObjectMapper.Map<CustomerDto, EditCustomerViewModal>(customerDto);
-
         }
         public async Task<IActionResult> OnPostAsync()
         {

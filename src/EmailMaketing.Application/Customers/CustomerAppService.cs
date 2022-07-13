@@ -110,8 +110,6 @@ namespace EmailMaketing.Customers
             foreach (var item in customerDtos)
             {
                 item.Stt = stt++;
-                var roles = await _identityUserAppService.GetRolesAsync(item.UserID);
-                item.RoleName = roles.Items.Select(x => x.Name).ToArray();
                 
             }
             
@@ -154,6 +152,7 @@ namespace EmailMaketing.Customers
                 customer.PhoneNumber = input.PhoneNumber;
                 customer.FullName = input.FullName;
                 customer.UserID = input.UserID;
+                customer.Type = input.Type;
                 await _customerRepository.UpdateAsync(customer);
 
 

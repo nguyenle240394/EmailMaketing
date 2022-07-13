@@ -75,10 +75,10 @@ namespace EmailMaketing.Web.Pages.Customers
             Customer.UserID = userId.Id;
 
             // get all roles
-            var role = await _identityRoleAppService.GetAsync(Customer.RoleID);
-
+            var listRoles = await _identityRoleAppService.GetAsync(Customer.RoleID);
+            Customer.Type = listRoles.Name;
             // set value for IdentityUserUpdateRolesDto
-            UpdateRole.RoleNames = new string[] {role.Name};
+            UpdateRole.RoleNames = new string[] { listRoles.Name};
 
             // Update Roles for user
             await _identityUserAppService.UpdateRolesAsync(userId.Id,UpdateRole);
@@ -97,6 +97,8 @@ namespace EmailMaketing.Web.Pages.Customers
             [SelectItems(nameof(Roles))]
             [DisplayName("Roles")]
             public Guid RoleID { get; set; }
+            [HiddenInput]
+            public string Type { get; set; }
             [Required]
             [DisplayName("User Name")]
             public string UserName { get; set; }

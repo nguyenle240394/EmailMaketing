@@ -22,7 +22,6 @@ namespace EmailMaketing.Web.Pages.Customers
 
         [BindProperty]
         public EditCustomerViewModal Customer { get; set; }
-       
         public EditModalModel(CustomerAppService customerAppService, IdentityRoleAppService identityRoleAppService, IdentityUserAppService identityUserAppService)
         {
             _customerAppService = customerAppService;
@@ -54,13 +53,13 @@ namespace EmailMaketing.Web.Pages.Customers
             [DisplayName("User Name")]
             public string UserName { get; set; }
             [DisplayName("Full Name")]
-            /*[RegularExpression("[a-zA-Z]Vs")]*/
             public string FullName { get; set; }
             [RegularExpression("[0-9]{10}")]
             public string PhoneNumber { get; set; }
             [EmailAddress]
             public string Email { get; set; }
-            /*public bool Status { get; set; }*/
+            [HiddenInput]
+            public string Type { get; set; }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EmailMaketing.MongoDB;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace EmailMaketing.ContentEmails
         {
             var queryable = await GetMongoQueryableAsync();
             return await queryable
+                .OrderByDescending(x => x.CreationTime)
+                .As<IMongoQueryable<ContentEmail>>()
                 .ToListAsync();
         }
     }

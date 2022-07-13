@@ -45,7 +45,7 @@ $(function () {
                 },
                 {
                     title: l('Type'),
-                    data: "roleName"
+                    data: "type"
                 },
                 {
                     "orderable": false,

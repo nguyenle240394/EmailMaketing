@@ -10,7 +10,10 @@ $(function () {
     /*viewUrl: abp.appPath + 'Categories/CreateModal',
         scriptUrl : '/Pages/Categories/Create.js'*/
     var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
-    var resetPasswordModal = new abp.ModalManager(abp.appPath + 'Customers/ResetPassword');
+    var resetPasswordModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'Customers/ResetPassword',
+        scriptUrl: '/Pages/Customers/CreateCusotmer.js'
+    });
     var editRole = new abp.ModalManager(abp.appPath + 'Customers/EditRoleModal')
 
     dataTable = $('#CustomerTable').DataTable(

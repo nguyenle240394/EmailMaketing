@@ -26,8 +26,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly SenderEmailAppService _senderEmailAppService;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ICustomerRepository _customerRepository;
-        private readonly IdentityUserAppService _identityUserAppService;
-        private readonly IdentityRoleAppService _identityRoleAppService;
 
         [BindProperty]
         public CreateContentEmailViewModal ContentEmail { get; set; }
@@ -38,26 +36,18 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             ICurrentUser currentUser,
             SenderEmailAppService senderEmailAppService,
             IHostingEnvironment hostingEnvironment,
-            ICustomerRepository customerRepository, 
-            IdentityUserAppService identityUserAppService,
-            IdentityRoleAppService identityRoleAppService)
+            ICustomerRepository customerRepository)
         {
             _contentEmailAppService = contentEmailAppService;
             _currentUser = currentUser;
             _senderEmailAppService = senderEmailAppService;
             _hostingEnvironment = hostingEnvironment;
             _customerRepository = customerRepository;
-            _identityUserAppService = identityUserAppService;
-            _identityRoleAppService = identityRoleAppService;
         }
 
         public async Task OnGetAsync()
         {
             ContentEmail = new CreateContentEmailViewModal();
-            /*var senderLookup = await _contentEmailAppService.GetSenderLookupAsync();*/
-            /*SenderEmails = senderLookup.Items
-                .Select(s => new SelectListItem(s.email, s.Id.ToString()))
-                .ToList();*/
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -65,19 +55,14 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             //get role
             var userId = _currentUser.Id;
             var userName = _currentUser.UserName;
-            var listRoles = await _identityUserAppService.GetRolesAsync((Guid)userId);
-            string[] arryRoles = listRoles.Items.Select(r => r.Name).ToArray();
-            string role;
-            foreach (var item in arryRoles)
-            {
-                role = item;
-            }
+            var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
             // tao bien de remove khoi arry
             string stringToRemove = "";
             // remove cac phan tu ""
-            listEmailReceive = listEmailReceive.Where(val => val != stringToRemove).ToArray();
+            listEmailReceive = listEmailReceive.Where(val => val != stringToRemove).ToArray();                          
             var senderIsSendFalse = new SenderEmailDto();
             if (FileUpload != null)
             {
@@ -105,12 +90,26 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                 var countEmailReceive = listEmailReceive.Length;
                 for (int i = 0; i < countEmailReceive; i++)
                 {
-                    senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
-                    if (senderIsSendFalse == null)
+                    if (userName == "admin")
+                    {
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
+                    }
+                    else
+                    {
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync(customer.Id, customer.Type);
+                    }
+                    
+                    if (senderIsSendFalse == null && userName == "admin")
                     {
                         await _senderEmailAppService.ChangeIsSendToFalseAsync();
                         senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
                     }
+                    else if (senderIsSendFalse == null)
+                    {
+                        await _senderEmailAppService.ChangeIsSendToFalseAsync(customer.Id, customer.Type);
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync(customer.Id, customer.Type);
+                    }
+
                     if (listEmailReceive[i] != "")
                     {
                         await _contentEmailAppService.SendMailAsync(

@@ -250,7 +250,8 @@ namespace EmailMaketing.SenderEmails
         public async Task<SenderEmailDto> SenderIsSendFalseAsync()
         {
             var senders = await _senderEmailRepository.GetListAsync();
-          
+            senders = senders.Where(s => s.CustomerID == null).ToList();
+
             foreach (var sender in senders)
             {
                 if (sender.IsSend == false)
@@ -268,6 +269,7 @@ namespace EmailMaketing.SenderEmails
         {
 
             var senders = await _senderEmailRepository.GetListAsync();
+            senders = senders.Where(s => s.CustomerID == null).ToList();
             foreach (var sender in senders)
             {
                 sender.IsSend = false;

@@ -62,10 +62,12 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:EmailIsSend"],
+                    icon: "fa fa-envelope-open-o",
                     url: "/ContentEmails/Index") )
                 .AddItem( new ApplicationMenuItem(
                     "EmailMaketing.ContentEmails",
                     l["Menu:NewLetter"],
+                    icon: "fa fa-envelope-o",
                     url: "/ContentEmails/SendEmailModal"))
                     );
         }

@@ -26,7 +26,7 @@ $(function () {
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
                 {
-                    title: l('No.'),
+                    title: l('No'),
                     data: "stt"
                 },
                 {
@@ -122,7 +122,7 @@ $(function () {
                                 },
                                 {
                                     text: l('Edit Roles'),
-                                    iconClass: "fa fa-key",
+                                    iconClass: "fa fa-user-circle-o",
                                     /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
                                     action: function (data) {
                                         editRole.open({ id: data.record.id });

@@ -223,6 +223,7 @@ namespace EmailMaketing.ContentEmails
             var contentEmailDtos = new List<ContentEmailDto>();
             var contentDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(contenEmails);
             var toalCount = await _ContentEmailRepository.GetCountAsync();
+            var stt = 1;
             if (userName != "admin")
             {
                 var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
@@ -234,6 +235,7 @@ namespace EmailMaketing.ContentEmails
             }
             foreach (var item in contentEmailDtos)
             {
+                item.Stt = stt++;
                 var bodySplit = item.Body.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
                 item.BodyShow = bodySplit;
                 item.CustomerName = await GetCustomerNameAsync(item,userName, item.CustomerID);

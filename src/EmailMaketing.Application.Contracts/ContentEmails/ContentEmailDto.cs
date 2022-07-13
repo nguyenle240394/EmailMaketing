@@ -7,6 +7,7 @@ namespace EmailMaketing.ContentEmails
 {
     public class ContentEmailDto : AuditedEntityDto<Guid>
     {
+        public int Stt { get; set; }
         public string Subject { get; set; }
         public DateTime Time { get; set; }
         public string Body { get; set; }

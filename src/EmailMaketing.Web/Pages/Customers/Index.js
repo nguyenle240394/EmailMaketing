@@ -23,7 +23,7 @@ $(function () {
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
                 {
-                    title: l('STT'),
+                    title: l('No.'),
                     data: "stt"
                 },
                 {

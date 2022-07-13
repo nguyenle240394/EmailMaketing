@@ -151,9 +151,7 @@ namespace EmailMaketing.SenderEmails
                     return customerUserAdmin.FullName;
                 }
             }
-
             var customerUserNoAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
-
             return customerUserNoAdmin.FullName;
         }
 

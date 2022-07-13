@@ -46,12 +46,16 @@ namespace EmailMaketing.Web.Pages.Customers
         {
             // get all roles
             var role = await _identityRoleAppService.GetAsync(CustomerRole.RoleID);
-
+            CustomerRole.Type = role.Name;
             // set value for IdentityUserUpdateRolesDto
             UpdateRole.RoleNames = new string[] { role.Name };
 
             // Update Roles for user
             await _identityUserAppService.UpdateRolesAsync(CustomerRole.UserID, UpdateRole);
+            await _customerAppService.UpdateAsync(
+                   CustomerRole.Id,
+                   ObjectMapper.Map<EditCustomerRolesViewModal, CreateUpdateCustomer>(CustomerRole)
+               );
             return NoContent();
         }
         public class EditCustomerRolesViewModal
@@ -64,6 +68,18 @@ namespace EmailMaketing.Web.Pages.Customers
             public Guid Id { get; set; }
             [HiddenInput]
             public Guid UserID { get; set; }
+            [HiddenInput]
+            public string Password { get; set; }
+            [HiddenInput]
+            public string UserName { get; set; }
+            [HiddenInput]
+            public string FullName { get; set; }
+            [HiddenInput]
+            public string PhoneNumber { get; set; }
+            [HiddenInput]
+            public string Email { get; set; }
+            [HiddenInput]
+            public string Type { get; set; }
         }
     }
 }

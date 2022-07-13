@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
+using Volo.Abp.Identity;
 using Volo.Abp.Users;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
@@ -25,6 +26,8 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly SenderEmailAppService _senderEmailAppService;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IdentityUserAppService _identityUserAppService;
+        private readonly IdentityRoleAppService _identityRoleAppService;
 
         [BindProperty]
         public CreateContentEmailViewModal ContentEmail { get; set; }
@@ -35,13 +38,17 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             ICurrentUser currentUser,
             SenderEmailAppService senderEmailAppService,
             IHostingEnvironment hostingEnvironment,
-            ICustomerRepository customerRepository)
+            ICustomerRepository customerRepository, 
+            IdentityUserAppService identityUserAppService,
+            IdentityRoleAppService identityRoleAppService)
         {
             _contentEmailAppService = contentEmailAppService;
             _currentUser = currentUser;
             _senderEmailAppService = senderEmailAppService;
             _hostingEnvironment = hostingEnvironment;
             _customerRepository = customerRepository;
+            _identityUserAppService = identityUserAppService;
+            _identityRoleAppService = identityRoleAppService;
         }
 
         public async Task OnGetAsync()
@@ -55,6 +62,16 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
         public async Task<IActionResult> OnPostAsync()
         {
+            //get role
+            var userId = _currentUser.Id;
+            var userName = _currentUser.UserName;
+            var listRoles = await _identityUserAppService.GetRolesAsync((Guid)userId);
+            string[] arryRoles = listRoles.Items.Select(r => r.Name).ToArray();
+            string role;
+            foreach (var item in arryRoles)
+            {
+                role = item;
+            }
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
             // tao bien de remove khoi arry
@@ -104,7 +121,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                         ContentEmail.Name,
                         senderIsSendFalse.Password,
                         listsfile);
-                        await CreateContentEmail(senderIsSendFalse);
+                        await CreateContentEmail(senderIsSendFalse, (Guid)userId,userName);
                     }
 
                 }
@@ -114,10 +131,8 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             return RedirectToAction("Index", "ContentEmails");
         }
 
-        private async Task CreateContentEmail(SenderEmailDto senderEmailDto)
+        private async Task CreateContentEmail(SenderEmailDto senderEmailDto, Guid userId, string userName)
         {
-            var userId = _currentUser.Id;
-            var userName = _currentUser.UserName;
             if (userName == "admin")
             {
                 ContentEmail.CustomerID = (Guid)userId;

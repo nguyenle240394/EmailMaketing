@@ -1,3 +1,5 @@
 ﻿$(function () {
     $('#summernote').summernote();
-})
+});
+
+

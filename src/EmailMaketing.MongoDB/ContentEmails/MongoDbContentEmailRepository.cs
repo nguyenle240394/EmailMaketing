@@ -1,4 +1,6 @@
 ﻿using EmailMaketing.MongoDB;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,15 @@ namespace EmailMaketing.ContentEmails
         public MongoDbContentEmailRepository(IMongoDbContextProvider<EmailMaketingMongoDbContext> dbContextProvider) : base(dbContextProvider)
         {
 
+        }
+
+        public async Task<List<ContentEmail>> GetListAsync(int skipCount, int maxResultCount, string sorting, string filter)
+        {
+            var queryable = await GetMongoQueryableAsync();
+            return await queryable
+                .OrderByDescending(x => x.CreationTime)
+                .As<IMongoQueryable<ContentEmail>>()
+                .ToListAsync();
         }
     }
 }

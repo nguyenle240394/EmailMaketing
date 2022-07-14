@@ -1,0 +1,42 @@
+﻿@page
+@model EmailMaketing.Web.Pages.ContentEmails.SendEmailModalModel
+@using EmailMaketing.Localization
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<EmailMaketingResource> L
+@section scripts
+{
+    <abp-script src="/Pages/ContentEmails/SendEmailModal.js" />
+     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote();
+
+        });
+    </script>
+}
+    <form method="post" asp-page="/ContentEmails/SendEmailModal" enctype="multipart/form-data">
+        <abp-card>
+            <abp-card-header>
+                <abp-row>
+                    <abp-card-title>@L["New Leter"]</abp-card-title>
+                </abp-row>
+            </abp-card-header>
+            <abp-card-body>
+                <abp-row>
+                    <abp-column>
+                        <abp-input asp-for="ContentEmail.Name"></abp-input>
+                        <abp-input asp-for="ContentEmail.RecipientEmail"></abp-input>
+                        <abp-input asp-for="ContentEmail.Subject"></abp-input>
+                        <abp-input asp-for="ContentEmail.Body"  id="summernote"></abp-input>
+                        <abp-input asp-for="FileUpload" type="file"></abp-input>
+                    </abp-column>
+                </abp-row>
+            </abp-card-body>
+            <abp-card-footer id="save" style="text-align:right">
+                <button data-busy-text="Sending..." class="btn btn-primary bkgrnd-cyan save-details" type="submit" name="save-details" style="text-align:left">@L["Send Now"]</button>
+                <a href="/Categories" class="btn btn-primary">@L["Schedule"]</a>
+            </abp-card-footer>
+        </abp-card>
+    </form>
+

@@ -2,9 +2,19 @@
 var l;
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
-    var createModal = new abp.ModalManager(abp.appPath + 'Customers/CreateModal');
+    var createModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'Customers/CreateModal',
+        scriptUrl: '/Pages/Customers/CreateCusotmer.js'
+    });
+
+    /*viewUrl: abp.appPath + 'Categories/CreateModal',
+        scriptUrl : '/Pages/Categories/Create.js'*/
     var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
-    var resetPasswordModal = new abp.ModalManager(abp.appPath + 'Customers/ResetPassword');
+    var resetPasswordModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'Customers/ResetPassword',
+        scriptUrl: '/Pages/Customers/CreateCusotmer.js'
+    });
+    var editRole = new abp.ModalManager(abp.appPath + 'Customers/EditRoleModal')
 
     dataTable = $('#CustomerTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -15,7 +25,10 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
-
+                {
+                    title: l('No'),
+                    data: "stt"
+                },
                 {
                     title: l('User Name'),
                     data: "userName"
@@ -34,6 +47,10 @@ $(function () {
                     data: "email"
                 },
                 {
+                    title: l('Type'),
+                    data: "type"
+                },
+                {
                     "orderable": false,
                     title: l('Status'),
                     data: { status: "status", id: "id" },
@@ -50,7 +67,7 @@ $(function () {
                     }
                 },
                 {
-                    title: l('CreationTime'), data: "creationTime",
+                    title: l('Creation Time'), data: "creationTime",
                     render: function (data) {
                         return luxon
                             .DateTime
@@ -83,11 +100,13 @@ $(function () {
                                         emailMaketing.customers.customer
                                             .delete(data.record.id)
                                             .then(function (data) {
-                                                if (data) {
+                                                if (data== "Ok") {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
-                                                } else {
-                                                    abp.message.error(l("Customer have data"));
+                                                } else if (data == "Customer have data with Content") {
+                                                    abp.message.error(l("Customer have data with Content"));
+                                                }else {
+                                                    abp.message.error(l("Customer have data with Sender Email"));
                                                 }
 
                                             });
@@ -99,6 +118,14 @@ $(function () {
                                     /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
                                     action: function (data) {
                                         resetPasswordModal.open({ id: data.record.id });
+                                    }
+                                },
+                                {
+                                    text: l('Edit Roles'),
+                                    iconClass: "fa fa-user-circle-o",
+                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
+                                    action: function (data) {
+                                        editRole.open({ id: data.record.id });
                                     }
                                 },
                             ]
@@ -137,6 +164,9 @@ $(function () {
         dataTable.ajax.reload();
     });
 
+    editRole.onResult(function () {
+        dataTable.ajax.reload();
+    });
 
     $('#NewCustomerButton').click(function (e) {
         e.preventDefault();

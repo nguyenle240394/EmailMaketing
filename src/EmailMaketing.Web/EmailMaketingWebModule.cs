@@ -104,6 +104,7 @@ public class EmailMaketingWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
+        context.Services.AddSignalR();
 
         ConfigureHangfire(context, configuration);
 
@@ -117,6 +118,8 @@ public class EmailMaketingWebModule : AbpModule
             options.Conventions.AuthorizePage("/SenderEmails/Index", EmailMaketingPermissions.SenderEmails.Default);
             options.Conventions.AuthorizePage("/SenderEmails/CreateModal", EmailMaketingPermissions.SenderEmails.Create);
             options.Conventions.AuthorizePage("/SenderEmails/EditModal", EmailMaketingPermissions.SenderEmails.Edit);
+
+            options.Conventions.AuthorizePage("/ContentEmails/SendEmailModal", EmailMaketingPermissions.ContentEmails.Default);
         });
 
     }
@@ -277,6 +280,11 @@ public class EmailMaketingWebModule : AbpModule
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapHub<SignalServer>("/SignalServer");
+        });
         app.UseJwtTokenMiddleware();
 
         if (MultiTenancyConsts.IsEnabled)

@@ -15,6 +15,7 @@ public class EmailMaketingApplicationAutoMapperProfile : Profile
 
         CreateMap<ContentEmail, ContentEmailDto>();
         CreateMap<CreateUpdateContentEmailDto, ContentEmail>();
+        CreateMap<SenderEmail, SenderLookup>();
 
         CreateMap<CreateUpdateCustomer, Customer>();
         CreateMap<Customer, CustomerDto>();
@@ -23,5 +24,6 @@ public class EmailMaketingApplicationAutoMapperProfile : Profile
         CreateMap<SenderEmail, SenderEmailDto>();
         CreateMap<SenderWithNavigation, SenderWithNavigationDto>();
         CreateMap<CreateUpdateSenderEmailDto, SenderEmail>();
+        CreateMap<Customer, GetCustomerTypeLookup>();
     }
 }

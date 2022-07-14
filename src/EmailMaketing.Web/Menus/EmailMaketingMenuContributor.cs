@@ -41,30 +41,37 @@ public class EmailMaketingMenuContributor : IMenuContributor
                 new ApplicationMenuItem(
                         "EmailMaketing.Customers",
                         l["Menu:Customers"],
-                        url: "/Customers"
-                    )
+                        icon: "fa fa-address-card",
+                        url: "/Customers")
             );
         }
-        if (await context.IsGrantedAsync(EmailMaketingPermissions.Customers.Default))
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Default))
         {
             context.Menu.AddItem(
                 new ApplicationMenuItem(
                         "EmailMaketing.SenderEmails",
                         l["Menu:SenderEmails"],
-                        url: "/SenderEmails"
-                    )
+                        icon: "fa fa-envelope",
+                        url: "/SenderEmails")
             );
         }
-            context.Menu.AddItem(
-                new ApplicationMenuItem(
-                        "EmailMaketing.ContentEmails",
-                        l["Menu:ContentEmails"],
-                        url: "/abc"
-                    )
-            );
-
-
-
+        if (await context.IsGrantedAsync(EmailMaketingPermissions.ContentEmails.Default))
+        {
+            
+            context.Menu.AddItem( new ApplicationMenuItem("EmailMaketing.ContentEmails", l["Menu:ContentEmails"], icon: "fa fa-paper-plane")
+                .AddItem( new ApplicationMenuItem(
+                    "EmailMaketing.ContentEmails",
+                    l["Menu:EmailIsSend"],
+                    icon: "fa fa-envelope-open-o",
+                    url: "/ContentEmails/Index") )
+                .AddItem( new ApplicationMenuItem(
+                    "EmailMaketing.ContentEmails",
+                    l["Menu:NewLetter"],
+                    icon: "fa fa-envelope-o",
+                    url: "/ContentEmails/SendEmailModal"))
+                    );
+        }
+        
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

@@ -9,6 +9,11 @@ namespace EmailMaketing.ContentEmails
 {
     public interface IContentEmailRepository: IRepository<ContentEmail, Guid>
     {
-
+        Task<List<ContentEmail>> GetListAsync(
+                int skipCount,
+                int maxResultCount,
+                string sorting,
+                string filter
+            );
     }
 }

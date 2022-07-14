@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
 namespace EmailMaketing.Web.Pages.SenderEmails
@@ -22,6 +23,9 @@ namespace EmailMaketing.Web.Pages.SenderEmails
 
         List<CreateUpdateSenderEmailDto> senderEmail = new List<CreateUpdateSenderEmailDto>();
         public List<CreateUpdateSenderEmailDto> emailError = new List<CreateUpdateSenderEmailDto>();
+        [BindProperty]
+        public List<SenderEmailDto> SenderEmails { get; set; }
+        
 
         public IndexModel(ICurrentUser currentUser, ICustomerRepository customerRepository,
             SenderEmailAppService senderEmailAppService,
@@ -32,11 +36,7 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             _senderEmailAppService = senderEmailAppService;
             _contentEmailAppService = contentEmailAppService;
         }
-        /*public async Task OnGetAsync()
-        {
-            Alerts.Warning("abcbbb", "title");
-            await Task.CompletedTask;
-        }*/
+
         public async Task<IActionResult> OnPostExportAsync()
         {
             var memoryStream = new MemoryStream();
@@ -61,19 +61,13 @@ namespace EmailMaketing.Web.Pages.SenderEmails
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-
-
         public async Task OnPostImportAsync(IFormFile excel)
         {
-            if (excel == null)
-            {
-                throw new UserFriendlyException("Execl emty");
-            }
             using (var workbook = new XLWorkbook(excel.OpenReadStream()))
             {
                 var worksheet = workbook.Worksheet("Users Sheet");
                 var count = 0;
-
+            
                 foreach (var row in worksheet.Rows())
                 {
                     var email = row.Cell(1).Value.ToString();
@@ -83,12 +77,12 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                     count += 1;
                     var userId = _currentUser.Id; //Lay userId hien tai
                     var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
-
+            
                     var emailsenderExist = await _senderEmailAppService.CheckEmailExist(email);
-                    
+            
                     if (count > 1)
                     {
-                        if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist==false)
+                        if (emailExist == "OK" && emailcheck == "Success" && emailsenderExist == false)
                         {
                             if (_currentUser.UserName != "admin")
                             {
@@ -115,13 +109,12 @@ namespace EmailMaketing.Web.Pages.SenderEmails
                     }
                 }
             }
-
-            if (senderEmail.Count>0)
+            
+            if (senderEmail.Count > 0)
             {
                 await _senderEmailAppService.CreateManyAsync(senderEmail);
             }
             /*return RedirectToAction("Index", "SenderEmails");*/
         }
-
     }
 }

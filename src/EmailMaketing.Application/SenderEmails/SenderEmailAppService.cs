@@ -51,7 +51,7 @@ namespace EmailMaketing.SenderEmails
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var  sender = await _senderEmailRepository.FindAsync(id);
+            var sender = await _senderEmailRepository.FindAsync(id);
             var userIdAdmin = _currentUser.Id;
             var userAdmin = await _identityUserRepository.FindAsync((Guid)userIdAdmin);
             if (userAdmin.UserName == "admin")
@@ -95,40 +95,73 @@ namespace EmailMaketing.SenderEmails
             return false;
         }
 
-        //public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
-        //{
-        //    //Set a default sorting, if not provided
-        //    if (input.Sorting.IsNullOrWhiteSpace())
-        //    {
-        //        input.Sorting = nameof(SenderEmail.Email);
-        //    }
+        public async Task<PagedResultDto<SenderEmailDto>> GetListAsync(GetSenderEmailInput input)
+        {
+            var userid = _currentUser.Id;
+            var username = _currentUser.UserName;
+            if(input.Sorting.IsNullOrWhiteSpace())
+            {
+                input.Sorting = nameof(SenderEmail.Email);
+            }
+            var senderEmail = await _senderEmailRepository.GetListAsync(
+                input.SkipCount,
+                input.MaxResultCount,
+                input.Sorting,
+                input.Filter);
+            var listSenderEmail = new List<SenderEmailDto>();
+            var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderEmail);
+            var totalcount = await _senderEmailRepository.GetCountAsync();
+            if(username != "admin")
+            {
+                var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userid);
+                listSenderEmail = senderEmailDtos.Where(c => c.CustomerID == customer.Id).ToList();
+            }
+            else
+            {
+                listSenderEmail = senderEmailDtos;
+            }
+            var stt = 1;
+            foreach (var item in listSenderEmail)
+            {
+                item.Stt = stt;
+                stt++;
+                if(item.CustomerID != null)
+                {
+                    item.CustomerName = await GetCustomerNameAsync(item, username, (Guid)item.CustomerID);
+                }
+            }
+            return new PagedResultDto<SenderEmailDto>(
+                totalcount,
+                listSenderEmail
+                );
+        }
 
+        private async Task<string> GetCustomerNameAsync(SenderEmailDto senderEmailDto, string username, Guid id)
+        {
+            if (username == "admin")
+            {
+                var userId = _currentUser.Id;
+                if (userId == id)
+                {
+                    return username;
+                }
+                else
+                {
+                    var customerUserAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
+                    return customerUserAdmin.FullName;
+                }
+            }
+            var customerUserNoAdmin = await _customerRepository.FindByCustomerWithIDAsync(id);
+            return customerUserNoAdmin.FullName;
+        }
 
-        //    var senderemail = await _senderEmailRepository.GetListAsync(
-        //        input.SkipCount,
-        //        input.MaxResultCount,
-        //        input.Sorting,
-        //        input.Filter);
-        //    //Convert to DTOs
-        //    var senderEmailDtos = ObjectMapper.Map<List<SenderEmail>, List<SenderEmailDto>>(senderemail);
-        //    //Get the total count with another query (required for the paging)
-        //    var totalcount = await _senderEmailRepository.GetCountAsync();
-        //    return new PagedResultDto<SenderEmailDto>
-        //    {
-        //        TotalCount = totalcount,
-        //        Items = senderEmailDtos
-        //    };
-        //}
-
-        public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
+        /*public async Task<PagedResultDto<SenderWithNavigationDto>> GetListWithNavigationAsync(GetSenderEmailInput input)
         {
             //Set a default sorting, if not provided
             if (input.Sorting.IsNullOrWhiteSpace())
             {
                 input.Sorting = nameof(SenderEmail.Email);
             }
-
-
             var senderemail = await _senderEmailRepository.GetListWithNavigationAsync(
                 input.SkipCount,
                 input.MaxResultCount,
@@ -136,14 +169,21 @@ namespace EmailMaketing.SenderEmails
                 input.Filter);
             //Convert to DTOs
             var senderWithNavigationDtos = ObjectMapper.Map<List<SenderWithNavigation>, List<SenderWithNavigationDto>>(senderemail);
+            var stt = 1;
+            foreach (var item in senderWithNavigationDtos)
+            {
+                item.Stt = stt;
+                stt++;
+            }
             //Get the total count with another query (required for the paging)
             var totalcount = await _senderEmailRepository.GetCountAsync();
+
             return new PagedResultDto<SenderWithNavigationDto>
             {
                 TotalCount = totalcount,
                 Items = senderWithNavigationDtos
             };
-        }
+        }*/
 
         public async Task<SenderEmailDto> GetSenderEmailAsync(Guid Id)
         {
@@ -161,5 +201,81 @@ namespace EmailMaketing.SenderEmails
             return ObjectMapper.Map<SenderEmail, SenderEmailDto>(items);
         }
 
+        //get sender with IsSend = false
+        public async Task<SenderEmailDto> SenderIsSendFalseAsync(Guid cusotmerId, string role)
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            if (role == "Private")
+            {
+               senders = senders.Where(s => s.CustomerID == cusotmerId).ToList();
+            }
+            else
+            {
+                senders = senders.Where(s => s.CustomerID == null).ToList();
+            }
+
+            foreach (var sender in senders)
+            {
+                if (sender.IsSend == false)
+                {
+                    sender.IsSend = true;
+                    await _senderEmailRepository.UpdateAsync(sender);
+                    var senderdto = ObjectMapper.Map<SenderEmail, SenderEmailDto>(sender);
+                    return senderdto;
+                }
+            }
+            return null;
+        }
+
+        //change all sender with IsSend = true to IsSend = false
+        public async Task<bool> ChangeIsSendToFalseAsync(Guid cusotmerId, string role)
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            if (role == "Private")
+            {
+                senders = senders.Where(s => s.CustomerID == cusotmerId).ToList();
+            }
+            else
+            {
+                senders = senders.Where(s => s.CustomerID == null).ToList();
+            }
+            foreach (var sender in senders)
+            {
+                sender.IsSend = false;
+                await _senderEmailRepository.UpdateAsync(sender);
+            }
+            return true;
+        }
+
+        public async Task<SenderEmailDto> SenderIsSendFalseAsync()
+        {
+            var senders = await _senderEmailRepository.GetListAsync();
+            senders = senders.Where(s => s.CustomerID == null).ToList();
+
+            foreach (var sender in senders)
+            {
+                if (sender.IsSend == false)
+                {
+                    sender.IsSend = true;
+                    await _senderEmailRepository.UpdateAsync(sender);
+                    var senderdto = ObjectMapper.Map<SenderEmail, SenderEmailDto>(sender);
+                    return senderdto;
+                }
+            }
+            return null;
+        }
+
+        public async Task<bool> ChangeIsSendToFalseAsync()
+        {
+
+            var senders = await _senderEmailRepository.GetListAsync();
+            senders = senders.Where(s => s.CustomerID == null).ToList();
+            foreach (var sender in senders)
+            {
+                sender.IsSend = false;
+                await _senderEmailRepository.UpdateAsync(sender);
+            }
+            return true;
+        }
     }
 }

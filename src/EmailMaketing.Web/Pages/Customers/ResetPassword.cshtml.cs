@@ -25,6 +25,8 @@ namespace EmailMaketing.Web.Pages.Customers
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var pass = Request.Form["password"];
+            Customer.Password = pass;
             await _customerAppService.ReSetPasswordAsync(Customer.Id, Customer.Password);
             return NoContent();
         }

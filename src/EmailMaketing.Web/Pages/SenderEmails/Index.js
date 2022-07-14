@@ -1,6 +1,10 @@
 ﻿
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
+    /*var createModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'EmailManagement/SenderEmails/CreateModal',
+        scriptUrl: '/Pages/SenderEmails/CreateModal.js'
+    });*/
     var createModal = new abp.ModalManager(abp.appPath + 'SenderEmails/CreateModal');
     var editModal = new abp.ModalManager(abp.appPath + 'SenderEmails/EditModal');
 
@@ -11,27 +15,31 @@ $(function () {
             order: [[1, "asc"]],
             searching: true,
             scrollX: true,
-            ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getListWithNavigation),
+            ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getList),
             columnDefs: [
                 {
+                    title: l('No.'),
+                    data: "stt"
+                },
+                {
                     title: l('Email'),
-                    data: "senderEmail.email",
+                    data: "email"
                 },
                 {
                     title: l('Password'),
-                    data: "senderEmail.password"
+                    data: "password"
                 },
                 {
                     title: l('Customer Name'),
-                    data: "customer",
-                    render: function (data) {
+                    data: "customerName"
+                    /*render: function (data) {
                         if (data != null) return data.fullName;
                         return "";
-                    }
+                    }*/
                 },
                 {
                     title: l('IsSend'),
-                    data: "senderEmail.isSend"
+                    data: "isSend"
                 },
                 {
                     title: l('Actions'),
@@ -43,7 +51,7 @@ $(function () {
                                     iconClass: "fa fa-pencil-square-o",
                                     visible: abp.auth.isGranted('EmailMaketing.SenderEmails.Edit'),
                                     action: function (data) {
-                                        editModal.open({ id: data.record.senderEmail.id });
+                                        editModal.open({ id: data.record.id });
                                     }
                                 },
                                 {
@@ -58,7 +66,7 @@ $(function () {
                                     },
                                     action: function (data) {
                                         emailMaketing.senderEmails.senderEmail
-                                            .delete(data.record.senderEmail.id)
+                                            .delete(data.record.id)
                                             .then(function (data) {
                                                 if (data) {
                                                     abp.notify.info(l('Successfully Deleted'));
@@ -76,6 +84,7 @@ $(function () {
 
         })
     )
+    
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });
@@ -87,5 +96,16 @@ $(function () {
     $('#NewSenderEmailButton').click(function (e) {
         e.preventDefault();
         createModal.open();
+    });
+});
+
+$(function () {
+    $(document).ready(function () {
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            if (fileName != null) {
+                $('#ImportExcelButton').reload(document.getElementById("ImportExcelButton").disabled = false);
+            }
+        });
     });
 });

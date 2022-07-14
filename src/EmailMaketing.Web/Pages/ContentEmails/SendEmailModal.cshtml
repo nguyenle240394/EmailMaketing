@@ -4,12 +4,12 @@
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<EmailMaketingResource> L
 @section scripts
-{
+    {
     <abp-script src="/Pages/ContentEmails/SendEmailModal.js" />
-     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#summernote').summernote();
 
         });
@@ -28,8 +28,10 @@
                         <abp-input asp-for="ContentEmail.Name"></abp-input>
                         <abp-input asp-for="ContentEmail.RecipientEmail"></abp-input>
                         <abp-input asp-for="ContentEmail.Subject"></abp-input>
-                        <abp-input asp-for="ContentEmail.Body"  id="summernote"></abp-input>
+                        <abp-input asp-for="ContentEmail.Body" id="summernote"></abp-input>
                         <abp-input asp-for="FileUpload" type="file"></abp-input>
+                        <input type="checkbox" id="ShowTime"> Time</input>
+                        <input style="display:none" asp-for="ContentEmail.Schedule">
                     </abp-column>
                 </abp-row>
             </abp-card-body>

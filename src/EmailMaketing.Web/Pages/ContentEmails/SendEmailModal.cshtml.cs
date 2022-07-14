@@ -180,7 +180,8 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             public bool Status { get; set; }
             public bool Featured { get; set; }
             public Guid CustomerID { get; set; }
-            public DateTime Schedule { get; set; }
+            [DataType(DataType.DateTime)]
+            public DateTime Schedule { get; set; } = DateTime.Now;
             public Guid SenderEmailID { get; set; }
         }
     }

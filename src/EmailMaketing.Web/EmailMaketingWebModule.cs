@@ -281,10 +281,10 @@ public class EmailMaketingWebModule : AbpModule
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseEndpoints(endpoints =>
+        /*app.UseEndpoints(endpoints =>
         {
             endpoints.MapHub<SignalServer>("/SignalServer");
-        });
+        });*/
         app.UseJwtTokenMiddleware();
 
         if (MultiTenancyConsts.IsEnabled)

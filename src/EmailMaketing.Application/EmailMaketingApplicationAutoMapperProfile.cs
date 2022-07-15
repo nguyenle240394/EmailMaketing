@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmailMaketing.ContentEmails;
 using EmailMaketing.Customers;
+using EmailMaketing.EmailSchedules;
 using EmailMaketing.SenderEmails;
 
 namespace EmailMaketing;
@@ -25,5 +26,8 @@ public class EmailMaketingApplicationAutoMapperProfile : Profile
         CreateMap<SenderWithNavigation, SenderWithNavigationDto>();
         CreateMap<CreateUpdateSenderEmailDto, SenderEmail>();
         CreateMap<Customer, GetCustomerTypeLookup>();
+
+        CreateMap<EmailSchedule, EmailScheduleDto>();
+        CreateMap<CreateUpdateEmailSchedule, EmailSchedule>();
     }
 }

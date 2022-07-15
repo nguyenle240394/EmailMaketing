@@ -34,6 +34,23 @@ $(function () {
                     data: "bodyShow"
                 },
                 {
+                    title: l('Schedule'), data: "schedule",
+                    render: function (data) {
+                        if (data==null) {
+                            return "";
+                        }
+                        return luxon
+                            .DateTime
+                            .fromISO(data, {
+                                locale: abp.localization.currentCulture.name
+                            }).toLocaleString(luxon.DateTime.DATETIME_SHORT);
+                    }
+                },
+                {
+                    title: l('Status'),
+                    data: "statusSend"
+                },
+                {
                     title: l('Creation Time'), data: "creationTime",
                     render: function (data) {
                         return luxon

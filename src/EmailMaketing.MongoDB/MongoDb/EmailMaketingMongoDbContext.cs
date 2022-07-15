@@ -1,5 +1,6 @@
 ﻿using EmailMaketing.ContentEmails;
 using EmailMaketing.Customers;
+using EmailMaketing.EmailSchedules;
 using EmailMaketing.RecipientDetails;
 using EmailMaketing.SenderEmails;
 using MongoDB.Driver;
@@ -18,6 +19,7 @@ public class EmailMaketingMongoDbContext : AbpMongoDbContext
     public IMongoCollection<Customer> Customers => Collection<Customer>();
     public IMongoCollection<RecipientDetail> RecipientDetails => Collection<RecipientDetail>();
     public IMongoCollection<SenderEmail> SenderEmails => Collection<SenderEmail>();
+    public IMongoCollection<EmailSchedule> EmailSchedules => Collection<EmailSchedule>();
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {
         base.CreateModel(modelBuilder);

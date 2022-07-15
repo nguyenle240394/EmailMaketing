@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
+using EmailMaketing.EmailSchedules;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
 {
@@ -29,9 +30,12 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ICustomerRepository _customerRepository;
         private readonly IBackgroundJobManager _backgroundJobManager;
+        private readonly EmailScheduleAppService _emailScheduleAppService;
 
         [BindProperty]
         public CreateContentEmailViewModal ContentEmail { get; set; }
+        [BindProperty]
+        public CreateUpdateEmailSchedule emailSchedule { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
@@ -40,7 +44,8 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             SenderEmailAppService senderEmailAppService,
             IHostingEnvironment hostingEnvironment,
             ICustomerRepository customerRepository,
-            IBackgroundJobManager backgroundJobManager)
+            IBackgroundJobManager backgroundJobManager,
+            EmailScheduleAppService emailScheduleAppService)
         {
             _contentEmailAppService = contentEmailAppService;
             _currentUser = currentUser;
@@ -48,11 +53,13 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             _hostingEnvironment = hostingEnvironment;
             _customerRepository = customerRepository;
             _backgroundJobManager = backgroundJobManager;
+            _emailScheduleAppService = emailScheduleAppService;
         }
 
         public async Task OnGetAsync()
         {
             ContentEmail = new CreateContentEmailViewModal();
+            emailSchedule = new CreateUpdateEmailSchedule();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -61,6 +68,8 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var userId = _currentUser.Id;
             var userName = _currentUser.UserName;
             var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+            var dayNow = DateTime.Now;
+            var timespan = ContentEmail.Day - dayNow;
 
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
@@ -125,7 +134,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                         ContentEmail.Name,
                         senderIsSendFalse.Password,
                         listsfile);
-                        await CreateContentEmail(senderIsSendFalse, (Guid)userId,userName);
+                        await CreateContentEmail(senderIsSendFalse, (Guid)userId,userName,0);
                     }
 
                 }
@@ -135,7 +144,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             return RedirectToAction("Index", "ContentEmails");
         }
 
-        private async Task CreateContentEmail(SenderEmailDto senderEmailDto, Guid userId, string userName)
+        private async Task CreateContentEmail(SenderEmailDto senderEmailDto, Guid userId, string userName, int timespan)
         {
             if (userName == "admin")
             {
@@ -150,6 +159,14 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             ContentEmail.SenderEmailID = senderEmailDto.Id;
             ContentEmail.Subject = ContentEmail.Subject;
             ContentEmail.Body = ContentEmail.Body;
+            if (timespan == 1)
+            {
+                emailSchedule.Schedule = ContentEmail.Day;
+                emailSchedule.isSend = false;
+                await _emailScheduleAppService.CreateAsync(emailSchedule);
+                var emailNew = await _emailScheduleAppService.GetNewEmailScheduleAsync();
+                ContentEmail.EmailScheduleID = emailNew.Id;
+            }
             var contentDto = ObjectMapper.Map<CreateContentEmailViewModal, CreateUpdateContentEmailDto>(ContentEmail);
             await _contentEmailAppService.CreateAsync(contentDto);
         }
@@ -242,7 +259,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                             File = listsfile
                         };
                         await _backgroundJobManager.EnqueueAsync(senderJob, BackgroundJobPriority.High, timespan);
-                        await CreateContentEmail(senderIsSendFalse, (Guid)userId, userName);
+                        await CreateContentEmail(senderIsSendFalse, (Guid)userId, userName, 1);
                     }
 
                 }
@@ -269,10 +286,10 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             public bool Status { get; set; }
             public bool Featured { get; set; }
             public Guid CustomerID { get; set; }
+            public Guid? EmailScheduleID { get; set; }
             public DateTime Schedule { get; set; }
             [DataType(DataType.DateTime)]
             public DateTime Day { get; set; } = DateTime.Now;
-            
             public Guid SenderEmailID { get; set; }
         }
     }

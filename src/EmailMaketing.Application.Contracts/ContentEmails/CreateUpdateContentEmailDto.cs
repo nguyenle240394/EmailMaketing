@@ -12,7 +12,7 @@ namespace EmailMaketing.ContentEmails
         public bool Status { get; set; }
         public bool Featured { get; set; }
         public Guid CustomerID { get; set; }
-        public DateTime Schedule { get; set; }
+        public Guid? EmailScheduleID { get; set; }
         public Guid SenderEmailID { get; set; }
     }
 }

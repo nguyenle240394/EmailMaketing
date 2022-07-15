@@ -3,11 +3,6 @@
     
 })
 
-$(document).ready(function () {
-    
-})
-
-
 $('#ShowTime').on('click', function () {
     if (this.checked) {
         

@@ -236,7 +236,7 @@ namespace EmailMaketing.ContentEmails
                     var time = emailSchedule.Schedule.CompareTo(DateTime.Now);
                     if (time>0)
                     {
-                        item.StatusSend = "Sending";
+                        item.StatusSend = "Watiting";
                     }
                     else
                     {

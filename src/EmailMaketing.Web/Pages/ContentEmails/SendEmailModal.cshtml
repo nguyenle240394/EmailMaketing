@@ -30,14 +30,19 @@
                         <abp-input asp-for="ContentEmail.Subject"></abp-input>
                         <abp-input asp-for="ContentEmail.Body" id="summernote"></abp-input>
                         <abp-input asp-for="FileUpload" type="file"></abp-input>
+                        
+                    </abp-column>
+                </abp-row>
+                <abp-row>
+                    <abp-column>
                         <input type="checkbox" id="ShowTime"> Time</input>
-                        <input style="display:none" asp-for="ContentEmail.Schedule">
+                        <input style="display:none" asp-for="ContentEmail.Day">
                     </abp-column>
                 </abp-row>
             </abp-card-body>
             <abp-card-footer id="save" style="text-align:right">
                 <button data-busy-text="Sending..." class="btn btn-primary bkgrnd-cyan save-details" type="submit" name="save-details" style="text-align:left">@L["Send Now"]</button>
-                <a href="/Categories" class="btn btn-primary">@L["Schedule"]</a>
+                <button type="submit" asp-page-handler="ScheduleJob" class="btn btn-primary" >@L["Schedule"]</button>
             </abp-card-footer>
         </abp-card>
     </form>

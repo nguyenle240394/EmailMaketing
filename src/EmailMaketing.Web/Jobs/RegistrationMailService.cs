@@ -80,7 +80,7 @@ namespace EmailMaketing.Jobs
             }
 
         }
-        public async Task sendeMailNN()
+        public async Task sendeMail()
         {
             string htmlbody = "";
             htmlbody = "<p>" + randomtext() + "<p>";

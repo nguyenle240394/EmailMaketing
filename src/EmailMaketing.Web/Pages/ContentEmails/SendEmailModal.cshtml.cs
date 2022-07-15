@@ -167,7 +167,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             return new String(stringChars);
         }
 
-        public async Task OnPostScheduleJobAsync()
+        public async Task<IActionResult> OnPostScheduleJobAsync()
         {
             //get role
             var userId = _currentUser.Id;
@@ -247,6 +247,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
 
                 }
             }
+            return RedirectToAction("Index", "ContentEmails");
 
         }
        

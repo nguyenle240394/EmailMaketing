@@ -6,7 +6,8 @@
 @section scripts
 {
     <abp-script src="/Pages/ContentEmails/SendEmailModal.js" />
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <link href="/Pages/ContentEmails/SenderEmailModal.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
     <script>
@@ -26,7 +27,7 @@
             <abp-row>
                 <abp-column>
                     <abp-input asp-for="ContentEmail.Name"></abp-input>
-                    <abp-input asp-for="ContentEmail.RecipientEmail"></abp-input>
+                    <abp-input type="text" id="tag-input1" asp-for="ContentEmail.RecipientEmail" ></abp-input>
                     <abp-input asp-for="ContentEmail.Subject"></abp-input>
                     <abp-input asp-for="ContentEmail.Body"  id="summernote"></abp-input>
                     <abp-input asp-for="FileUpload" type="file"></abp-input>

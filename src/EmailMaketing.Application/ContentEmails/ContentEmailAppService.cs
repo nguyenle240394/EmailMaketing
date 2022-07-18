@@ -1,4 +1,5 @@
 ﻿using EmailMaketing.Customers;
+using EmailMaketing.EmailSchedules;
 using EmailMaketing.SenderEmails;
 using MailKit.Security;
 using MimeKit;
@@ -22,15 +23,18 @@ namespace EmailMaketing.ContentEmails
         private readonly ISenderEmailRepository _senderEmailRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly EmailScheduleAppService _emailScheduleAppService;
 
         public ContentEmailAppService(IContentEmailRepository contentEmailRepository, 
             ISenderEmailRepository senderEmailRepository, ICustomerRepository customerRepository,
-            ICurrentUser currentUser)        
+            ICurrentUser currentUser,
+            EmailScheduleAppService emailScheduleAppService)        
         {
             _ContentEmailRepository = contentEmailRepository;
             _senderEmailRepository = senderEmailRepository;
             _customerRepository = customerRepository;
             _currentUser = currentUser;
+            _emailScheduleAppService = emailScheduleAppService;
         }
 
         public async Task<ContentEmailDto> CreateAsync(CreateUpdateContentEmailDto input)
@@ -223,6 +227,29 @@ namespace EmailMaketing.ContentEmails
             var contentEmailDtos = new List<ContentEmailDto>();
             var contentDtos = ObjectMapper.Map<List<ContentEmail>, List<ContentEmailDto>>(contenEmails);
             var toalCount = await _ContentEmailRepository.GetCountAsync();
+            foreach (var item in contentDtos)
+            {
+                if (item.EmailScheduleID != null)
+                {
+                    var emailSchedule = await _emailScheduleAppService.GetEmailScheduleAsync((Guid)item.EmailScheduleID);
+                    item.Schedule = emailSchedule.Schedule;
+                    var time = emailSchedule.Schedule.CompareTo(DateTime.Now);
+                    if (time>0)
+                    {
+                        item.StatusSend = "Watiting";
+                    }
+                    else
+                    {
+                        item.StatusSend = "Sent";
+                        await _emailScheduleAppService.ChangeStatusSendEmailAsync(emailSchedule.Id);
+                    }
+                }
+                else
+                {
+                    item.Schedule = null;
+                }
+                
+            }
             var stt = 1;
             if (userName != "admin")
             {
@@ -269,7 +296,7 @@ namespace EmailMaketing.ContentEmails
         }
         private async Task<string> GetEmailAsync(ContentEmailDto contentEmailDto)
         {
-            var sender = await _senderEmailRepository.FindByIdAsync(contentEmailDto.SenderEmailID);
+            var sender = await _senderEmailRepository.FindByIdAsync((Guid)contentEmailDto.SenderEmailID);
             var senderEmail = sender.Email;
             return senderEmail;
         }

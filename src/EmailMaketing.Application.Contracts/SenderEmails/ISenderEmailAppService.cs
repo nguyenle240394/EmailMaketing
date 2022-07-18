@@ -16,6 +16,9 @@ namespace EmailMaketing.SenderEmails
         Task<SenderEmailDto> UpdateAsync(Guid id, CreateUpdateSenderEmailDto input);       
         Task<bool> DeleteAsync(Guid id);
         Task<bool> CheckEmailExist(string email);
+        Task<SenderEmailDto> SenderIsSendFalseAsync(Guid cusotmerId, string role);
+        Task<bool> ChangeIsSendToFalseAsync(Guid cusotmerId, string role);
+
         Task<SenderEmailDto> SenderIsSendFalseAsync();
         Task<bool> ChangeIsSendToFalseAsync();
     }

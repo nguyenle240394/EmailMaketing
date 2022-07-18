@@ -10,7 +10,10 @@ $(function () {
     /*viewUrl: abp.appPath + 'Categories/CreateModal',
         scriptUrl : '/Pages/Categories/Create.js'*/
     var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');
-    var resetPasswordModal = new abp.ModalManager(abp.appPath + 'Customers/ResetPassword');
+    var resetPasswordModal = new abp.ModalManager({
+        viewUrl: abp.appPath + 'Customers/ResetPassword',
+        scriptUrl: '/Pages/Customers/CreateCusotmer.js'
+    });
     var editRole = new abp.ModalManager(abp.appPath + 'Customers/EditRoleModal')
 
     dataTable = $('#CustomerTable').DataTable(
@@ -23,7 +26,7 @@ $(function () {
             ajax: abp.libs.datatables.createAjax(emailMaketing.customers.customer.getList),
             columnDefs: [
                 {
-                    title: l('No.'),
+                    title: l('No'),
                     data: "stt"
                 },
                 {
@@ -119,7 +122,7 @@ $(function () {
                                 },
                                 {
                                     text: l('Edit Roles'),
-                                    iconClass: "fa fa-key",
+                                    iconClass: "fa fa-user-circle-o",
                                     /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
                                     action: function (data) {
                                         editRole.open({ id: data.record.id });

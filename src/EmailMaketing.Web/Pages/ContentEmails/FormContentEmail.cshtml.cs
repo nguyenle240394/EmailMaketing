@@ -1,19 +1,17 @@
-using EmailMaketing.ContentEmails;
+﻿using EmailMaketing.ContentEmails;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 using System;
 using EmailMaketing.Jobs;
-using Abp.BackgroundJobs;
 using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
 using Volo.Abp.Users;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.SignalR;
+using Volo.Abp.BackgroundJobs;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
 {
@@ -23,23 +21,36 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly RegistrationMailService _RegistrationMailService;
         private readonly IHostingEnvironment _environment;
         private readonly ICurrentUser _currentUser;
-        private readonly IHubContext<SignalServer> _hubcontext;
+        private readonly IBackgroundJobManager _backgroundJobManager;
+
         public List<ContentEmailDto> ContentEmail { get; set; }
         public ContentEmailDto SelectEmail { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
-        public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService, 
-            IHostingEnvironment environment, ICurrentUser currentUser, IHubContext<SignalServer> hubContext)
+        public FormContentEmailModel(ContentEmailAppService contentEmailAppService, RegistrationMailService registrationMailService,
+            IHostingEnvironment environment, ICurrentUser currentUser, IBackgroundJobManager backgroundJobManager)
         {
             _ContentEmailAppService = contentEmailAppService;
             _RegistrationMailService = registrationMailService;
             _environment = environment;
             _currentUser = currentUser;
-            _hubcontext = hubContext;
+            _backgroundJobManager = backgroundJobManager;
         }
         private static string foderfileUser = "";
-        string str = "dfasd <abc> hasdfh kfkdsk ";
+        private string randomtext()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[30];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new String(stringChars);
+        }
         public async Task OnGetAsync()
         {
             Guid? Idcustomer = _currentUser.Id;
@@ -52,7 +63,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                     System.IO.Directory.CreateDirectory(directory);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -75,7 +86,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                 {
                     foreach (var FileUpload in files)
                     {
-                        var file = Path.Combine(_environment.ContentRootPath, "wwwroot/TempFile",FileUpload.FileName);
+                        var file = Path.Combine(_environment.ContentRootPath, "wwwroot/TempFile", FileUpload.FileName);
                         listsfile.Add(file);
                         using (var fileStream = new FileStream(file, FileMode.Create))
                         {
@@ -113,7 +124,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             await _ContentEmailAppService.CreateAsync(Data);
             ContentEmail = await _ContentEmailAppService.GetListsEmailAsync((Guid)Idcustomer);
             var item = ContentEmail.LastOrDefault();
-            string valueid = item.Id.ToString();   
+            string valueid = item.Id.ToString();
             return new JsonResult(valueid);
         }
         public async Task<IActionResult> OnPostSelectEmail(string id)
@@ -203,113 +214,5 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             await saveEmail();
             return new JsonResult("OK");
         }
-        private string randomtext()
-        {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var stringChars = new char[30];
-            var random = new Random();
-
-            for (int i = 0; i < stringChars.Length; i++)
-            {
-                stringChars[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new String(stringChars);
-        }
-        private static string CountEmailSended = "";
-        private static string Confirm = "";
-        public async Task<IActionResult> OnPostSendMutiEmail()
-        {
-            await saveEmail();
-            string emailaddress = "HenryDao0810@gmail.com";
-            string pass = "leuzxdmiwryorxxi";
-            string name = "Tran Van Dao";
-
-            var listEmailReceive = Request.Form["toemail"].ToString().Split(',');
-            if (listEmailReceive.Length > 0 && listEmailReceive != null)
-            {
-                string htmlbody = "";
-                var linesbody = Request.Form["body"].ToString().Split("/");
-                foreach (var line in linesbody)
-                {
-                    htmlbody += "<p>" + line + "</p>";
-                }
-                int countEmailSender = 1;
-                int countEmailReceiver = listEmailReceive.Length;
-                int count = -1;
-                for (int i = 0; i < countEmailReceiver; i++)
-                {
-                    count++;
-                    var result =  _ContentEmailAppService.CheckEmailExist(listEmailReceive[i]);
-                    if (result == "OK")
-                    {
-                        for (int j = count; j < countEmailSender;)
-                        {
-                            htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
-                            int countSent = await _ContentEmailAppService.SendMailAsync(listEmailReceive[i], Request.Form["subject"].ToString(), htmlbody, emailaddress, name, pass, listsfile);
-                            CountEmailSended = countSent.ToString();
-                            await Task.Delay(3000);
-                            if (count == countEmailSender - 1)
-                            {
-                                count = -1;
-                            }
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        count = -1;
-                        CountEmailSended = result.Split('<', '>')[1] + ".";
-                        await _hubcontext.Clients.All.SendAsync("RefreshVariable");
-                        await Task.Delay(3000);
-                    }
-                }
-                _ContentEmailAppService.coutEmailSended = 0;
-                CountEmailSended = "";
-                Confirm = "";
-                listsfile.Clear();
-                return new JsonResult("OK");
-            }
-            listsfile.Clear();
-            return new JsonResult("NOK");
-        }
-        public static int checkcount = 0;
-        public JsonResult OnPostRuntimeValue()
-        {
-            return new JsonResult(CountEmailSended);
-        }
-        public async Task<IActionResult> OnPostTestfile()
-        {
-            if (Request.Form.Files.Count > 0)
-            {
-                var files = Request.Form.Files;
-                try
-                {
-                    foreach (var FileUpload in files)
-                    {
-                        var file = Path.Combine(_environment.ContentRootPath, "wwwroot/FilesUpload", FileUpload.FileName);
-                        using (var fileStream = new FileStream(file, FileMode.Create))
-                        {
-                            await FileUpload.CopyToAsync(fileStream);
-                        }
-                    }
-                }
-                catch(Exception ex)
-                {
-
-                }
-            }
-            return new JsonResult("OK");
-        }
     }
-    public class ContentEmailModel
-    {
-        public string id { get; set; }
-        public string subject { get; set; }
-        public string body { get; set; }
-        public string fromemail { get; set; }
-        public string toemail { get; set; }
-        public string status { get; set; }
-        public DateTime datetime { get; set; }
-    } 
 }

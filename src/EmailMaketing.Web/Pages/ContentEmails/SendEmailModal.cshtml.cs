@@ -1,5 +1,7 @@
+﻿using Volo.Abp.BackgroundJobs;
 using EmailMaketing.ContentEmails;
 using EmailMaketing.Customers;
+using EmailMaketing.Jobs;
 using EmailMaketing.SenderEmails;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +18,7 @@ using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
+using EmailMaketing.EmailSchedules;
 
 namespace EmailMaketing.Web.Pages.ContentEmails
 {
@@ -26,11 +29,13 @@ namespace EmailMaketing.Web.Pages.ContentEmails
         private readonly SenderEmailAppService _senderEmailAppService;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ICustomerRepository _customerRepository;
-        private readonly IdentityUserAppService _identityUserAppService;
-        private readonly IdentityRoleAppService _identityRoleAppService;
+        private readonly IBackgroundJobManager _backgroundJobManager;
+        private readonly EmailScheduleAppService _emailScheduleAppService;
 
         [BindProperty]
         public CreateContentEmailViewModal ContentEmail { get; set; }
+        [BindProperty]
+        public CreateUpdateEmailSchedule emailSchedule { get; set; }
         private List<string> listsfile = new List<string>();
         [BindProperty]
         public IFormFile FileUpload { get; set; }
@@ -38,26 +43,23 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             ICurrentUser currentUser,
             SenderEmailAppService senderEmailAppService,
             IHostingEnvironment hostingEnvironment,
-            ICustomerRepository customerRepository, 
-            IdentityUserAppService identityUserAppService,
-            IdentityRoleAppService identityRoleAppService)
+            ICustomerRepository customerRepository,
+            IBackgroundJobManager backgroundJobManager,
+            EmailScheduleAppService emailScheduleAppService)
         {
             _contentEmailAppService = contentEmailAppService;
             _currentUser = currentUser;
             _senderEmailAppService = senderEmailAppService;
             _hostingEnvironment = hostingEnvironment;
             _customerRepository = customerRepository;
-            _identityUserAppService = identityUserAppService;
-            _identityRoleAppService = identityRoleAppService;
+            _backgroundJobManager = backgroundJobManager;
+            _emailScheduleAppService = emailScheduleAppService;
         }
 
         public async Task OnGetAsync()
         {
             ContentEmail = new CreateContentEmailViewModal();
-            /*var senderLookup = await _contentEmailAppService.GetSenderLookupAsync();*/
-            /*SenderEmails = senderLookup.Items
-                .Select(s => new SelectListItem(s.email, s.Id.ToString()))
-                .ToList();*/
+            emailSchedule = new CreateUpdateEmailSchedule();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -65,13 +67,131 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             //get role
             var userId = _currentUser.Id;
             var userName = _currentUser.UserName;
-            var listRoles = await _identityUserAppService.GetRolesAsync((Guid)userId);
-            string[] arryRoles = listRoles.Items.Select(r => r.Name).ToArray();
-            string role;
-            foreach (var item in arryRoles)
+            var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+            var dayNow = DateTime.Now;
+            var timespan = ContentEmail.Day - dayNow;
+
+            //get data to form va cat cac phan tu \r, \n
+            var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
+            // tao bien de remove khoi arry
+            string stringToRemove = "";
+            // remove cac phan tu ""
+            listEmailReceive = listEmailReceive.Where(val => val != stringToRemove).ToArray();                          
+            var senderIsSendFalse = new SenderEmailDto();
+            if (FileUpload != null)
             {
-                role = item;
+                //luu file vao thu muc wwwroot/FilesUpload
+                var file = Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot/FilesUpload", FileUpload.FileName);
+                listsfile.Add(file);
+                using (var fileStream = new FileStream(file, FileMode.Create))
+                {
+                    await FileUpload.CopyToAsync(fileStream);
+                }
             }
+            if (listEmailReceive.Length > 0 && listEmailReceive != null)
+            {
+                string htmlbody = "";
+                var linesbody = ContentEmail.Body.ToString().Split('\r', '\n');
+                foreach (var line in linesbody)
+                {
+                    if (line != "")
+                    {
+                        htmlbody += "<p>" + line + "</p>";
+                    }
+
+                }
+                htmlbody += "<p style='display:none'>" + randomtext() + "</p>";
+                var countEmailReceive = listEmailReceive.Length;
+                for (int i = 0; i < countEmailReceive; i++)
+                {
+                    if (userName == "admin")
+                    {
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
+                    }
+                    else
+                    {
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync(customer.Id, customer.Type);
+                    }
+                    
+                    if (senderIsSendFalse == null && userName == "admin")
+                    {
+                        await _senderEmailAppService.ChangeIsSendToFalseAsync();
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
+                    }
+                    else if (senderIsSendFalse == null)
+                    {
+                        await _senderEmailAppService.ChangeIsSendToFalseAsync(customer.Id, customer.Type);
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync(customer.Id, customer.Type);
+                    }
+
+                    if (listEmailReceive[i] != "")
+                    {
+                        await _contentEmailAppService.SendMailAsync(
+                        listEmailReceive[i],
+                        ContentEmail.Subject,
+                        htmlbody,
+                        senderIsSendFalse.Email,
+                        ContentEmail.Name,
+                        senderIsSendFalse.Password,
+                        listsfile);
+                        await CreateContentEmail(senderIsSendFalse, (Guid)userId,userName,0);
+                    }
+
+                }
+            }
+
+
+            return RedirectToAction("Index", "ContentEmails");
+        }
+
+        private async Task CreateContentEmail(SenderEmailDto senderEmailDto, Guid userId, string userName, int timespan)
+        {
+            if (userName == "admin")
+            {
+                ContentEmail.CustomerID = (Guid)userId;
+            }
+            else
+            {
+                var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+                ContentEmail.CustomerID = customer.Id;
+            }
+
+            ContentEmail.SenderEmailID = senderEmailDto.Id;
+            ContentEmail.Subject = ContentEmail.Subject;
+            ContentEmail.Body = ContentEmail.Body;
+            if (timespan == 1)
+            {
+                emailSchedule.Schedule = ContentEmail.Day;
+                emailSchedule.isSend = false;
+                await _emailScheduleAppService.CreateAsync(emailSchedule);
+                var emailNew = await _emailScheduleAppService.GetNewEmailScheduleAsync();
+                ContentEmail.EmailScheduleID = emailNew.Id;
+            }
+            var contentDto = ObjectMapper.Map<CreateContentEmailViewModal, CreateUpdateContentEmailDto>(ContentEmail);
+            await _contentEmailAppService.CreateAsync(contentDto);
+        }
+        private string randomtext()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[30];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new String(stringChars);
+        }
+
+        public async Task<IActionResult> OnPostScheduleJobAsync()
+        {
+            //get role
+            var userId = _currentUser.Id;
+            var userName = _currentUser.UserName;
+            var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
+            var dayNow = DateTime.Now;
+            var timespan = ContentEmail.Day - dayNow;
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
             // tao bien de remove khoi arry
@@ -105,64 +225,49 @@ namespace EmailMaketing.Web.Pages.ContentEmails
                 var countEmailReceive = listEmailReceive.Length;
                 for (int i = 0; i < countEmailReceive; i++)
                 {
-                    senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
-                    if (senderIsSendFalse == null)
+                    if (userName == "admin")
+                    {
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
+                    }
+                    else
+                    {
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync(customer.Id, customer.Type);
+                    }
+
+                    if (senderIsSendFalse == null && userName == "admin")
                     {
                         await _senderEmailAppService.ChangeIsSendToFalseAsync();
                         senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync();
                     }
+                    else if (senderIsSendFalse == null)
+                    {
+                        await _senderEmailAppService.ChangeIsSendToFalseAsync(customer.Id, customer.Type);
+                        senderIsSendFalse = await _senderEmailAppService.SenderIsSendFalseAsync(customer.Id, customer.Type);
+                    }
+
                     if (listEmailReceive[i] != "")
                     {
-                        await _contentEmailAppService.SendMailAsync(
-                        listEmailReceive[i],
-                        ContentEmail.Subject,
-                        htmlbody,
-                        senderIsSendFalse.Email,
-                        ContentEmail.Name,
-                        senderIsSendFalse.Password,
-                        listsfile);
-                        await CreateContentEmail(senderIsSendFalse, (Guid)userId,userName);
+
+                        var senderJob = new SendEmailArgs()
+                        {
+                            To = listEmailReceive[i],
+                            Subject = ContentEmail.Subject,
+                            Body = htmlbody,
+                            EmailAddress = senderIsSendFalse.Email,
+                            Name = ContentEmail.Name,
+                            Password = senderIsSendFalse.Password,
+                            File = listsfile
+                        };
+                        await _backgroundJobManager.EnqueueAsync(senderJob, BackgroundJobPriority.High, timespan);
+                        await CreateContentEmail(senderIsSendFalse, (Guid)userId, userName, 1);
                     }
 
                 }
             }
-
-
             return RedirectToAction("Index", "ContentEmails");
+
         }
-
-        private async Task CreateContentEmail(SenderEmailDto senderEmailDto, Guid userId, string userName)
-        {
-            if (userName == "admin")
-            {
-                ContentEmail.CustomerID = (Guid)userId;
-            }
-            else
-            {
-                var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
-                ContentEmail.CustomerID = customer.Id;
-            }
-
-            ContentEmail.SenderEmailID = senderEmailDto.Id;
-            ContentEmail.Subject = ContentEmail.Subject;
-            ContentEmail.Body = ContentEmail.Body;
-            var contentDto = ObjectMapper.Map<CreateContentEmailViewModal, CreateUpdateContentEmailDto>(ContentEmail);
-            await _contentEmailAppService.CreateAsync(contentDto);
-        }
-        private string randomtext()
-        {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var stringChars = new char[30];
-            var random = new Random();
-
-            for (int i = 0; i < stringChars.Length; i++)
-            {
-                stringChars[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new String(stringChars);
-        }
-
+       
         public class CreateContentEmailViewModal
         {
             [DisplayName("Sender Email")]
@@ -181,7 +286,10 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             public bool Status { get; set; }
             public bool Featured { get; set; }
             public Guid CustomerID { get; set; }
+            public Guid? EmailScheduleID { get; set; }
             public DateTime Schedule { get; set; }
+            [DataType(DataType.DateTime)]
+            public DateTime Day { get; set; } = DateTime.Now;
             public Guid SenderEmailID { get; set; }
         }
     }

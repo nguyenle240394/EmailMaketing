@@ -2,14 +2,6 @@
 var l;
 $(function () {
     l = abp.localization.getResource('EmailMaketing');
-    /*var createModal = new abp.ModalManager({
-        viewUrl: abp.appPath + 'Customers/CreateModal',
-        scriptUrl: '/Pages/Customers/CreateCusotmer.js'
-    });*/
-
-    /*viewUrl: abp.appPath + 'Categories/CreateModal',
-        scriptUrl : '/Pages/Categories/Create.js'*/
-    /*var editModal = new abp.ModalManager(abp.appPath + 'Customers/EditModal');*/
 
     dataTable = $('#LetterTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -20,10 +12,10 @@ $(function () {
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(emailMaketing.contentEmails.contentEmail.getList),
             columnDefs: [
-               /* {
-                    title: l('STT'),
+                {
+                    title: l('No'),
                     data: "stt"
-                },*/
+                },
                 {
                     title: l('User'),
                     data: "customerName"
@@ -42,6 +34,23 @@ $(function () {
                     data: "bodyShow"
                 },
                 {
+                    title: l('Schedule'), data: "schedule",
+                    render: function (data) {
+                        if (data==null) {
+                            return "";
+                        }
+                        return luxon
+                            .DateTime
+                            .fromISO(data, {
+                                locale: abp.localization.currentCulture.name
+                            }).toLocaleString(luxon.DateTime.DATETIME_SHORT);
+                    }
+                },
+                {
+                    title: l('Status'),
+                    data: "statusSend"
+                },
+                {
                     title: l('Creation Time'), data: "creationTime",
                     render: function (data) {
                         return luxon
@@ -51,24 +60,38 @@ $(function () {
                             }).toLocaleString(luxon.DateTime.DATETIME_SHORT);
                     }
                 },
+                /*{
+                    title: l('Actions'),
+                    rowAction: {
+                        items:
+                            [
+                                {
+                                    text: l('Delete'),
+                                    iconClass: "fa fa-trash-o",
+                                    visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
+                                    confirmMessage: function (data) {
+                                        return l('Deleting Customer', data.record.name);
+                                    },
+                                    action: function (data) {
+                                        emailMaketing.customers.customer
+                                            .delete(data.record.id)
+                                            .then(function (data) {
+                                                if (data == "Ok") {
+                                                    abp.notify.info(l('Successfully Deleted'));
+                                                    dataTable.ajax.reload();
+                                                } else if (data == "Customer have data with Content") {
+                                                    abp.message.error(l("Customer have data with Content"));
+                                                } else {
+                                                    abp.message.error(l("Customer have data with Sender Email"));
+                                                }
+
+                                            });
+                                    }
+                                },
+                            ]
+                    }
+                }*/
             ]
         })
     );
-   /* editModal.onResult(function () {
-        dataTable.ajax.reload();
-    });
-
-    resetPasswordModal.onResult(function () {
-        dataTable.ajax.reload();
-    });
-
-
-    $('#NewCustomerButton').click(function (e) {
-        e.preventDefault();
-        createModal.open();
-    });
-    $('#Customer_FullName').keypress(function (e) {
-        console.log(e);
-    });
-*/
 });

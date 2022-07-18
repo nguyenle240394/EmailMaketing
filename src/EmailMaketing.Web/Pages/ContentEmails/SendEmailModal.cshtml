@@ -4,18 +4,19 @@
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<EmailMaketingResource> L
 @section scripts
-{
+    {
     <abp-script src="/Pages/ContentEmails/SendEmailModal.js" />
     <link href="/Pages/ContentEmails/SenderEmailModal.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#summernote').summernote();
         });
     </script>
 }
+
 <form method="post" asp-page="/ContentEmails/SendEmailModal" enctype="multipart/form-data">
     <abp-card>
         <abp-card-header>

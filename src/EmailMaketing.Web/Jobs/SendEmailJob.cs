@@ -1,4 +1,5 @@
 ﻿
+using EmailMaketing.ContentEmails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,24 @@ namespace EmailMaketing.Jobs
 {
     public class SendEmailJob : AsyncBackgroundJob<SendEmailArgs>, ITransientDependency
     {
-        private readonly ISendMailService _emailSender;
+        private readonly ContentEmailAppService _contentEmailAppService;
+        private readonly IBackgroundJobManager _backgroundJobManager;
 
-        public SendEmailJob(ISendMailService emailSender)
+        public SendEmailJob(ContentEmailAppService contentEmailAppService, IBackgroundJobManager backgroundJobManager)
         {
-            _emailSender = emailSender;
+            _contentEmailAppService = contentEmailAppService;
+            _backgroundJobManager = backgroundJobManager;
         }
         public override async Task ExecuteAsync(SendEmailArgs args)
         {
-            await _emailSender.SendEmailAsync(
-                args.EmailAddress,
-                args.Subject,
-                args.Body
+            await _contentEmailAppService.SendMailAsync(
+                    args.To,
+                    args.Subject,
+                    args.Body,
+                    args.EmailAddress,
+                    args.Name,
+                    args.Password,
+                    args.File
                 );
         }
     }

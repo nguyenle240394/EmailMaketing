@@ -26,5 +26,8 @@ public static class EmailMaketingPermissions
     public static class ContentEmails
     {
         public const string Default = GroupName + ".ContentEmails";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
     }
 }

@@ -60,7 +60,7 @@ $(function () {
                             }).toLocaleString(luxon.DateTime.DATETIME_SHORT);
                     }
                 },
-                /*{
+                {
                     title: l('Actions'),
                     rowAction: {
                         items:
@@ -68,29 +68,26 @@ $(function () {
                                 {
                                     text: l('Delete'),
                                     iconClass: "fa fa-trash-o",
-                                    visible: abp.auth.isGranted('EmailMaketing.Customers.Delete'),
+                                    visible: abp.auth.isGranted('EmailMaketing.ContentEmails.Delete'),
                                     confirmMessage: function (data) {
-                                        return l('Deleting Customer', data.record.name);
+                                        return l('Deleting Content', data.record.name);
                                     },
                                     action: function (data) {
-                                        emailMaketing.customers.customer
+                                        emailMaketing.contentEmails.contentEmail
                                             .delete(data.record.id)
                                             .then(function (data) {
-                                                if (data == "Ok") {
+                                                if (data) {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
-                                                } else if (data == "Customer have data with Content") {
-                                                    abp.message.error(l("Customer have data with Content"));
-                                                } else {
-                                                    abp.message.error(l("Customer have data with Sender Email"));
-                                                }
-
+                                                } else{
+                                                    abp.message.error(l("Content Delete Failed"));
+                                                } 
                                             });
                                     }
                                 },
                             ]
                     }
-                }*/
+                }
             ]
         })
     );

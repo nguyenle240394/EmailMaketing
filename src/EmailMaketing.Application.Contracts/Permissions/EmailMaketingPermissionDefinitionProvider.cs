@@ -24,6 +24,9 @@ public class EmailMaketingPermissionDefinitionProvider : PermissionDefinitionPro
         senderEmailPermission.AddChild(EmailMaketingPermissions.SenderEmails.Delete, L("Permission:SenderEmails.Delete"));
 
         var contentEmailPermission = emailMaketingGroup.AddPermission(EmailMaketingPermissions.ContentEmails.Default, L("Permission:ContentEmails"));
+        contentEmailPermission.AddChild(EmailMaketingPermissions.ContentEmails.Create, L("Permission:ContentEmails.Create"));
+        contentEmailPermission.AddChild(EmailMaketingPermissions.ContentEmails.Edit, L("Permission:ContentEmails.Edit"));
+        contentEmailPermission.AddChild(EmailMaketingPermissions.ContentEmails.Delete, L("Permission:ContentEmails.Delete"));
 
     }
 

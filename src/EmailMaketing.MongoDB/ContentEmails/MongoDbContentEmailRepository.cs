@@ -18,6 +18,12 @@ namespace EmailMaketing.ContentEmails
 
         }
 
+        public async Task<ContentEmail> FindByIdSenderEmailAsync(Guid id)
+        {
+            var queryable = await GetMongoQueryableAsync();
+            return await queryable.FirstOrDefaultAsync(c => c.SenderEmailID == id);
+        }
+
         public async Task<List<ContentEmail>> GetListAsync(int skipCount, int maxResultCount, string sorting, string filter)
         {
             var queryable = await GetMongoQueryableAsync();

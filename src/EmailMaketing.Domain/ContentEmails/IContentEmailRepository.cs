@@ -15,5 +15,6 @@ namespace EmailMaketing.ContentEmails
                 string sorting,
                 string filter
             );
+        Task<ContentEmail> FindByIdSenderEmailAsync(Guid id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using EmailMaketing.Customers;
+﻿using EmailMaketing.ContentEmails;
+using EmailMaketing.Customers;
 using EmailMaketing.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using System;
@@ -21,17 +22,20 @@ namespace EmailMaketing.SenderEmails
         private readonly ICustomerRepository _customerRepository;
         private readonly IIdentityUserRepository _identityUserRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly IContentEmailRepository _contentEmailRepository;
 
         public SenderEmailAppService(
             ISenderEmailRepository senderEmailRepository,
             ICustomerRepository customerRepository,
             IIdentityUserRepository identityUserRepository,
-            ICurrentUser currentUser)
+            ICurrentUser currentUser,
+            IContentEmailRepository contentEmailRepository)
         {
             _senderEmailRepository = senderEmailRepository;
             _customerRepository = customerRepository;
             _identityUserRepository = identityUserRepository;
             _currentUser = currentUser;
+            _contentEmailRepository = contentEmailRepository;
         }
 
         public async Task<SenderEmailDto> CreateAsync(CreateUpdateSenderEmailDto input)
@@ -52,19 +56,28 @@ namespace EmailMaketing.SenderEmails
         public async Task<bool> DeleteAsync(Guid id)
         {
             var sender = await _senderEmailRepository.FindAsync(id);
-            var userIdAdmin = _currentUser.Id;
-            var userAdmin = await _identityUserRepository.FindAsync((Guid)userIdAdmin);
+            var userId = _currentUser.Id;
+            var userAdmin = await _identityUserRepository.FindAsync((Guid)userId);
             if (userAdmin.UserName == "admin")
             {
+                var contenEmail = await _contentEmailRepository.FindByIdSenderEmailAsync(id);
+                if (contenEmail != null)
+                {
+                    return false;
+                }
                 await _senderEmailRepository.DeleteAsync(sender);
                 return true;
             }
             if (sender.CustomerID != null)
             {
-                var userId = _currentUser.Id;
                 var customer = await _customerRepository.FindAsync(x => x.UserID == userId);
                 if (sender.CustomerID == customer.Id)
                 {
+                    var contenEmail = await _contentEmailRepository.FindByIdSenderEmailAsync(id);
+                    if (contenEmail != null)
+                    {
+                        return false;
+                    }
                     await _senderEmailRepository.DeleteAsync(sender);
                     return true;
                 }

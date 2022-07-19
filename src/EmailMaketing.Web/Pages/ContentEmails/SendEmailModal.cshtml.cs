@@ -72,7 +72,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var timespan = ContentEmail.Day - dayNow;
 
             //get data to form va cat cac phan tu \r, \n
-            var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
+            var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split(',');
             // tao bien de remove khoi arry
             string stringToRemove = "";
             // remove cac phan tu ""
@@ -193,7 +193,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var dayNow = DateTime.Now;
             var timespan = ContentEmail.Day - dayNow;
             //get data to form va cat cac phan tu \r, \n
-            var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split('\r', '\n');
+            var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split(',');
             // tao bien de remove khoi arry
             string stringToRemove = "";
             // remove cac phan tu ""

@@ -1,4 +1,5 @@
-﻿
+﻿const { DateTime } = require("../../wwwroot/libs/luxon/luxon");
+
 
 (function () {
     "use strict"
@@ -173,13 +174,18 @@ $(function () {
     $('#summernote').summernote();
 });
 
+$(function () {
+    $('#date_picker').datepicker({
+        startDate: new Date()
+    });
+});
 
 $('#ShowTime').on('click', function () {
     if (this.checked) {
-        document.getElementById("ContentEmail_Day").style.display = 'block';
         document.getElementById("ScheduleJob").disabled = false;
+        document.getElementById("date_picker").style.display = 'block';
     } else {
         document.getElementById("ScheduleJob").disabled = true;
-        document.getElementById("ContentEmail_Day").style.display = 'none';
+        document.getElementById("date_picker").style.display = 'none';
     }
 })

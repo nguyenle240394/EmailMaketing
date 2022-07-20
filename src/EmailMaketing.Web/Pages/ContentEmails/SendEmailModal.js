@@ -1,5 +1,4 @@
-﻿const { DateTime } = require("../../wwwroot/libs/luxon/luxon");
-
+﻿
 
 (function () {
     "use strict"

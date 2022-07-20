@@ -194,9 +194,9 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var dayNow = DateTime.Now;
             var timespan = ContentEmail.Day - dayNow;
             //dang lam do
-            if (ContentEmail.Day.CompareTo(dayNow)<0)
+            if (ContentEmail.Day.CompareTo(dayNow) < 0)
             {
-          /*      throw new UserFriendlyException(L["User Name is already exists"]);*/
+                //throw new UserFriendlyException(L["User Name is already exists"]);
             }
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split(',');

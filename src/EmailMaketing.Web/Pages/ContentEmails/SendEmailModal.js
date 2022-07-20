@@ -1,4 +1,6 @@
-﻿(function () {
+﻿
+
+(function () {
     "use strict"
     // Plugin Constructor
     var TagsInput = function (opts) {
@@ -174,7 +176,6 @@ $(function () {
 
 $('#ShowTime').on('click', function () {
     if (this.checked) {
-        
         document.getElementById("ContentEmail_Day").style.display = 'block';
         document.getElementById("ScheduleJob").disabled = false;
     } else {

@@ -173,18 +173,13 @@ $(function () {
     $('#summernote').summernote();
 });
 
-$(function () {
-    $('#date_picker').datepicker({
-        startDate: new Date()
-    });
-});
 
 $('#ShowTime').on('click', function () {
     if (this.checked) {
         document.getElementById("ScheduleJob").disabled = false;
-        document.getElementById("date_picker").style.display = 'block';
+        document.getElementsByName("dateschedule")[0].disabled = false;
     } else {
         document.getElementById("ScheduleJob").disabled = true;
-        document.getElementById("date_picker").style.display = 'none';
+        document.getElementsByName("dateschedule")[0].disabled = true;
     }
 })

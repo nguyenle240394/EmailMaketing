@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
-
+    
     <script>
         $(document).ready(function() {
             $('#summernote').summernote();
@@ -40,8 +40,12 @@
             <abp-row>
                 <abp-column>
                     <input type="checkbox" id="ShowTime"> Time</input>
-                    @*<input asp-for="ContentEmail.Day" style="display:none" data-provide="datepicker" />*@
-                    <input id="date_picker" type="datetime-local" value="@Model.ContentEmail.Day" style="display:none" />
+                    @*<label>Schedule</label>*@
+                    <input class="form-control" name="dateschedule" type="datetime-local" value="@Model.ContentEmail.Day" disabled />
+                    <script type="text/javascript">
+                        var today = new Date().toISOString().slice(0, 16);
+                        document.getElementsByName("dateschedule")[0].min = today;
+                    </script>
                 </abp-column>
             </abp-row>
         </abp-card-body>
@@ -52,10 +56,3 @@
     </abp-card>
 </form>
 
-<script>
-$(document).ready(function () {
-    $('#date_picker').datepicker({
-        startDate: new Date()
-    });
-});
-</script>

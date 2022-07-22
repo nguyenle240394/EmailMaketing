@@ -193,11 +193,6 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
             var dayNow = DateTime.Now;
             var timespan = ContentEmail.Day - dayNow;
-            //dang lam do
-            if (ContentEmail.Day.CompareTo(dayNow) < 0)
-            {
-                //throw new UserFriendlyException(L["User Name is already exists"]);
-            }
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split(',');
             // tao bien de remove khoi arry

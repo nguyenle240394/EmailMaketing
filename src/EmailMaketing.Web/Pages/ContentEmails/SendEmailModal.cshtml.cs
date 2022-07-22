@@ -192,6 +192,9 @@ namespace EmailMaketing.Web.Pages.ContentEmails
             var userName = _currentUser.UserName;
             var customer = await _customerRepository.FindByCustomerWithUserIDAsync((Guid)userId);
             var dayNow = DateTime.Now;
+            var timeInForm = Request.Form["dateschedule"];
+            ContentEmail.Day = Convert.ToDateTime(timeInForm);
+            /*var timespan = ContentEmail.Day - dayNow;*/
             var timespan = ContentEmail.Day - dayNow;
             //get data to form va cat cac phan tu \r, \n
             var listEmailReceive = ContentEmail.RecipientEmail.ToString().Split(',');

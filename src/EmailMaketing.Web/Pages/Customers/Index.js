@@ -82,6 +82,14 @@ $(function () {
                         items:
                             [
                                 {
+                                    text: l('Edit Roles'),
+                                    iconClass: "fa fa-user-circle-o",
+                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
+                                    action: function (data) {
+                                        editRole.open({ id: data.record.id });
+                                    }
+                                },
+                                {
                                     text: l('Edit'),
                                     iconClass: "fa fa-pencil-square-o",
                                     visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),
@@ -119,15 +127,7 @@ $(function () {
                                     action: function (data) {
                                         resetPasswordModal.open({ id: data.record.id });
                                     }
-                                },
-                                {
-                                    text: l('Edit Roles'),
-                                    iconClass: "fa fa-user-circle-o",
-                                    /*visible: abp.auth.isGranted('EmailMaketing.Customers.Edit'),*/
-                                    action: function (data) {
-                                        editRole.open({ id: data.record.id });
-                                    }
-                                },
+                                }
                             ]
                     }
                 }

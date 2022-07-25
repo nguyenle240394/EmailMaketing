@@ -18,7 +18,7 @@ $(function () {
             ajax: abp.libs.datatables.createAjax(emailMaketing.senderEmails.senderEmail.getList),
             columnDefs: [
                 {
-                    title: l('No.'),
+                    title: l('No'),
                     data: "stt"
                 },
                 {

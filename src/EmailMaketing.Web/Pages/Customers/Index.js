@@ -34,7 +34,7 @@ $(function () {
                     data: "userName"
                 },
                 {
-                    title: l('Name'),
+                    title: l('Full Name'),
                     data: "fullName",
                 },
                 {

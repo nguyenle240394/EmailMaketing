@@ -274,7 +274,7 @@ namespace EmailMaketing.Web.Pages.ContentEmails
        
         public class CreateContentEmailViewModal
         {
-            [DisplayName("Sender Email")]
+            [DisplayName("Sender Name")]
             public string Name { get; set; }
             [Required]
             public string Subject { get; set; }

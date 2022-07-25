@@ -170,7 +170,7 @@ var tagInput1 = new TagsInput({
 
 
 $(function () {
-    $('#summernote').summernote();
+    $('.summernote').summernote();
 });
 
 

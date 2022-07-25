@@ -51,7 +51,7 @@
                 @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Create))
             {
                 <abp-button id="NewSenderEmailButton"
-                        text="@L["New Sender Email"].Value"
+                        text="@L["Create New Sender Email"].Value"
                         icon="plus"
                         button-type="Primary" />
             }

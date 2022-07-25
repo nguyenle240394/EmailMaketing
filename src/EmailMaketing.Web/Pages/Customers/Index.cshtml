@@ -22,7 +22,7 @@
                  @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.Customers.Create))
                 {
                 <abp-button id="NewCustomerButton"
-                            text="@L["New Customer"].Value"
+                            text="@L["Create New Customer"].Value"
                             icon="plus"
                             button-type="Primary" />
                 }

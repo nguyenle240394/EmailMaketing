@@ -70,7 +70,7 @@ $(function () {
                                     iconClass: "fa fa-trash-o",
                                     visible: abp.auth.isGranted('EmailMaketing.ContentEmails.Delete'),
                                     confirmMessage: function (data) {
-                                        return l('Deleting Content', data.record.name);
+                                        return l('Deleting Content Email', data.record.name);
                                     },
                                     action: function (data) {
                                         emailMaketing.contentEmails.contentEmail
@@ -80,7 +80,7 @@ $(function () {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
                                                 } else{
-                                                    abp.message.error(l("Content Delete Failed"));
+                                                    abp.message.error(l("Delete Failed"));
                                                 } 
                                             });
                                     }

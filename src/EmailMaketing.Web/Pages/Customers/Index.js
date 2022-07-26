@@ -111,8 +111,8 @@ $(function () {
                                                 if (data== "Ok") {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
-                                                } else if (data == "Customer have data with Content") {
-                                                    abp.message.error(l("Customer have data with Content"));
+                                                } else if (data == "Customer have data with Content Email") {
+                                                    abp.message.error(l("Customer have data with Content Email"));
                                                 }else {
                                                     abp.message.error(l("Customer have data with Sender Email"));
                                                 }

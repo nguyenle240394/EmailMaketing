@@ -82,7 +82,7 @@ $(function () {
                                                     abp.notify.info(l('Successfully Deleted'));
                                                     dataTable.ajax.reload();
                                                 } else {
-                                                    abp.message.error(l("Delete Failed, Email has data in table content"));
+                                                    abp.message.error(l("Delete Failed, Email has data in Content Email"));
                                                 }
                                             });
                                     }

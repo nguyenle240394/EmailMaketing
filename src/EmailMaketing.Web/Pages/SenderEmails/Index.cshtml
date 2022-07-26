@@ -31,7 +31,7 @@
                                 </abp-column>
                                 <abp-column size-sm="_5">
                                     <abp-button id="ImportExcelButton" button-type="Primary" type="submit" disabled="true" >
-                                        <i class="fa fa-upload" aria-hidden="true"></i> Import Excel
+                                        <i class="fa fa-upload" aria-hidden="true"></i> @L["Upload Excel"]
                                     </abp-button>
                                 </abp-column>
                             </abp-row>
@@ -40,7 +40,7 @@
                     <abp-column size-sm="_4" style="text-align:left;">
                         <form method="post" asp-page-handler="Export">
                             <abp-button button-type="Primary" type="submit">
-                                <i class="fa fa-file" aria-hidden="true"></i> Template Excel
+                                <i class="fa fa-file" aria-hidden="true"></i> @L["Template Excel"]
                             </abp-button>
                         </form>
                     </abp-column> 
@@ -51,7 +51,7 @@
                 @if (await AuthorizationService.IsGrantedAsync(EmailMaketingPermissions.SenderEmails.Create))
             {
                 <abp-button id="NewSenderEmailButton"
-                        text="@L["Create New Sender Email"].Value"
+                        text="@L["New Sender Email"].Value"
                         icon="plus"
                         button-type="Primary" />
             }
